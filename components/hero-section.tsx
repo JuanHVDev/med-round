@@ -1,19 +1,19 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
+
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Heart, Activity, Users, FileText, Shield, Clock } from "lucide-react";
+
+import { Heart, Activity, Users, FileText, Shield } from "lucide-react";
 import Link from "next/link";
 
 export default function HeroSection()
 {
   const [isVisible, setIsVisible] = useState(false);
 
-  useEffect(() =>
-  {
-    setIsVisible(true);
+  useEffect(() => {
+    const timer = setTimeout(() => setIsVisible(true), 100);
+    return () => clearTimeout(timer);
   }, []);
 
   return (
@@ -27,10 +27,10 @@ export default function HeroSection()
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div className={`space-y-8 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           {/* Badge */}
-          <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-200 px-4 py-2 text-sm font-medium animate-fadeIn animate-delay-100">
+          <div className="bg-blue-100 text-blue-800 hover:bg-blue-200 px-4 py-2 text-sm font-medium rounded-full inline-flex items-center animate-fadeIn animate-delay-100">
             <Heart className="w-4 h-4 mr-2 animate-heartbeat" />
             Solución Innovadora para el Sector Médico
-          </Badge>
+          </div>
 
           {/* Main Title */}
           <div className="space-y-4">
@@ -62,7 +62,7 @@ export default function HeroSection()
             <Card className="bg-white/80 backdrop-blur-sm border-blue-100 shadow-lg hover:shadow-xl transition-all duration-300 animate-slideInLeft animate-delay-300">
               <CardContent className="p-6 text-center">
                 <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Clock className="w-6 h-6 text-blue-600" />
+                  <FileText className="w-6 h-6 text-blue-600" />
                 </div>
                 <div className="text-3xl font-bold text-gray-900">75%</div>
                 <div className="text-gray-600 text-sm mt-1">Ahorro de tiempo en handoffs</div>

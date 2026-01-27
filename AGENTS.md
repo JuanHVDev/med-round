@@ -4,15 +4,6 @@ This file contains guidelines and commands for agentic coding agents working in 
 
 ## Build Commands
 
-### Development
-- `npm run dev` - Start development server (Next.js)
-- `npm run build` - Build production version
-- `npm start` - Start production server
-
-### Code Quality
-- `npm run lint` - Run ESLint checks
-- `tsc --noEmit` - Type check without emitting files
-
 ### Testing
 No test framework is currently configured in this project.
 
@@ -59,7 +50,6 @@ import './styles.css';
 
 ### CSS & Styling
 - Use Tailwind CSS v4 classes
-- CSS variables defined in :root for theming
 - Responsive design with Tailwind breakpoints
 - Dark mode support via `prefers-color-scheme`
 

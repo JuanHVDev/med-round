@@ -2,20 +2,18 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+
 import
 {
   Heart,
   Mail,
   Phone,
-  MapPin,
   Facebook,
   Twitter,
   Linkedin,
   Instagram,
   Shield,
-  Users,
-  Clock
+  Users
 } from "lucide-react";
 import Link from "next/link";
 
