@@ -2,8 +2,24 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { formSchema } from '@/lib/registerSchema';
+import { checkRateLimit, getRateLimitHeaders } from '@/lib/rate-limit';
 
 export async function POST(request: NextRequest) {
+  // Rate limiting based on IP address
+  const forwardedFor = request.headers.get('x-forwarded-for');
+  const ip = forwardedFor ? forwardedFor.split(',')[0] : request.headers.get('x-real-ip') ?? 'unknown';
+  const rateLimit = checkRateLimit(`register:${ip}`);
+
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      { error: 'Too many registration attempts. Please try again later.' },
+      { 
+        status: 429,
+        headers: getRateLimitHeaders(rateLimit.remaining, rateLimit.resetTime),
+      }
+    );
+  }
+
   try {
     const body = await request.json();
     
@@ -45,25 +61,33 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create medical profile using Prisma
+    // Create medical profile using Prisma within a transaction
     try {
-      await prisma.medicosProfile.create({
-        data: {
-          userId: user.user.id,
-          fullName: validatedData.fullName,
-          professionalId: validatedData.professionalId,
-          studentType: validatedData.studentType,
-          universityMatricula: validatedData.universityMatricula,
-          hospital: validatedData.hospital,
-          otherHospital: validatedData.otherHospital,
-          specialty: validatedData.specialty,
-          userType: validatedData.userType,
-        },
+      await prisma.$transaction(async (tx) => {
+        await tx.medicosProfile.create({
+          data: {
+            userId: user.user.id,
+            fullName: validatedData.fullName,
+            professionalId: validatedData.professionalId,
+            studentType: validatedData.studentType,
+            universityMatricula: validatedData.universityMatricula,
+            hospital: validatedData.hospital,
+            otherHospital: validatedData.otherHospital,
+            specialty: validatedData.specialty,
+            userType: validatedData.userType,
+          },
+        });
       });
     } catch (profileError) {
       console.error('Profile creation failed:', profileError);
-      // If profile creation fails, we should clean up the user
-      // For now, return error to user
+      // Attempt to clean up the user if profile creation fails
+      try {
+        await prisma.user.delete({
+          where: { id: user.user.id },
+        });
+      } catch (cleanupError) {
+        console.error('Failed to cleanup user after profile error:', cleanupError);
+      }
       return NextResponse.json(
         { error: 'Error creating medical profile. Please try again.' },
         { status: 500 }
@@ -72,14 +96,19 @@ export async function POST(request: NextRequest) {
 
     // Better Auth handles session creation automatically via cookies
     // No need to manually create session or return tokens
-    return NextResponse.json({
-      success: true,
-      user: {
-        id: user.user.id,
-        name: user.user.name,
-        email: user.user.email,
+    return NextResponse.json(
+      {
+        success: true,
+        user: {
+          id: user.user.id,
+          name: user.user.name,
+          email: user.user.email,
+        },
       },
-    });
+      {
+        headers: getRateLimitHeaders(rateLimit.remaining, rateLimit.resetTime),
+      }
+    );
   } catch (error) {
     console.error('Registration error:', error);
     

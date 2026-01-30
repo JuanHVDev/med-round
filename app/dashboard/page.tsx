@@ -2,6 +2,17 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { DashboardActions } from "./DashboardActions";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Dashboard - MedRound",
+  description: "Gestiona el pase de visita, tareas pendientes y la comunicación entre turnos médicos.",
+  keywords: ["dashboard", "gestión médica", "pase de visita", "pendientes"],
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 export default async function DashboardPage() {
   const session = await auth.api.getSession({
