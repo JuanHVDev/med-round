@@ -40,6 +40,6 @@ export const config = {
      * - register (public route)
      * - / (root page)
      */
-    '/((?!api|_next/static|_next/image|favicon.ico|login|register|dashboard).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|login|register|$).*)',
   ],
 };
