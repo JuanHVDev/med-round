@@ -1,7 +1,6 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import type { RegistrationStore } from './types'
-import { MAX_STEPS } from '@/constants/registerConstants'
 
 export const useRegistrationStore = create<RegistrationStore>()(
   devtools(
@@ -53,7 +52,7 @@ export const useRegistrationStore = create<RegistrationStore>()(
         })
       },
 
-      submitForm: async (formData: any) => {
+      submitForm: async (formData: unknown) => {
         const state = get()
         
         if (state.isSubmitting) return
@@ -66,26 +65,51 @@ export const useRegistrationStore = create<RegistrationStore>()(
         })
 
         try {
-          // Simulación de envío al backend
-          await new Promise(resolve => setTimeout(resolve, 2000))
-          
-          console.log('Form data submitted:', formData)
+          const response = await fetch('/api/register', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData as FormData),
+          })
+
+          const result = await response.json()
+
+          if (!response.ok) {
+            // Handle specific HTTP status codes
+            let errorMessage = 'Error en el registro'
+            
+            if (response.status === 409) {
+              errorMessage = 'El email ya está registrado. Por favor use otro email o inicie sesión.'
+            } else if (response.status === 400) {
+              errorMessage = result.error || 'Datos inválidos. Por favor revise todos los campos.'
+            } else if (response.status === 500) {
+              errorMessage = 'Error del servidor. Por favor intente más tarde.'
+            }
+            
+            throw new Error(errorMessage)
+          }
+
+          console.log('Registration successful:', result)
           
           set({ 
             isSubmitting: false, 
             submissionStatus: 'success'
           })
 
-          // Aquí podrías redirigir o mostrar mensaje de éxito
-          
+          // Wait a moment before redirect to ensure session is set
+          setTimeout(() => {
+            window.location.href = '/dashboard'
+          }, 500)
+
         } catch (error) {
-          console.error('Error submitting form:', error)
+          console.error('Registration error:', error)
           
           set({ 
             isSubmitting: false, 
             submissionStatus: 'error',
             showErrorDialog: true,
-            errorMessage: 'Error al procesar el registro'
+            errorMessage: error instanceof Error ? error.message : 'Error al procesar el registro'
           })
         }
       },

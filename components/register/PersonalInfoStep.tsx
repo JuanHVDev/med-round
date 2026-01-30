@@ -1,6 +1,6 @@
 "use client"
 
-import { FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription } from "@/components/ui/form"
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { UseFormReturn } from "react-hook-form"
 import type { FormData } from "@/lib/registerSchema"

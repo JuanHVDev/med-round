@@ -23,7 +23,7 @@ export interface RegistrationActions {
   setSubmitting: (isSubmitting: boolean) => void
   showError: (message: string) => void
   hideError: () => void
-  submitForm: (formData: any) => Promise<void>
+  submitForm: (formData: unknown) => Promise<void>
   resetForm: () => void
 }
 
