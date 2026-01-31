@@ -1,6 +1,7 @@
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 import HeroSection from "@/components/hero-section";
+import Navbar from "@/components/navbar";
 
 // Dynamic imports for below-the-fold sections
 const FeaturesSection = dynamic(() => import("@/components/features-section"), {
@@ -64,6 +65,7 @@ export const metadata = {
 export default function Home() {
   return (
     <main className="min-h-screen">
+      <Navbar />
       <HeroSection />
       <Suspense>
         <FeaturesSection />
