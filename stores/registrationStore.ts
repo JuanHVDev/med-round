@@ -11,6 +11,7 @@ export const useRegistrationStore = create<RegistrationStore>()(
       showErrorDialog: false,
       errorMessage: '',
       submissionStatus: 'idle',
+      showVerificationMessage: false,
 
       // Acciones
       nextStep: () => {
@@ -92,15 +93,12 @@ export const useRegistrationStore = create<RegistrationStore>()(
 
           console.log('Registration successful:', result)
           
+          // Show verification message instead of redirecting
           set({ 
             isSubmitting: false, 
-            submissionStatus: 'success'
+            submissionStatus: 'success',
+            showVerificationMessage: true
           })
-
-          // Wait a moment before redirect to ensure session is set
-          setTimeout(() => {
-            window.location.href = '/dashboard'
-          }, 500)
 
         } catch (error) {
           console.error('Registration error:', error)
@@ -120,7 +118,8 @@ export const useRegistrationStore = create<RegistrationStore>()(
           isSubmitting: false,
           showErrorDialog: false,
           errorMessage: '',
-          submissionStatus: 'idle'
+          submissionStatus: 'idle',
+          showVerificationMessage: false
         })
       }
     }),

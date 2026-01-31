@@ -14,6 +14,7 @@ export interface RegistrationState {
   showErrorDialog: boolean
   errorMessage: string
   submissionStatus: 'idle' | 'submitting' | 'success' | 'error'
+  showVerificationMessage: boolean
 }
 
 export interface RegistrationActions {
