@@ -11,6 +11,7 @@ import { PersonalInfoStep } from "@/components/register/PersonalInfoStep"
 import { IdentificationStep } from "@/components/register/IdentificationStep"
 import { WorkInfoStep } from "@/components/register/WorkInfoStep"
 import { NavigationButtons } from "@/components/register/NavigationButtons"
+import { VerificationMessage } from "@/components/register/VerificationMessage"
 import { formSchema, type FormData } from "@/lib/registerSchema"
 
 export default function RegisterPage() {
@@ -38,15 +39,18 @@ export default function RegisterPage() {
     isSubmitting,
     showErrorDialog,
     errorMessage,
+    showVerificationMessage,
     nextStep,
     prevStep,
     hideError,
     submitForm,
+    resetForm,
   } = useRegistration()
 
   // Watchers para obtener valores actuales del formulario
   const userType = form.watch("userType")
   const selectedHospital = form.watch("hospital")
+  const email = form.watch("email")
 
   // Validación de paso actual
   const validateCurrentStep = async () => {
@@ -102,6 +106,21 @@ export default function RegisterPage() {
         nextStep()
       }
     }
+  }
+
+  // Mostrar mensaje de verificación si el registro fue exitoso
+  if (showVerificationMessage) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 flex items-center justify-center p-4">
+        <VerificationMessage
+          email={email}
+          onBack={() => {
+            resetForm()
+            form.reset()
+          }}
+        />
+      </div>
+    )
   }
 
   return (
