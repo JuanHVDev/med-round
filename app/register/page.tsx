@@ -2,6 +2,7 @@
 
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Form } from "@/components/ui/form"
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog"
@@ -124,12 +125,18 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-2xl bg-white/80 backdrop-blur-sm border-blue-100 shadow-lg hover:shadow-xl transition-all duration-300">
+      <Card className="w-full max-w-2xl modern-card">
         <CardHeader className="text-center pb-6">
-          <CardTitle className="text-2xl font-bold text-gray-900">Registro de Médico</CardTitle>
+          <CardTitle className="text-2xl font-bold">Registro de Médico</CardTitle>
           <CardDescription>
             Complete el formulario para crear su cuenta
           </CardDescription>
+          <p className="text-sm text-muted-foreground mt-2">
+            ¿Ya tienes una cuenta?{" "}
+            <Link href="/login" className="text-primary hover:underline font-medium">
+              Inicia sesión
+            </Link>
+          </p>
         </CardHeader>
         <CardContent>
           <StepProgress currentStep={currentStep} />

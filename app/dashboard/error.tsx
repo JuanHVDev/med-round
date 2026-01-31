@@ -2,7 +2,8 @@
 
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { AlertCircle } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { AlertCircle, RefreshCw } from "lucide-react";
 
 export default function DashboardError({
   error,
@@ -16,38 +17,34 @@ export default function DashboardError({
   }, [error]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50">
       {/* Header */}
-      <div className="bg-white shadow">
+      <div className="bg-white/80 backdrop-blur-sm border-b border-border shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center">
-            <h1 className="text-xl font-semibold">Dashboard</h1>
+            <h1 className="text-xl font-semibold text-foreground">Dashboard</h1>
           </div>
         </div>
       </div>
 
       {/* Error Content */}
       <div className="max-w-7xl mx-auto py-12 sm:px-6 lg:px-8">
-        <div className="text-center max-w-md mx-auto">
-          <div className="mb-6">
-            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto">
-              <AlertCircle className="w-8 h-8 text-red-600" />
+        <Card className="max-w-md mx-auto modern-card">
+          <CardHeader className="text-center">
+            <div className="mx-auto mb-4 w-16 h-16 bg-destructive/10 rounded-full flex items-center justify-center">
+              <AlertCircle className="h-8 w-8 text-destructive" />
             </div>
-          </div>
-
-          <h2 className="text-xl font-bold text-gray-900 mb-2">
-            Error en el Dashboard
-          </h2>
-
-          <p className="text-gray-600 mb-6">
-            No se pudo cargar la información del dashboard. Por favor, intenta nuevamente.
-          </p>
-
-          <div className="space-y-3">
+            <CardTitle className="text-xl">Error en el Dashboard</CardTitle>
+            <CardDescription>
+              No se pudo cargar la información del dashboard. Por favor, intenta nuevamente.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
             <Button
               onClick={reset}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+              className="w-full btn-primary gap-2"
             >
+              <RefreshCw className="h-4 w-4" />
               Reintentar
             </Button>
 
@@ -58,8 +55,8 @@ export default function DashboardError({
             >
               Recargar página
             </Button>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

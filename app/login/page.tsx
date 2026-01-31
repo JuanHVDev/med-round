@@ -4,6 +4,11 @@ import { useState } from 'react';
 import { signIn, sendVerificationEmail } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { AlertCircle, Loader2 } from 'lucide-react';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -64,91 +69,97 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full space-y-8 p-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Iniciar Sesión
-          </h2>
-        </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email
-              </label>
-              <input
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-cyan-50 p-4">
+      <Card className="w-full max-w-md bg-white/80 backdrop-blur-sm border border-border shadow-lg">
+        <CardHeader className="text-center space-y-2">
+          <CardTitle className="text-2xl font-bold">Iniciar Sesión</CardTitle>
+          <CardDescription>
+            Accede a tu cuenta de MedRound
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
                 id="email"
                 name="email"
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                placeholder="tu@email.com"
+                className="rounded-lg"
               />
             </div>
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Contraseña
-              </label>
-              <input
+            <div className="space-y-2">
+              <Label htmlFor="password">Contraseña</Label>
+              <Input
                 id="password"
                 name="password"
                 type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                placeholder="••••••••"
+                className="rounded-lg"
               />
             </div>
-          </div>
 
-          {error && (
-            <div className="text-red-600 text-sm">{error}</div>
-          )}
+            {error && (
+              <div className="flex items-center gap-2 text-sm text-destructive bg-destructive/10 p-3 rounded-lg">
+                <AlertCircle className="h-4 w-4 flex-shrink-0" />
+                <span>{error}</span>
+              </div>
+            )}
 
-          {needsVerification && (
-            <div className="bg-amber-50 border border-amber-200 rounded-md p-4 mt-4">
-              <div className="flex">
-                <div className="flex-shrink-0">
-                  <svg className="h-5 w-5 text-amber-600" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <div className="ml-3">
-                  <p className="text-sm text-amber-800">
-                    {error}
-                  </p>
-                  <button
-                    type="button"
-                    onClick={handleResendVerification}
-                    disabled={isLoading}
-                    className="mt-2 text-xs text-amber-700 underline hover:text-amber-900 disabled:opacity-50"
-                  >
-                    Reenviar email de verificación
-                  </button>
+            {needsVerification && (
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <p className="text-sm text-amber-800">
+                      {error}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={handleResendVerification}
+                      disabled={isLoading}
+                      className="mt-2 text-xs text-amber-700 underline hover:text-amber-900 disabled:opacity-50"
+                    >
+                      Reenviar email de verificación
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
 
-          <div>
-            <button
+            <Button
               type="submit"
               disabled={isLoading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+              className="w-full btn-primary rounded-lg"
             >
-              {isLoading ? 'Iniciando...' : 'Iniciar Sesión'}
-            </button>
-          </div>
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Iniciando...
+                </>
+              ) : (
+                'Iniciar Sesión'
+              )}
+            </Button>
 
-          <div className="text-center">
-            <Link href="/register" className="text-indigo-600 hover:text-indigo-500">
-              ¿No tienes cuenta? Regístrate
-            </Link>
-          </div>
-        </form>
-      </div>
+            <div className="text-center text-sm">
+              <Link 
+                href="/register" 
+                className="text-primary hover:text-primary/90 underline-offset-4 hover:underline"
+              >
+                ¿No tienes cuenta? Regístrate
+              </Link>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 }

@@ -19,23 +19,23 @@ export function NavigationButtons({ currentStep, onPrevStep, onNextStep, isSubmi
         variant="outline"
         onClick={onPrevStep}
         disabled={currentStep === 1}
-        className="border-blue-200 text-blue-600 hover:bg-blue-50"
+        className="gap-2"
       >
-        <ChevronLeft className="w-4 h-4 mr-2" />
+        <ChevronLeft className="w-4 h-4" />
         Anterior
       </Button>
       <Button
         type="button"
         onClick={onNextStep}
         disabled={isSubmitting}
-        className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="btn-primary gap-2"
       >
         {isSubmitting ? (
           "Procesando..."
         ) : (
           <>
             {currentStep === MAX_STEPS ? "Registrarse" : "Siguiente"}
-            {currentStep < MAX_STEPS && <ChevronRight className="w-4 h-4 ml-2" />}
+            {currentStep < MAX_STEPS && <ChevronRight className="w-4 h-4" />}
           </>
         )}
       </Button>

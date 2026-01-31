@@ -2,6 +2,8 @@
 
 import { signOut } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { LogOut } from "lucide-react";
 
 interface DashboardActionsProps {
   userName: string;
@@ -17,13 +19,16 @@ export function DashboardActions({ userName }: DashboardActionsProps) {
 
   return (
     <div className="flex items-center space-x-4">
-      <span className="text-sm text-gray-700">Hola, {userName}</span>
-      <button
+      <span className="text-sm text-muted-foreground">Hola, {userName}</span>
+      <Button
         onClick={handleLogout}
-        className="bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-red-700 transition-colors"
+        variant="destructive"
+        size="sm"
+        className="gap-2"
       >
+        <LogOut className="h-4 w-4" />
         Cerrar Sesión
-      </button>
+      </Button>
     </div>
   );
 }

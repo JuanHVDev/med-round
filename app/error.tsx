@@ -2,7 +2,8 @@
 
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { AlertTriangle, Home, RefreshCw } from "lucide-react";
 
 export default function GlobalError({
   error,
@@ -16,51 +17,50 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full mx-4 text-center">
-        <div className="mb-6">
-          <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto">
-            <AlertTriangle className="w-10 h-10 text-red-600" />
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-cyan-50 p-4">
+      <Card className="w-full max-w-md modern-card">
+        <CardHeader className="text-center">
+          <div className="mx-auto mb-4 w-16 h-16 bg-destructive/10 rounded-full flex items-center justify-center">
+            <AlertTriangle className="h-8 w-8 text-destructive" />
           </div>
-        </div>
+          <CardTitle className="text-2xl">¡Algo salió mal!</CardTitle>
+          <CardDescription>
+            Ha ocurrido un error inesperado. Por favor, intenta nuevamente.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {error.message && (
+            <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
+              <p className="text-sm text-destructive font-mono">{error.message}</p>
+            </div>
+          )}
 
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">
-          ¡Algo salió mal!
-        </h1>
+          <div className="space-y-3">
+            <Button
+              onClick={reset}
+              className="w-full btn-primary gap-2"
+            >
+              <RefreshCw className="h-4 w-4" />
+              Intentar nuevamente
+            </Button>
 
-        <p className="text-gray-600 mb-6">
-          Ha ocurrido un error inesperado. Por favor, intenta nuevamente.
-        </p>
-
-        {error.message && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-            <p className="text-sm text-red-800 font-mono">{error.message}</p>
+            <Button
+              variant="outline"
+              onClick={() => window.location.href = "/"}
+              className="w-full gap-2"
+            >
+              <Home className="h-4 w-4" />
+              Volver al inicio
+            </Button>
           </div>
-        )}
 
-        <div className="space-y-3">
-          <Button
-            onClick={reset}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-          >
-            Intentar nuevamente
-          </Button>
-
-          <Button
-            variant="outline"
-            onClick={() => window.location.href = "/"}
-            className="w-full"
-          >
-            Volver al inicio
-          </Button>
-        </div>
-
-        {error.digest && (
-          <p className="mt-6 text-xs text-gray-400">
-            Error ID: {error.digest}
-          </p>
-        )}
-      </div>
+          {error.digest && (
+            <p className="text-center text-xs text-muted-foreground">
+              Error ID: {error.digest}
+            </p>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }

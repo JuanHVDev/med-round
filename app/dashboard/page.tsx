@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { DashboardActions } from "./DashboardActions";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -24,28 +25,33 @@ export default async function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="bg-white shadow">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50">
+      {/* Header */}
+      <div className="bg-white/80 backdrop-blur-sm border-b border-border shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
-            <h1 className="text-xl font-semibold">Dashboard</h1>
+            <h1 className="text-xl font-semibold text-foreground">Dashboard</h1>
             <DashboardActions userName={session.user.name || "Usuario"} />
           </div>
         </div>
       </div>
 
+      {/* Content */}
       <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
-          <div className="border-4 border-dashed border-gray-200 rounded-lg h-96 flex items-center justify-center">
-            <div className="text-center">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                ¡Bienvenido!
-              </h2>
-              <p className="text-gray-600">
+          <Card className="modern-card">
+            <CardHeader className="text-center">
+              <CardTitle className="text-2xl font-bold">¡Bienvenido!</CardTitle>
+              <CardDescription>
                 Tu dashboard está listo para ser personalizado
-              </p>
-            </div>
-          </div>
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="flex items-center justify-center min-h-[300px]">
+              <div className="text-center text-muted-foreground">
+                <p>Comienza a gestionar el pase de visita y tus tareas pendientes</p>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
