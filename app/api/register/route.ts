@@ -61,33 +61,36 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create medical profile using Prisma within a transaction
+    // Create medical profile using Prisma (operación directa, sin transacción innecesaria)
+    // Nota: Las operaciones individuales en Prisma son atómicas por defecto
     try {
-      await prisma.$transaction(async (tx) => {
-        await tx.medicosProfile.create({
-          data: {
-            userId: user.user.id,
-            fullName: validatedData.fullName,
-            professionalId: validatedData.professionalId,
-            studentType: validatedData.studentType,
-            universityMatricula: validatedData.universityMatricula,
-            hospital: validatedData.hospital,
-            otherHospital: validatedData.otherHospital,
-            specialty: validatedData.specialty,
-            userType: validatedData.userType,
-          },
-        });
+      await prisma.medicosProfile.create({
+        data: {
+          userId: user.user.id,
+          fullName: validatedData.fullName,
+          professionalId: validatedData.professionalId,
+          studentType: validatedData.studentType,
+          universityMatricula: validatedData.universityMatricula,
+          hospital: validatedData.hospital,
+          otherHospital: validatedData.otherHospital,
+          specialty: validatedData.specialty,
+          userType: validatedData.userType,
+        },
       });
     } catch (profileError) {
-      console.error('Profile creation failed:', profileError);
+      console.error('❌ [Register] Profile creation failed:', profileError);
+      
       // Attempt to clean up the user if profile creation fails
+      // Esto evita tener usuarios huérfanos sin perfil médico
       try {
         await prisma.user.delete({
           where: { id: user.user.id },
         });
+        console.log('✅ [Register] User cleanup successful after profile error');
       } catch (cleanupError) {
-        console.error('Failed to cleanup user after profile error:', cleanupError);
+        console.error('⚠️ [Register] Failed to cleanup user after profile error:', cleanupError);
       }
+      
       return NextResponse.json(
         { error: 'Error creating medical profile. Please try again.' },
         { status: 500 }
