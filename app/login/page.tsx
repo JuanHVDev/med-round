@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { signIn } from '@/lib/auth-client';
+import { signIn, sendVerificationEmail } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -10,12 +10,15 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [needsVerification, setNeedsVerification] = useState(false);
+  const [unverifiedEmail, setUnverifiedEmail] = useState('');
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
+    setNeedsVerification(false);
 
     try {
       const result = await signIn.email({
@@ -24,12 +27,37 @@ export default function LoginPage() {
       });
 
       if (result?.error) {
-        setError(result.error.message || 'Error en el inicio de sesión');
+        if (result.error.status === 403) {
+          setNeedsVerification(true);
+          setUnverifiedEmail(email);
+          setError('Por favor verifica tu email antes de iniciar sesión.');
+        } else {
+          setError(result.error.message || 'Error en el inicio de sesión');
+        }
       } else {
         router.push('/dashboard');
       }
     } catch {
       setError('Error al iniciar sesión');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleResendVerification = async () => {
+    if (!unverifiedEmail) return;
+    
+    setIsLoading(true);
+    try {
+      await sendVerificationEmail({
+        email: unverifiedEmail,
+        callbackURL: '/dashboard',
+      });
+      setError('');
+      setNeedsVerification(false);
+      alert('Email de verificación reenviado. Por favor revisa tu bandeja de entrada.');
+    } catch {
+      setError('Error al reenviar el email de verificación.');
     } finally {
       setIsLoading(false);
     }
@@ -77,6 +105,31 @@ export default function LoginPage() {
 
           {error && (
             <div className="text-red-600 text-sm">{error}</div>
+          )}
+
+          {needsVerification && (
+            <div className="bg-amber-50 border border-amber-200 rounded-md p-4 mt-4">
+              <div className="flex">
+                <div className="flex-shrink-0">
+                  <svg className="h-5 w-5 text-amber-600" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm text-amber-800">
+                    {error}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={handleResendVerification}
+                    disabled={isLoading}
+                    className="mt-2 text-xs text-amber-700 underline hover:text-amber-900 disabled:opacity-50"
+                  >
+                    Reenviar email de verificación
+                  </button>
+                </div>
+              </div>
+            </div>
           )}
 
           <div>
