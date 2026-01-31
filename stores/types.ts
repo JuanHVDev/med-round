@@ -8,6 +8,21 @@ export interface Notification {
   duration?: number
 }
 
+// Datos del formulario que se persisten
+export interface RegistrationFormData {
+  fullName: string
+  email: string
+  password: string
+  confirmPassword: string
+  professionalId: string
+  studentType: "MPSS" | "MIP" | undefined
+  universityMatricula: string
+  hospital: string
+  otherHospital: string
+  specialty: string
+  userType: "professional" | "student"
+}
+
 export interface RegistrationState {
   currentStep: number
   isSubmitting: boolean
@@ -15,6 +30,7 @@ export interface RegistrationState {
   errorMessage: string
   submissionStatus: 'idle' | 'submitting' | 'success' | 'error'
   showVerificationMessage: boolean
+  formData: RegistrationFormData
 }
 
 export interface RegistrationActions {
@@ -26,6 +42,8 @@ export interface RegistrationActions {
   hideError: () => void
   submitForm: (formData: unknown) => Promise<void>
   resetForm: () => void
+  updateFormData: (data: Partial<RegistrationFormData>) => void
+  setFormData: (data: RegistrationFormData) => void
 }
 
 export interface UIState {

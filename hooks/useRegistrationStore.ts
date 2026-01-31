@@ -12,6 +12,8 @@ export const useRegistration = () => {
     showErrorDialog: store.showErrorDialog,
     errorMessage: store.errorMessage,
     submissionStatus: store.submissionStatus,
+    showVerificationMessage: store.showVerificationMessage,
+    formData: store.formData,
     
     // Acciones
     nextStep: store.nextStep,
@@ -22,5 +24,7 @@ export const useRegistration = () => {
     hideError: store.hideError,
     submitForm: store.submitForm,
     resetForm: store.resetForm,
+    updateFormData: store.updateFormData,
+    setFormData: store.setFormData,
   }
 }

@@ -13,26 +13,9 @@ import { WorkInfoStep } from "@/components/register/WorkInfoStep"
 import { NavigationButtons } from "@/components/register/NavigationButtons"
 import { VerificationMessage } from "@/components/register/VerificationMessage"
 import { formSchema, type FormData } from "@/lib/registerSchema"
+import { useEffect } from "react"
 
 export default function RegisterPage() {
-  // React Hook Form para validación y estado de campos
-  const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      fullName: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-      professionalId: "",
-      studentType: undefined,
-      universityMatricula: "",
-      hospital: "",
-      otherHospital: "",
-      specialty: "",
-      userType: "professional",
-    },
-  })
-
   // Zustand para estado global y navegación
   const {
     currentStep,
@@ -40,12 +23,28 @@ export default function RegisterPage() {
     showErrorDialog,
     errorMessage,
     showVerificationMessage,
+    formData: persistedFormData,
     nextStep,
     prevStep,
     hideError,
     submitForm,
     resetForm,
+    updateFormData,
   } = useRegistration()
+
+  // React Hook Form para validación y estado de campos
+  const form = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: persistedFormData,
+  })
+
+  // Sincronizar cambios del formulario con el store
+  useEffect(() => {
+    const subscription = form.watch((value) => {
+      updateFormData(value as Partial<FormData>)
+    })
+    return () => subscription.unsubscribe()
+  }, [form, updateFormData])
 
   // Watchers para obtener valores actuales del formulario
   const userType = form.watch("userType")
