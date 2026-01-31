@@ -113,7 +113,25 @@ export async function POST(request: NextRequest) {
       }
     );
   } catch (error) {
-    console.error('Registration error:', error);
+    console.error('❌ [Register] Registration error:', error);
+    
+    // Handle Better Auth specific errors (APIError from better-auth)
+    const apiError = error as { 
+      statusCode?: number; 
+      body?: { message?: string; code?: string };
+      message?: string;
+    };
+    
+    // Better Auth user already exists error (422 UNPROCESSABLE_ENTITY)
+    if (apiError.statusCode === 422 || 
+        apiError.body?.code?.includes('USER_ALREADY_EXISTS') ||
+        apiError.body?.message?.includes('already exists') ||
+        apiError.message?.includes('already exists')) {
+      return NextResponse.json(
+        { error: apiError.body?.message || 'Email already registered. Please use a different email or sign in.' },
+        { status: 422 }
+      );
+    }
     
     // Handle specific validation errors
     if (error instanceof Error && error.message.includes('Invalid')) {
@@ -123,7 +141,7 @@ export async function POST(request: NextRequest) {
       );
     }
     
-    // Handle duplicate email errors
+    // Handle duplicate email errors (legacy check)
     if (error instanceof Error && error.message.includes('duplicate')) {
       return NextResponse.json(
         { error: 'Email already registered. Please use a different email or sign in.' },
