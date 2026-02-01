@@ -4,7 +4,7 @@ import { Resend } from 'resend';
  * Cliente de Resend para envío de emails
  * Se inicializa con la API key desde variables de entorno
  */
-const resend = new Resend(process.env.RESEND_API_KEY);
+export const resend = new Resend(process.env.RESEND_API_KEY);
 
 /**
  * Parámetros para enviar un email

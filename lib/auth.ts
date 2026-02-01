@@ -16,7 +16,8 @@ const EMAIL_RETRY_CONFIG = {
 /**
  * Resultado del envío de email con reintentos
  */
-interface EmailSendResult {
+interface EmailSendResult
+{
   success: boolean;
   error?: string;
   attempts: number;
@@ -57,33 +58,28 @@ async function sendEmailWithRetry(
         return { success: true, attempts: attempt };
       }
 
-      // El email falló, guardamos el error
-      lastError = result.error || 'Error desconocido';
+      lastError = result.error || "Error desconocido";
       console.warn(`⚠️ [Email Retry] Intento ${attempt} falló: ${lastError}`);
 
-      // Si no es el último intento, esperamos antes de reintentar
       if (attempt < EMAIL_RETRY_CONFIG.MAX_RETRIES) {
         console.log(`⏱️ [Email Retry] Esperando ${EMAIL_RETRY_CONFIG.RETRY_DELAY_MS}ms antes del siguiente intento...`);
-        await new Promise(resolve => setTimeout(resolve, EMAIL_RETRY_CONFIG.RETRY_DELAY_MS));
+        await new Promise((resolve) => setTimeout(resolve, EMAIL_RETRY_CONFIG.RETRY_DELAY_MS));
       }
-
     } catch (error) {
-      // Error inesperado (no debería pasar, pero por seguridad lo capturamos)
-      lastError = error instanceof Error ? error.message : 'Error inesperado';
+      lastError = error instanceof Error ? error.message : "Error inesperado";
       console.error(`❌ [Email Retry] Error inesperado en intento ${attempt}:`, lastError);
-      
+
       if (attempt < EMAIL_RETRY_CONFIG.MAX_RETRIES) {
-        await new Promise(resolve => setTimeout(resolve, EMAIL_RETRY_CONFIG.RETRY_DELAY_MS));
+        await new Promise((resolve) => setTimeout(resolve, EMAIL_RETRY_CONFIG.RETRY_DELAY_MS));
       }
     }
   }
 
-  // Todos los intentos fallaron
   console.error(`🚫 [Email Retry] Todos los intentos fallaron para: ${to}`);
-  return { 
-    success: false, 
-    error: lastError || 'No se pudo enviar el email después de múltiples intentos',
-    attempts: EMAIL_RETRY_CONFIG.MAX_RETRIES 
+  return {
+    success: false,
+    error: lastError || "No se pudo enviar el email después de múltiples intentos",
+    attempts: EMAIL_RETRY_CONFIG.MAX_RETRIES,
   };
 }
 
@@ -95,7 +91,7 @@ export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
-  
+
   /**
    * Configuración de email y password
    * - Habilitado: true
@@ -121,7 +117,7 @@ export const auth = betterAuth({
   emailVerification: {
     sendOnSignUp: true,
     autoSignInAfterVerification: true,
-    
+
     /**
      * Función para enviar el email de verificación
      * 
@@ -134,7 +130,8 @@ export const auth = betterAuth({
      * @param token - Token de verificación (no se usa directamente, usa la URL)
      * @param request - Request object de Next.js (no se usa actualmente)
      */
-    sendVerificationEmail: async ({ user, url, token }, request) => {
+    sendVerificationEmail: async ({ user, url, token }, request) =>
+    {
       console.log(`🔄 [Auth] Iniciando envío de email de verificación para: ${user.email}`);
 
       // Construir el contenido del email
@@ -159,21 +156,22 @@ export const auth = betterAuth({
       // Enviar email con sistema de reintentos
       const result = await sendEmailWithRetry(user.email, subject, text, html);
 
-      if (!result.success) {
+      if (!result.success)
+      {
         // 🚨 OPCIÓN 3: El email falló después de todos los reintentos
         // Mostrar mensaje al usuario pero NO bloquear el registro
         console.error(`🚫 [Auth] CRÍTICO: No se pudo enviar email de verificación para ${user.email}`);
         console.error(`   Error: ${result.error}`);
         console.error(`   Intentos realizados: ${result.attempts}`);
         console.log(`💡 [Auth] El usuario ${user.email} puede reenviar el email desde su perfil o la página de login`);
-        
+
         // NOTA: No lanzamos error para que el registro se complete
         // Better Auth seguirá adelante y el usuario verá un mensaje explicando
         // que puede reenviar el email desde su cuenta
-        
+
         // Opcional: Guardar en base de datos para seguimiento administrativo
         // await saveFailedVerificationEmail(user.id, user.email, result.error);
-        
+
         return;
       }
 
@@ -188,17 +186,20 @@ export const auth = betterAuth({
      * @param user - Datos del usuario verificado
      * @param request - Request object de Next.js
      */
-    afterEmailVerification: async (user, request) => {
+    afterEmailVerification: async (user, request) =>
+    {
       console.log(`✅ [Auth] Email verificado exitosamente: ${user.email}`);
-      
+
       // Actualizar el campo isEmailVerified en medicosProfile
-      try {
+      try
+      {
         await prisma.medicosProfile.updateMany({
           where: { userId: user.id },
           data: { isEmailVerified: true },
         });
         console.log(`✅ [Auth] Perfil de médico actualizado (isEmailVerified: true) para: ${user.email}`);
-      } catch (error) {
+      } catch (error)
+      {
         console.error(`❌ [Auth] Error actualizando medicosProfile para ${user.email}:`, error);
         // No lanzamos error para no interrumpir el flujo de verificación
       }

@@ -1,41 +1,48 @@
-import { NextRequest, NextResponse } from 'next/server';
-import type { ZodError } from 'zod';
-import { auth } from '@/lib/auth';
-import { prisma } from '@/lib/prisma';
-import { formSchema } from '@/lib/registerSchema';
-import { checkRateLimit, getRateLimitHeaders } from '@/lib/rate-limit';
+/**
+ * API Endpoint: POST /api/register
+ * 
+ * Registra un nuevo médico en el sistema MedRound.
+ * 
+ * Flujo simplificado gracias a la capa de servicios:
+ * 1. Rate limiting por IP (protección contra abuso)
+ * 2. Validación de datos con Zod schema
+ * 3. Delegar a RegistrationService (transacciones atómicas con rollback)
+ * 4. Retornar respuesta estandarizada con headers de rate limit
+ * 
+ * La lógica de negocio compleja (crear usuario + perfil + email) vive en
+ * RegistrationService, permitiendo testing unitario y reutilización.
+ * 
+ * @module app/api/register/route
+ */
+
+import { NextRequest, NextResponse } from "next/server";
+import type { ZodError } from "zod";
+import { formSchema } from "@/lib/registerSchema";
+import { checkRateLimit, getRateLimitHeaders } from "@/lib/rate-limit";
+import { registrationService } from "@/services";
 import {
   ErrorCodes,
-  type AppError,
   ZodValidationError,
-  DatabaseError,
   RateLimitError,
-  parseBetterAuthError,
-  isBetterAuthError,
-  isZodValidationError,
-  isDatabaseError,
-  createUnknownError,
   formatErrorForLog,
-} from '@/lib/errors';
+  isZodValidationError,
+} from "@/lib/errors";
 
 /**
- * POST /api/register
+ * Maneja las peticiones POST para registro de nuevos médicos
  * 
- * Registra un nuevo médico en el sistema.
- * 
- * Flujo:
- * 1. Rate limiting por IP
- * 2. Validación de datos con Zod
- * 3. Creación de usuario con Better Auth
- * 4. Creación de perfil médico con Prisma
- * 5. Manejo de errores estructurado
+ * @param request - Petición HTTP de Next.js con datos del formulario
+ * @returns Respuesta JSON con resultado del registro o error estructurado
  */
 export async function POST(request: NextRequest): Promise<NextResponse> {
-  // PASO 1: Rate limiting por IP
-  const forwardedFor = request.headers.get('x-forwarded-for');
+  // ============================================================================
+  // PASO 1: Rate Limiting por IP
+  // ============================================================================
+  // Extraemos la IP real considerando proxies (Vercel, CloudFlare, etc.)
+  const forwardedFor = request.headers.get("x-forwarded-for");
   const ip = forwardedFor
-    ? forwardedFor.split(',')[0]
-    : (request.headers.get('x-real-ip') ?? 'unknown');
+    ? forwardedFor.split(",")[0]?.trim()
+    : (request.headers.get("x-real-ip") ?? "unknown");
 
   const rateLimit = await checkRateLimit(`register:${ip}`);
 
@@ -54,45 +61,72 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   }
 
   try {
-    // PASO 2: Parsear y validar body
+    // ============================================================================
+    // PASO 2: Parsear y validar el cuerpo de la petición
+    // ============================================================================
     const body = await request.json();
     const validatedData = parseAndValidateBody(body);
 
-    // PASO 3: Crear usuario con Better Auth
-    const user = await createUserWithBetterAuth(validatedData);
+    // ============================================================================
+    // PASO 3: Ejecutar registro via RegistrationService
+    // ============================================================================
+    // Delegamos toda la lógica compleja al servicio, que maneja:
+    // - Creación de usuario con Better Auth
+    // - Creación de perfil médico con Prisma
+    // - Rollback automático si falla el perfil (cleanup del usuario)
+    // - Envío de email de verificación (async, no bloqueante)
+    const result = await registrationService.register(validatedData);
 
-    // PASO 4: Crear perfil médico
-    await createMedicalProfile(user.user.id, validatedData);
+    if (!result.success) {
+      // Error de negocio (duplicado, DB error, etc.) - ya viene estructurado
+      const statusCode = getErrorStatusCode(result.error?.code ?? ErrorCodes.UNKNOWN_ERROR);
+      return NextResponse.json(
+        {
+          error: result.error?.message ?? "Error en el registro",
+          code: result.error?.code ?? ErrorCodes.UNKNOWN_ERROR,
+        },
+        {
+          status: statusCode,
+          headers: getRateLimitHeaders(rateLimit.remaining, rateLimit.resetTime),
+        }
+      );
+    }
 
-    // PASO 5: Respuesta exitosa
+    // ============================================================================
+    // PASO 4: Respuesta exitosa
+    // ============================================================================
     return NextResponse.json(
       {
         success: true,
-        user: {
-          id: user.user.id,
-          name: user.user.name,
-          email: user.user.email,
-        },
+        userId: result.userId,
+        message: "Registro exitoso. Por favor verifica tu email.",
       },
       {
+        status: 201,
         headers: getRateLimitHeaders(rateLimit.remaining, rateLimit.resetTime),
       }
     );
+
   } catch (error) {
+    // ============================================================================
+    // MANEJO DE ERRORES INESPERADOS
+    // ============================================================================
     return handleRegistrationError(error, rateLimit.remaining, rateLimit.resetTime);
   }
 }
 
 /**
- * Parsea y valida el body de la petición usando Zod
+ * Valida el cuerpo de la petición contra el schema Zod
  * 
+ * @param body - Datos crudos de la petición HTTP
+ * @returns Datos validados y tipados según RegistrationData
  * @throws {ZodValidationError} Si la validación falla
  */
 function parseAndValidateBody(body: unknown) {
   try {
     return formSchema.parse(body);
   } catch (error) {
-    if (error instanceof Error && 'issues' in error) {
+    if (error instanceof Error && "issues" in error) {
       throw new ZodValidationError(error as ZodError);
     }
     throw error;
@@ -100,163 +134,81 @@ function parseAndValidateBody(body: unknown) {
 }
 
 /**
- * Crea un usuario usando Better Auth
+ * Mapea códigos de error a códigos HTTP estándar
  * 
- * @throws Error de Better Auth si el usuario ya existe o hay problemas de autenticación
+ * @param code - Código de error interno de la aplicación
+ * @returns Código HTTP correspondiente
  */
-async function createUserWithBetterAuth(data: {
-  email: string;
-  password: string;
-  fullName: string;
-}) {
-  const user = await auth.api.signUpEmail({
-    body: {
-      email: data.email,
-      password: data.password,
-      name: data.fullName,
-    },
-  });
+function getErrorStatusCode(code: string): number {
+  const statusMap: Record<string, number> = {
+    [ErrorCodes.USER_ALREADY_EXISTS]: 409,     // Conflict - duplicado
+    [ErrorCodes.DUPLICATE_ERROR]: 409,         // Conflict - duplicado
+    [ErrorCodes.VALIDATION_ERROR]: 400,        // Bad request
+    [ErrorCodes.ZOD_VALIDATION_ERROR]: 400,    // Bad request
+    [ErrorCodes.RATE_LIMIT_ERROR]: 429,        // Too many requests
+  };
 
-  if (!user?.user) {
-    throw new DatabaseError('No se pudo crear el usuario: respuesta inválida de Better Auth');
-  }
-
-  return user;
+  return statusMap[code] ?? 500;  // 500 Internal Server Error por defecto
 }
 
 /**
- * Crea el perfil médico del usuario
- * 
- * Si falla, elimina el usuario creado para evitar usuarios huérfanos
- * 
- * @throws {DatabaseError} Si no se puede crear el perfil o hacer cleanup
- */
-async function createMedicalProfile(
-  userId: string,
-  data: {
-    fullName: string;
-    professionalId?: string;
-    studentType?: string;
-    universityMatricula?: string;
-    hospital: string;
-    otherHospital?: string;
-    specialty: string;
-    userType: string;
-  }
-) {
-  try {
-    await prisma.medicosProfile.create({
-      data: {
-        userId,
-        fullName: data.fullName,
-        professionalId: data.professionalId,
-        studentType: data.studentType,
-        universityMatricula: data.universityMatricula,
-        hospital: data.hospital,
-        otherHospital: data.otherHospital,
-        specialty: data.specialty,
-        userType: data.userType,
-      },
-    });
-  } catch (profileError) {
-    console.error('❌ [Register] Profile creation failed:', profileError);
-
-    // Cleanup: eliminar usuario si el perfil falló
-    await cleanupOrphanedUser(userId);
-
-    throw new DatabaseError(
-      'Error al crear el perfil médico',
-      profileError
-    );
-  }
-}
-
-/**
- * Elimina un usuario huérfano (sin perfil)
- * 
- * @param userId - ID del usuario a eliminar
- */
-async function cleanupOrphanedUser(userId: string): Promise<void> {
-  try {
-    await prisma.user.delete({
-      where: { id: userId },
-    });
-    console.log('✅ [Register] User cleanup successful after profile error');
-  } catch (cleanupError) {
-    console.error('⚠️ [Register] Failed to cleanup user after profile error:', cleanupError);
-    // No lanzamos error aquí para no perder el error original del profile
-  }
-}
-
-/**
- * Maneja todos los errores del endpoint de registro
+ * Maneja errores inesperados durante el registro
  * 
  * Convierte diferentes tipos de error a respuestas HTTP consistentes
+ * con logging estructurado para observabilidad.
+ * 
+ * @param error - Error capturado (de cualquier tipo)
+ * @param rateLimitRemaining - Requests restantes para headers
+ * @param rateLimitResetTime - Timestamp de reset para headers
+ * @returns Respuesta HTTP con error estructurado
  */
 function handleRegistrationError(
   error: unknown,
   rateLimitRemaining: number,
   rateLimitResetTime: number
 ): NextResponse {
-  // Log del error con formato estructurado
-  console.error('❌ [Register] Registration error:', formatErrorForLog(error));
+  // Log estructurado del error para debugging y monitoreo
+  console.error("❌ [Register] Error inesperado:", formatErrorForLog(error));
 
-  let appError: AppError;
-
-  // PASO 1: Identificar tipo de error
-  // Nota: Usamos helper functions robustas para evitar problemas de módulos
-  if (isBetterAuthError(error)) {
-    // Error de Better Auth (ej: usuario ya existe)
-    appError = parseBetterAuthError(error);
-  } else if (isZodValidationError(error)) {
-    // Error de validación Zod
+  // Errores de validación Zod (ya estructurados)
+  if (isZodValidationError(error)) {
     const zodError = error as ZodValidationError;
-    appError = zodError.toJSON();
-  } else if (isDatabaseError(error)) {
-    // Error de base de datos
-    const dbError = error as DatabaseError;
-    appError = dbError.toJSON();
-  } else if (error instanceof Error && error.message.includes('prisma')) {
-    // Error específico de Prisma (ej: duplicado)
-    if (error.message.includes('Unique constraint')) {
-      appError = {
-        code: ErrorCodes.DUPLICATE_ERROR,
-        message: 'Este email ya está registrado',
-        statusCode: 409,
-      };
-    } else {
-      appError = {
-        code: ErrorCodes.DATABASE_ERROR,
-        message: 'Error de base de datos. Por favor, intenta de nuevo.',
-        statusCode: 500,
-      };
-    }
-  } else if (error instanceof Error) {
-    // Error genérico de JavaScript
-    appError = {
+    return NextResponse.json(
+      {
+        error: zodError.message,
+        code: zodError.code,
+        details: process.env.NODE_ENV === "development" ? zodError.zodIssues : undefined,
+      },
+      {
+        status: 400,
+        headers: getRateLimitHeaders(rateLimitRemaining, rateLimitResetTime),
+      }
+    );
+  }
+
+  // Error genérico de JavaScript
+  if (error instanceof Error) {
+    return NextResponse.json(
+      {
+        error: "Error en el proceso de registro. Por favor intenta de nuevo.",
+        code: ErrorCodes.INTERNAL_ERROR,
+      },
+      {
+        status: 500,
+        headers: getRateLimitHeaders(rateLimitRemaining, rateLimitResetTime),
+      }
+    );
+  }
+
+  // Error completamente desconocido
+  return NextResponse.json(
+    {
+      error: "Error desconocido en el servidor",
       code: ErrorCodes.UNKNOWN_ERROR,
-      message: error.message || 'Error desconocido en el registro',
-      statusCode: 500,
-    };
-  } else {
-    // Error completamente desconocido
-    appError = createUnknownError(error);
-  }
-
-  // PASO 2: Construir respuesta de error
-  const responseBody: { error: string; code: string; details?: string } = {
-    error: appError.message,
-    code: appError.code,
-  };
-
-  // Agregar detalles solo en desarrollo
-  if (process.env.NODE_ENV === 'development' && appError.details) {
-    responseBody.details = appError.details;
-  }
-
-  // PASO 3: Enviar respuesta con headers de rate limit
-  return NextResponse.json(responseBody, {
-    status: appError.statusCode,
-    headers: getRateLimitHeaders(rateLimitRemaining, rateLimitResetTime),
-  });
+    },
+    {
+      status: 500,
+      headers: getRateLimitHeaders(rateLimitRemaining, rateLimitResetTime),
+    }
+  );
 }
