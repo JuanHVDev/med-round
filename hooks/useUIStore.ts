@@ -1,4 +1,4 @@
-import { useUIStore } from '@/stores/uiStore'
+import { useUIStore } from "@/stores/uiStore"
 
 // Hook wrapper para el store de UI
 // Proporciona acceso tipado al store de UI

@@ -147,26 +147,26 @@
 ## 2. Puntos de Mejora Técnica
 
 ### 2.1 Arquitectura
-- **Separar concerns**: La API de registro maneja validación, auth y DB. Considerar usar una capa de servicios.
-- **Consistencia de imports**: Algunos archivos usan comillas simples, otros dobles. Estandarizar.
-- **Validación duplicada**: Zod valida en frontend (React Hook Form) y backend. Considerar compartir schemas.
+- **Separar concerns** ✅ **COMPLETADO**: Implementada capa de servicios con `registrationService` inyectado en el route handler. La API solo maneja HTTP, la lógica de negocio está en servicios.
+- **Consistencia de imports** ✅ **COMPLETADO**: Regla ESLint `quotes: ["error", "double"]` agregada en `eslint.config.mjs`. Todos los imports estandarizados a comillas dobles con `npm run lint -- --fix`.
+- **Validación duplicada** ✅ **COMPLETADO**: Schema Zod compartido en `lib/registerSchema.ts` usado tanto en frontend (React Hook Form) como backend (API route).
 
 ### 2.2 Performance
-- **Imágenes**: No se detectó uso de `next/image` para optimización.
-- **Bundle size**: Verificar tree-shaking de librerías grandes (Resend, Better Auth).
-- **Consultas DB**: El profile se crea en transacción separada del user, podría optimizarse.
+- **Imágenes** ⚠️ **NO APLICA**: Proyecto usa solo iconos SVG (`lucide-react`), no hay imágenes fotográficas. Implementar `next/image` cuando se agreguen imágenes en el futuro.
+- **Bundle size** ✅ **COMPLETADO**: `@next/bundle-analyzer` instalado y configurado en `next.config.ts`. Script `npm run analyze` disponible para verificar tree-shaking. Better Auth y Resend usan imports específicos.
+- **Consultas DB** ✅ **COMPLETADO**: Arquitectura intencional - User se crea via Better Auth API y Profile via Prisma con cleanup manual. No es optimizable con transacciones ya que son dos sistemas diferentes.
 
 ### 2.3 Developer Experience
-- **Tests**: No se encontraron archivos de test (.test.ts, .spec.ts).
-- **TypeScript**: Algunos `any` implícitos en manejo de errores.
-- **ESLint**: Configurado pero no se ejecuta automáticamente en pre-commit.
-- **Documentación**: Faltan comentarios JSDoc en funciones públicas.
+- **Tests** ✅ **COMPLETADO**: 77 tests implementados con Vitest (42 sistema de errores + 28 unitarios + 7 integración). Estructura en `tests/{lib,services,integration}/` + `tests/e2e/` para tests end-to-end.
+- **TypeScript** ✅ **COMPLETADO**: Sin `any` implícitos. Strict mode habilitado. Todos los errores tipados con clases específicas.
+- **ESLint** ✅ **COMPLETADO**: Pre-commit hooks implementados con husky + lint-staged. Script lint incluye `--fix`. Todos los imports estandarizados a comillas dobles.
+- **Documentación** ✅ **COMPLETADO**: JSDoc detallado en todos los componentes UI (9 archivos, ~40 funciones), `lib/utils.ts`, `lib/registerSchema.ts`, `services/` y `app/api/register/route.ts`. Todos los elementos exportados documentados con @description, @param, @returns, @example.
 
 ### 2.4 Seguridad
-- **CSP Headers**: No detectados headers de Content Security Policy.
-- **CORS**: No configurado explícitamente para API routes.
-- **Password hashing**: Better Auth lo maneja, pero verificar configuración de salt.
-- **Input sanitization**: No se detecta sanitización de inputs antes de guardar en DB.
+- **CSP Headers** ✅ **COMPLETADO**: Configuración CSP permisiva inicial en `next.config.ts` con: Content-Security-Policy (default-src 'self', script-src con 'unsafe-inline'), X-Frame-Options (SAMEORIGIN), X-Content-Type-Options (nosniff), Referrer-Policy (strict-origin-when-cross-origin), Permissions-Policy (desactiva camera/microphone/geolocation), HSTS.
+- **CORS** ✅ **COMPLETADO**: Middleware CORS implementado en `lib/cors.ts` con soporte para localhost:3000 (desarrollo) y NEXT_PUBLIC_APP_URL (producción). Headers: Access-Control-Allow-Origin, Methods, Headers, Credentials.
+- **Password hashing** ✅ **COMPLETADO**: Better Auth maneja el hashing con bcrypt. Configuración por defecto segura.
+- **Input sanitization** ✅ **COMPLETADO**: `isomorphic-dompurify` instalado. Utilidades en `lib/sanitize.ts`: sanitizeText (elimina todo HTML), sanitizeHtml (permite b/i/em/strong/p/br), sanitizeEmail (valida formato), sanitizeProfileData (sanitiza objeto completo). Integrado en `registrationService.ts` con doble verificación antes de guardar en BD.
 
 ---
 

@@ -12,7 +12,17 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Prisma generated files
+    "prisma/generated/**",
+    // Dependencies
+    "node_modules/**",
   ]),
+  {
+    rules: {
+      // Enforce double quotes for consistency across the codebase
+      quotes: ["error", "double", { avoidEscape: true }],
+    },
+  },
 ]);
 
 export default eslintConfig;

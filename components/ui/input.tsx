@@ -4,6 +4,40 @@ import { cn } from "@/lib/utils"
 
 type InputProps = React.InputHTMLAttributes<HTMLInputElement>
 
+/**
+ * Componente Input estilizado para formularios.
+ *
+ * Campo de entrada de texto con soporte completo para:
+ * - Todos los tipos de input HTML (text, email, password, number, etc.)
+ * - Estados de focus, disabled, readonly
+ * - Integración con React Hook Form mediante forwardRef
+ * - Estilos consistentes con el sistema de diseño de MedRound
+ * - Soporte para íconos y elementos decorativos
+ *
+ * @param props - Props extendidas de input HTML
+ * @param props.type - Tipo de input (text, email, password, etc.)
+ * @param props.className - Clases CSS adicionales
+ * @param ref - Referencia para React Hook Form o acceso directo al DOM
+ * @returns Componente Input renderizado
+ *
+ * @example
+ * // Input básico
+ * <Input type="text" placeholder="Nombre completo" />
+ *
+ * @example
+ * // Input con React Hook Form
+ * <Controller
+ *   name="email"
+ *   control={control}
+ *   render={({ field }) => (
+ *     <Input {...field} type="email" placeholder="correo@hospital.com" />
+ *   )}
+ * />
+ *
+ * @example
+ * // Input deshabilitado
+ * <Input disabled type="text" value="Hospital Central" />
+ */
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, type, ...props }, ref) => {
     return (

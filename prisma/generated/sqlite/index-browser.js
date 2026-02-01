@@ -8,7 +8,7 @@ const {
   Public,
   getRuntime,
   skip
-} = require('./runtime/index-browser.js')
+} = require("./runtime/index-browser.js")
 
 
 const Prisma = {}
@@ -116,90 +116,90 @@ Prisma.NullTypes = {
  */
 
 exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
-  Serializable: 'Serializable'
+  Serializable: "Serializable"
 });
 
 exports.Prisma.UserScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  email: 'email',
-  emailVerified: 'emailVerified',
-  image: 'image',
-  role: 'role',
-  isActive: 'isActive',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  id: "id",
+  name: "name",
+  email: "email",
+  emailVerified: "emailVerified",
+  image: "image",
+  role: "role",
+  isActive: "isActive",
+  createdAt: "createdAt",
+  updatedAt: "updatedAt"
 };
 
 exports.Prisma.SessionScalarFieldEnum = {
-  id: 'id',
-  expiresAt: 'expiresAt',
-  token: 'token',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  ipAddress: 'ipAddress',
-  userAgent: 'userAgent',
-  userId: 'userId'
+  id: "id",
+  expiresAt: "expiresAt",
+  token: "token",
+  createdAt: "createdAt",
+  updatedAt: "updatedAt",
+  ipAddress: "ipAddress",
+  userAgent: "userAgent",
+  userId: "userId"
 };
 
 exports.Prisma.AccountScalarFieldEnum = {
-  id: 'id',
-  accountId: 'accountId',
-  providerId: 'providerId',
-  userId: 'userId',
-  accessToken: 'accessToken',
-  refreshToken: 'refreshToken',
-  idToken: 'idToken',
-  accessTokenExpiresAt: 'accessTokenExpiresAt',
-  refreshTokenExpiresAt: 'refreshTokenExpiresAt',
-  scope: 'scope',
-  password: 'password',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  id: "id",
+  accountId: "accountId",
+  providerId: "providerId",
+  userId: "userId",
+  accessToken: "accessToken",
+  refreshToken: "refreshToken",
+  idToken: "idToken",
+  accessTokenExpiresAt: "accessTokenExpiresAt",
+  refreshTokenExpiresAt: "refreshTokenExpiresAt",
+  scope: "scope",
+  password: "password",
+  createdAt: "createdAt",
+  updatedAt: "updatedAt"
 };
 
 exports.Prisma.VerificationScalarFieldEnum = {
-  id: 'id',
-  identifier: 'identifier',
-  value: 'value',
-  expiresAt: 'expiresAt',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  id: "id",
+  identifier: "identifier",
+  value: "value",
+  expiresAt: "expiresAt",
+  createdAt: "createdAt",
+  updatedAt: "updatedAt"
 };
 
 exports.Prisma.MedicosProfileScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  fullName: 'fullName',
-  professionalId: 'professionalId',
-  studentType: 'studentType',
-  universityMatricula: 'universityMatricula',
-  hospital: 'hospital',
-  otherHospital: 'otherHospital',
-  specialty: 'specialty',
-  userType: 'userType',
-  isEmailVerified: 'isEmailVerified',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  id: "id",
+  userId: "userId",
+  fullName: "fullName",
+  professionalId: "professionalId",
+  studentType: "studentType",
+  universityMatricula: "universityMatricula",
+  hospital: "hospital",
+  otherHospital: "otherHospital",
+  specialty: "specialty",
+  userType: "userType",
+  isEmailVerified: "isEmailVerified",
+  createdAt: "createdAt",
+  updatedAt: "updatedAt"
 };
 
 exports.Prisma.SortOrder = {
-  asc: 'asc',
-  desc: 'desc'
+  asc: "asc",
+  desc: "desc"
 };
 
 exports.Prisma.NullsOrder = {
-  first: 'first',
-  last: 'last'
+  first: "first",
+  last: "last"
 };
 
 
 exports.Prisma.ModelName = {
-  user: 'user',
-  session: 'session',
-  account: 'account',
-  verification: 'verification',
-  medicosProfile: 'medicosProfile'
+  user: "user",
+  session: "session",
+  account: "account",
+  verification: "verification",
+  medicosProfile: "medicosProfile"
 };
 
 /**
@@ -217,7 +217,7 @@ class PrismaClient {
 - Use Driver Adapters: https://pris.ly/d/driver-adapters
 `;
         } else {
-          message = 'PrismaClient is unable to run in this browser environment, or has been bundled for the browser (running in `' + runtime.prettyName + '`).'
+          message = "PrismaClient is unable to run in this browser environment, or has been bundled for the browser (running in `" + runtime.prettyName + "`)."
         }
         
         message += `

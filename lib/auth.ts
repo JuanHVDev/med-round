@@ -135,7 +135,7 @@ export const auth = betterAuth({
       console.log(`🔄 [Auth] Iniciando envío de email de verificación para: ${user.email}`);
 
       // Construir el contenido del email
-      const subject = 'Verifica tu email - MedRound';
+      const subject = "Verifica tu email - MedRound";
       const text = `Hola ${user.name},\n\nPor favor verifica tu email haciendo clic en el siguiente enlace:\n${url}\n\nSi no creaste esta cuenta, puedes ignorar este mensaje.\n\nSaludos,\nEquipo MedRound`;
       const html = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">

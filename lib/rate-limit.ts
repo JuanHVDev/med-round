@@ -1,4 +1,4 @@
-import { Redis } from '@upstash/redis';
+import { Redis } from "@upstash/redis";
 
 // Cliente Redis - se reutiliza entre requests
 const redis = Redis.fromEnv();
@@ -59,7 +59,7 @@ export async function checkRateLimit(identifier: string): Promise<RateLimitResul
     };
     
   } catch (error) {
-    console.error('Redis rate limit error:', error);
+    console.error("Redis rate limit error:", error);
     // Fallback: permitir request si Redis falla
     // En producción, podrías querer bloquear o usar cache local
     return {
@@ -72,8 +72,8 @@ export async function checkRateLimit(identifier: string): Promise<RateLimitResul
 
 export function getRateLimitHeaders(remaining: number, resetTime: number) {
   return {
-    'X-RateLimit-Limit': MAX_REQUESTS.toString(),
-    'X-RateLimit-Remaining': remaining.toString(),
-    'X-RateLimit-Reset': Math.ceil(resetTime / 1000).toString(),
+    "X-RateLimit-Limit": MAX_REQUESTS.toString(),
+    "X-RateLimit-Remaining": remaining.toString(),
+    "X-RateLimit-Reset": Math.ceil(resetTime / 1000).toString(),
   };
 }

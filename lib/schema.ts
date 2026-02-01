@@ -6,7 +6,7 @@ import {
   boolean, 
   uuid,
   index
-} from 'drizzle-orm/pg-core';
+} from "drizzle-orm/pg-core";
 
 // Better Auth core tables
 export const users = pgTable("users", {
@@ -86,20 +86,20 @@ export const verifications = pgTable(
 );
 
 // Custom medicos_profile table
-export const medicosProfile = pgTable('medicos_profile', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-  fullName: varchar('full_name', { length: 255 }).notNull(),
-  professionalId: text('professional_id'),
-  studentType: text('student_type'), // 'MPSS' or 'MIP'
-  universityMatricula: text('university_matricula'),
-  hospital: text('hospital').notNull(),
-  otherHospital: text('other_hospital'),
-  specialty: text('specialty').notNull(),
-  userType: text('user_type').notNull(), // 'professional' or 'student'
-  isEmailVerified: boolean('is_email_verified').default(false),
-  createdAt: timestamp('created_at', { mode: 'date' }).defaultNow(),
-  updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow(),
+export const medicosProfile = pgTable("medicos_profile", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  fullName: varchar("full_name", { length: 255 }).notNull(),
+  professionalId: text("professional_id"),
+  studentType: text("student_type"), // 'MPSS' or 'MIP'
+  universityMatricula: text("university_matricula"),
+  hospital: text("hospital").notNull(),
+  otherHospital: text("other_hospital"),
+  specialty: text("specialty").notNull(),
+  userType: text("user_type").notNull(), // 'professional' or 'student'
+  isEmailVerified: boolean("is_email_verified").default(false),
+  createdAt: timestamp("created_at", { mode: "date" }).defaultNow(),
+  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow(),
 });
 
 export type MedicoProfile = typeof medicosProfile.$inferSelect;

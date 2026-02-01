@@ -56,7 +56,7 @@ export class EmailService implements IEmailService {
       }
     }
 
-    console.error(`🚫 [Email Retry] Todos los intentos fallaron`);
+    console.error("🚫 [Email Retry] Todos los intentos fallaron");
     return {
       success: false,
       error: {

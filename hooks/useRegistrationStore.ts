@@ -1,4 +1,4 @@
-import { useRegistrationStore } from '@/stores/registrationStore'
+import { useRegistrationStore } from "@/stores/registrationStore"
 
 // Hook wrapper para el store de registro
 // Proporciona acceso tipado al store de registro

@@ -14,7 +14,7 @@
  * - No reinventa la rueda: usa Better Auth nativo cuando aplica
  */
 
-import { z } from 'zod';
+import { z } from "zod";
 
 /**
  * Códigos de error constantes para toda la aplicación
@@ -22,30 +22,30 @@ import { z } from 'zod';
  */
 export const ErrorCodes = {
   // Errores de autenticación (Better Auth)
-  USER_ALREADY_EXISTS: 'USER_ALREADY_EXISTS',
-  INVALID_CREDENTIALS: 'INVALID_CREDENTIALS',
-  SESSION_EXPIRED: 'SESSION_EXPIRED',
+  USER_ALREADY_EXISTS: "USER_ALREADY_EXISTS",
+  INVALID_CREDENTIALS: "INVALID_CREDENTIALS",
+  SESSION_EXPIRED: "SESSION_EXPIRED",
   
   // Errores de validación
-  VALIDATION_ERROR: 'VALIDATION_ERROR',
-  ZOD_VALIDATION_ERROR: 'ZOD_VALIDATION_ERROR',
+  VALIDATION_ERROR: "VALIDATION_ERROR",
+  ZOD_VALIDATION_ERROR: "ZOD_VALIDATION_ERROR",
   
   // Errores de base de datos
-  DATABASE_ERROR: 'DATABASE_ERROR',
-  DUPLICATE_ERROR: 'DUPLICATE_ERROR',
-  PROFILE_CREATION_ERROR: 'PROFILE_CREATION_ERROR',
-  USER_CLEANUP_ERROR: 'USER_CLEANUP_ERROR',
+  DATABASE_ERROR: "DATABASE_ERROR",
+  DUPLICATE_ERROR: "DUPLICATE_ERROR",
+  PROFILE_CREATION_ERROR: "PROFILE_CREATION_ERROR",
+  USER_CLEANUP_ERROR: "USER_CLEANUP_ERROR",
   
   // Errores de rate limiting
-  RATE_LIMIT_ERROR: 'RATE_LIMIT_ERROR',
+  RATE_LIMIT_ERROR: "RATE_LIMIT_ERROR",
   
   // Errores de email
-  EMAIL_SEND_ERROR: 'EMAIL_SEND_ERROR',
-  EMAIL_TIMEOUT_ERROR: 'EMAIL_TIMEOUT_ERROR',
+  EMAIL_SEND_ERROR: "EMAIL_SEND_ERROR",
+  EMAIL_TIMEOUT_ERROR: "EMAIL_TIMEOUT_ERROR",
   
   // Errores generales
-  UNKNOWN_ERROR: 'UNKNOWN_ERROR',
-  INTERNAL_ERROR: 'INTERNAL_ERROR',
+  UNKNOWN_ERROR: "UNKNOWN_ERROR",
+  INTERNAL_ERROR: "INTERNAL_ERROR",
 } as const;
 
 /**
@@ -82,9 +82,9 @@ export class MedRoundError extends Error implements AppError {
     statusCode,
     details,
     cause,
-  }: Omit<AppError, 'code'> & { code: ErrorCode }) {
+  }: Omit<AppError, "code"> & { code: ErrorCode }) {
     super(message);
-    this.name = 'MedRoundError';
+    this.name = "MedRoundError";
     this.code = code;
     this.statusCode = statusCode;
     this.details = details;
@@ -121,7 +121,7 @@ export class ValidationError extends MedRoundError {
       statusCode: 400,
       details,
     });
-    this.name = 'ValidationError';
+    this.name = "ValidationError";
   }
 }
 
@@ -136,11 +136,11 @@ export class ZodValidationError extends MedRoundError {
     const firstIssue = zodError.issues[0];
     super({
       code: ErrorCodes.ZOD_VALIDATION_ERROR,
-      message: firstIssue?.message || 'Error de validación de datos',
+      message: firstIssue?.message || "Error de validación de datos",
       statusCode: 400,
-      details: `Campos inválidos: ${zodError.issues.map((issue: z.ZodIssue) => issue.path.join('.')).join(', ')}`,
+      details: `Campos inválidos: ${zodError.issues.map((issue: z.ZodIssue) => issue.path.join(".")).join(", ")}`,
     });
-    this.name = 'ZodValidationError';
+    this.name = "ZodValidationError";
     this.zodIssues = zodError.issues;
   }
 }
@@ -156,7 +156,7 @@ export class DuplicateError extends MedRoundError {
       statusCode: 409,
       details: `El ${resource.toLowerCase()} '${identifier}' ya existe en el sistema`,
     });
-    this.name = 'DuplicateError';
+    this.name = "DuplicateError";
   }
 }
 
@@ -171,7 +171,7 @@ export class DatabaseError extends MedRoundError {
       statusCode: 500,
       cause,
     });
-    this.name = 'DatabaseError';
+    this.name = "DatabaseError";
   }
 }
 
@@ -187,11 +187,11 @@ export class RateLimitError extends MedRoundError {
     
     super({
       code: ErrorCodes.RATE_LIMIT_ERROR,
-      message: 'Demasiados intentos. Por favor, intenta más tarde.',
+      message: "Demasiados intentos. Por favor, intenta más tarde.",
       statusCode: 429,
       details: `Límite de peticiones alcanzado. Intenta de nuevo en ${secondsRemaining} segundos.`,
     });
-    this.name = 'RateLimitError';
+    this.name = "RateLimitError";
     this.resetTime = resetTime;
   }
 }
@@ -206,7 +206,7 @@ export class EmailError extends MedRoundError {
       message,
       statusCode: 500,
     });
-    this.name = 'EmailError';
+    this.name = "EmailError";
   }
 }
 
@@ -231,25 +231,25 @@ export function parseBetterAuthError(error: unknown): AppError {
   const authError = error as BetterAuthError;
   
   // Extraer código de error de Better Auth
-  const errorCode = authError.body?.code || '';
-  const errorMessage = authError.body?.message || authError.message || 'Error de autenticación';
+  const errorCode = authError.body?.code || "";
+  const errorMessage = authError.body?.message || authError.message || "Error de autenticación";
   const statusCode = authError.statusCode || 500;
   
   // Mapear códigos específicos de Better Auth
-  if (errorCode.includes('USER_ALREADY_EXISTS') || 
-      errorMessage.includes('already exists') ||
+  if (errorCode.includes("USER_ALREADY_EXISTS") || 
+      errorMessage.includes("already exists") ||
       statusCode === 422) {
     return {
       code: ErrorCodes.USER_ALREADY_EXISTS,
-      message: 'Este email ya está registrado. Por favor, usa otro email o inicia sesión.',
+      message: "Este email ya está registrado. Por favor, usa otro email o inicia sesión.",
       statusCode: 422,
     };
   }
   
-  if (errorCode.includes('INVALID_CREDENTIALS')) {
+  if (errorCode.includes("INVALID_CREDENTIALS")) {
     return {
       code: ErrorCodes.INVALID_CREDENTIALS,
-      message: 'Credenciales inválidas. Por favor, verifica tus datos.',
+      message: "Credenciales inválidas. Por favor, verifica tus datos.",
       statusCode: 401,
     };
   }
@@ -266,13 +266,13 @@ export function parseBetterAuthError(error: unknown): AppError {
  * Verifica si un error es de tipo Better Auth
  */
 export function isBetterAuthError(error: unknown): error is BetterAuthError {
-  if (typeof error !== 'object' || error === null) return false;
+  if (typeof error !== "object" || error === null) return false;
   
   const e = error as BetterAuthError;
   return (
-    typeof e.statusCode === 'number' ||
-    typeof e.body === 'object' ||
-    (typeof e.message === 'string' && e.message.includes('better-auth'))
+    typeof e.statusCode === "number" ||
+    typeof e.body === "object" ||
+    (typeof e.message === "string" && e.message.includes("better-auth"))
   );
 }
 
@@ -290,10 +290,10 @@ export function isZodError(error: unknown): error is z.ZodError {
 export function isZodValidationError(error: unknown): error is ZodValidationError {
   return (
     error instanceof ZodValidationError ||
-    (typeof error === 'object' &&
+    (typeof error === "object" &&
       error !== null &&
-      'name' in error &&
-      (error as { name: string }).name === 'ZodValidationError')
+      "name" in error &&
+      (error as { name: string }).name === "ZodValidationError")
   );
 }
 
@@ -304,10 +304,10 @@ export function isZodValidationError(error: unknown): error is ZodValidationErro
 export function isDatabaseError(error: unknown): error is DatabaseError {
   return (
     error instanceof DatabaseError ||
-    (typeof error === 'object' &&
+    (typeof error === "object" &&
       error !== null &&
-      'name' in error &&
-      (error as { name: string }).name === 'DatabaseError')
+      "name" in error &&
+      (error as { name: string }).name === "DatabaseError")
   );
 }
 
@@ -317,7 +317,7 @@ export function isDatabaseError(error: unknown): error is DatabaseError {
 export function createUnknownError(cause?: unknown): AppError {
   return {
     code: ErrorCodes.UNKNOWN_ERROR,
-    message: 'Ha ocurrido un error inesperado. Por favor, intenta de nuevo más tarde.',
+    message: "Ha ocurrido un error inesperado. Por favor, intenta de nuevo más tarde.",
     statusCode: 500,
     cause,
   };

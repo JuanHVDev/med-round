@@ -1,8 +1,8 @@
-import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
-import { NextRequest } from 'next/server';
-import { POST } from '@/app/api/register/route';
-import { prisma } from '@/lib/prisma';
-import { ErrorCodes } from '@/lib/errors';
+import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from "vitest";
+import { NextRequest } from "next/server";
+import { POST } from "@/app/api/register/route";
+import { prisma } from "@/lib/prisma";
+import { ErrorCodes } from "@/lib/errors";
 
 /**
  * Tests de integración para el endpoint de registro
@@ -13,27 +13,27 @@ import { ErrorCodes } from '@/lib/errors';
  * NOTA: Estos tests requieren configuración de base de datos de test
  * y variables de entorno apropiadas.
  */
-describe('POST /api/register - Integration Tests', () => {
+describe("POST /api/register - Integration Tests", () => {
   const validRegistrationData = {
-    fullName: 'Dr. Juan Pérez',
-    email: 'test@example.com',
-    password: 'SecurePass123!',
-    confirmPassword: 'SecurePass123!',
-    hospital: 'Hospital General',
-    specialty: 'Medicina Interna',
-    userType: 'professional',
-    professionalId: 'PRO-12345',
+    fullName: "Dr. Juan Pérez",
+    email: "test@example.com",
+    password: "SecurePass123!",
+    confirmPassword: "SecurePass123!",
+    hospital: "Hospital General",
+    specialty: "Medicina Interna",
+    userType: "professional",
+    professionalId: "PRO-12345",
   };
 
   beforeAll(async () => {
     // Limpiar cualquier dato de test previo
     // Nota: En un entorno real, usarías una BD de test separada
-    console.log('🧪 Setting up integration test environment...');
+    console.log("🧪 Setting up integration test environment...");
   });
 
   afterAll(async () => {
     // Cleanup final
-    console.log('🧹 Cleaning up integration test environment...');
+    console.log("🧹 Cleaning up integration test environment...");
   });
 
   beforeEach(async () => {
@@ -42,7 +42,7 @@ describe('POST /api/register - Integration Tests', () => {
       await prisma.user.deleteMany({
         where: {
           email: {
-            contains: 'test@',
+            contains: "test@",
           },
         },
       });
@@ -60,13 +60,13 @@ describe('POST /api/register - Integration Tests', () => {
    * 3. Perfil médico se crea en Prisma
    * 4. Se devuelve respuesta exitosa
    */
-  it('should successfully complete full registration flow', async () => {
+  it("should successfully complete full registration flow", async () => {
     // Crear request mock
-    const request = new NextRequest('http://localhost:3000/api/register', {
-      method: 'POST',
+    const request = new NextRequest("http://localhost:3000/api/register", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'x-forwarded-for': '127.0.0.1',
+        "Content-Type": "application/json",
+        "x-forwarded-for": "127.0.0.1",
       },
       body: JSON.stringify(validRegistrationData),
     });
@@ -88,22 +88,22 @@ describe('POST /api/register - Integration Tests', () => {
    * 
    * Verifica que el schema de validación rechaza datos inválidos
    */
-  it('should return 400 for invalid data (validation error)', async () => {
+  it("should return 400 for invalid data (validation error)", async () => {
     const invalidData = {
-      fullName: 'A', // Muy corto (mínimo 2 caracteres)
-      email: 'invalid-email',
-      password: '123', // Muy corto (mínimo 8 caracteres)
-      confirmPassword: '123',
-      hospital: 'Hospital Test',
-      specialty: 'Medicina',
-      userType: 'professional',
+      fullName: "A", // Muy corto (mínimo 2 caracteres)
+      email: "invalid-email",
+      password: "123", // Muy corto (mínimo 8 caracteres)
+      confirmPassword: "123",
+      hospital: "Hospital Test",
+      specialty: "Medicina",
+      userType: "professional",
     };
 
-    const request = new NextRequest('http://localhost:3000/api/register', {
-      method: 'POST',
+    const request = new NextRequest("http://localhost:3000/api/register", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'x-forwarded-for': '127.0.0.1',
+        "Content-Type": "application/json",
+        "x-forwarded-for": "127.0.0.1",
       },
       body: JSON.stringify(invalidData),
     });
@@ -124,16 +124,16 @@ describe('POST /api/register - Integration Tests', () => {
    * NOTA: Este test requiere más tiempo porque envía emails reales
    * Timeout extendido a 30 segundos
    */
-  it('should return 429 after exceeding rate limit', async () => {
+  it("should return 429 after exceeding rate limit", async () => {
     // Hacer 6 requests rápidos
     const responses = [];
     
     for (let i = 0; i < 6; i++) {
-      const request = new NextRequest('http://localhost:3000/api/register', {
-        method: 'POST',
+      const request = new NextRequest("http://localhost:3000/api/register", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'x-forwarded-for': '192.168.1.100', // IP fija para rate limiting
+          "Content-Type": "application/json",
+          "x-forwarded-for": "192.168.1.100", // IP fija para rate limiting
         },
         body: JSON.stringify({
           ...validRegistrationData,
@@ -150,7 +150,7 @@ describe('POST /api/register - Integration Tests', () => {
     expect(lastResponse.status).toBe(429);
 
     const data = await lastResponse.json();
-    expect(data.error).toContain('Demasiados intentos');
+    expect(data.error).toContain("Demasiados intentos");
     expect(data.code).toBe(ErrorCodes.RATE_LIMIT_ERROR);
   }, 30000); // Timeout extendido a 30 segundos
 
@@ -160,7 +160,7 @@ describe('POST /api/register - Integration Tests', () => {
    * Verifica que no se puedan registrar emails duplicados
    * Better Auth devuelve 422 UNPROCESSABLE_ENTITY para usuarios existentes
    */
-  it('should return 422 for duplicate email', async () => {
+  it("should return 422 for duplicate email", async () => {
     // Usar email único para este test
     const uniqueEmail = `duplicate-${Date.now()}@example.com`;
     const testData = {
@@ -169,11 +169,11 @@ describe('POST /api/register - Integration Tests', () => {
     };
 
     // Primera registración exitosa
-    const request1 = new NextRequest('http://localhost:3000/api/register', {
-      method: 'POST',
+    const request1 = new NextRequest("http://localhost:3000/api/register", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'x-forwarded-for': '127.0.0.10',
+        "Content-Type": "application/json",
+        "x-forwarded-for": "127.0.0.10",
       },
       body: JSON.stringify(testData),
     });
@@ -182,11 +182,11 @@ describe('POST /api/register - Integration Tests', () => {
     expect(response1.status).toBe(200); // Verificar que la primera funciona
 
     // Intentar registrar el mismo email
-    const request2 = new NextRequest('http://localhost:3000/api/register', {
-      method: 'POST',
+    const request2 = new NextRequest("http://localhost:3000/api/register", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'x-forwarded-for': '127.0.0.11', // IP diferente para evitar rate limit
+        "Content-Type": "application/json",
+        "x-forwarded-for": "127.0.0.11", // IP diferente para evitar rate limit
       },
       body: JSON.stringify(testData),
     });
@@ -197,7 +197,7 @@ describe('POST /api/register - Integration Tests', () => {
     // Better Auth devuelve 422 para usuarios duplicados
     expect(response.status).toBe(422);
     expect(data.code).toBe(ErrorCodes.USER_ALREADY_EXISTS);
-    expect(data.error).toContain('registrado');
+    expect(data.error).toContain("registrado");
   }, 15000);
 
   /**
@@ -213,7 +213,7 @@ describe('POST /api/register - Integration Tests', () => {
    * - Cleanup de usuario si falla (prisma.user.delete)
    * - Retorno de error 500 al cliente
    */
-  it.skip('should have error handling for profile creation', async () => {
+  it.skip("should have error handling for profile creation", async () => {
     // Este test está skippeado porque requiere simular errores de BD
     // que son difíciles de reproducir en tests de integración sin
     // modificar el schema o usar mocks de bajo nivel.
@@ -228,24 +228,24 @@ describe('POST /api/register - Integration Tests', () => {
    * 
    * Verifica que el flujo funciona para estudiantes también
    */
-  it('should successfully register student user', async () => {
+  it("should successfully register student user", async () => {
     const studentData = {
-      fullName: 'Estudiante María García',
+      fullName: "Estudiante María García",
       email: `student-${Date.now()}@example.com`,
-      password: 'SecurePass123!',
-      confirmPassword: 'SecurePass123!',
-      hospital: 'Hospital Universitario',
-      specialty: 'Medicina General',
-      userType: 'student',
-      studentType: 'MPSS',
-      universityMatricula: 'MAT-2024-001',
+      password: "SecurePass123!",
+      confirmPassword: "SecurePass123!",
+      hospital: "Hospital Universitario",
+      specialty: "Medicina General",
+      userType: "student",
+      studentType: "MPSS",
+      universityMatricula: "MAT-2024-001",
     };
 
-    const request = new NextRequest('http://localhost:3000/api/register', {
-      method: 'POST',
+    const request = new NextRequest("http://localhost:3000/api/register", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'x-forwarded-for': '127.0.0.1',
+        "Content-Type": "application/json",
+        "x-forwarded-for": "127.0.0.1",
       },
       body: JSON.stringify(studentData),
     });
@@ -262,24 +262,24 @@ describe('POST /api/register - Integration Tests', () => {
    * 
    * Verifica que los headers de rate limiting están presentes en respuestas exitosas
    */
-  it('should include rate limit headers in successful response', async () => {
-    const request = new NextRequest('http://localhost:3000/api/register', {
-      method: 'POST',
+  it("should include rate limit headers in successful response", async () => {
+    const request = new NextRequest("http://localhost:3000/api/register", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'x-forwarded-for': '127.0.0.1',
+        "Content-Type": "application/json",
+        "x-forwarded-for": "127.0.0.1",
       },
       body: JSON.stringify({
         ...validRegistrationData,
-        email: 'headers-test@example.com',
+        email: "headers-test@example.com",
       }),
     });
 
     const response = await POST(request);
 
     // Verificar headers de rate limiting
-    expect(response.headers.get('X-RateLimit-Limit')).toBeDefined();
-    expect(response.headers.get('X-RateLimit-Remaining')).toBeDefined();
-    expect(response.headers.get('X-RateLimit-Reset')).toBeDefined();
+    expect(response.headers.get("X-RateLimit-Limit")).toBeDefined();
+    expect(response.headers.get("X-RateLimit-Remaining")).toBeDefined();
+    expect(response.headers.get("X-RateLimit-Reset")).toBeDefined();
   });
 });

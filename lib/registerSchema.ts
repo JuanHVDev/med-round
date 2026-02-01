@@ -1,5 +1,29 @@
 import { z } from "zod"
 
+/**
+ * Schema de validación Zod para el formulario de registro de médicos.
+ *
+ * Este schema define todas las reglas de validación para el registro de nuevos usuarios
+ * en MedRound, incluyendo validaciones condicionales según el tipo de usuario
+ * (profesional médico vs estudiante).
+ *
+ * El schema es compartido entre:
+ * - Frontend: Validación en tiempo real con React Hook Form
+ * - Backend: Validación de datos en la API de registro
+ *
+ * Validaciones implementadas:
+ * - Campos requeridos básicos (nombre, email, contraseña)
+ * - Validación de email válido
+ * - Contraseña mínima de 8 caracteres
+ * - Confirmación de contraseña debe coincidir
+ * - Validación condicional según tipo de usuario:
+ *   - Profesionales: Requiere ID profesional
+ *   - Estudiantes: Requiere tipo (MPSS/MIP) y matrícula universitaria
+ * - Hospital "Otro" requiere especificación manual
+ *
+ * @see {@link FormData} Tipo inferido del schema para TypeScript
+ * @see {@link https://zod.dev} Documentación de Zod
+ */
 export const formSchema = z.object({
   fullName: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
   email: z.string().email("Ingrese un email válido"),
@@ -36,4 +60,26 @@ export const formSchema = z.object({
   path: ["otherHospital"],
 })
 
+/**
+ * Tipo TypeScript inferido del schema de registro.
+ *
+ * Representa la estructura completa de datos validados del formulario de registro.
+ * Se utiliza para tipar formularios React, APIs y servicios de registro.
+ *
+ * @example
+ * // Uso en componente React con React Hook Form
+ * const form = useForm<FormData>({
+ *   resolver: zodResolver(formSchema),
+ *   defaultValues: { fullName: "", email: "", ... }
+ * })
+ *
+ * @example
+ * // Uso en API route
+ * async function register(data: FormData) {
+ *   const validated = formSchema.parse(data)
+ *   // ... lógica de registro
+ * }
+ *
+ * @see {@link formSchema} Schema Zod del cual se infiere este tipo
+ */
 export type FormData = z.infer<typeof formSchema>

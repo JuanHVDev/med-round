@@ -84,7 +84,7 @@ export default function RegisterPage() {
           const errorMessage = errors[firstErrorKey]?.message?.toString() || "Complete los campos requeridos"
           // Usar el store para mostrar error
           // Por ahora mostramos el error directamente
-          console.error('Validation error:', errorMessage)
+          console.error("Validation error:", errorMessage)
         }, 0)
       }
     }

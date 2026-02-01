@@ -3,7 +3,7 @@
  * Client
 **/
 
-import * as runtime from './runtime/library.js';
+import * as runtime from "./runtime/library.js";
 import $Types = runtime.Types // general types
 import $Public = runtime.Types.Public
 import $Utils = runtime.Types.Utils
@@ -55,10 +55,10 @@ export type medicosProfile = $Result.DefaultSelection<Prisma.$medicosProfilePayl
  */
 export class PrismaClient<
   ClientOptions extends Prisma.PrismaClientOptions = Prisma.PrismaClientOptions,
-  U = 'log' extends keyof ClientOptions ? ClientOptions['log'] extends Array<Prisma.LogLevel | Prisma.LogDefinition> ? Prisma.GetEvents<ClientOptions['log']> : never : never,
+  U = "log" extends keyof ClientOptions ? ClientOptions["log"] extends Array<Prisma.LogLevel | Prisma.LogDefinition> ? Prisma.GetEvents<ClientOptions["log"]> : never : never,
   ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
 > {
-  [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['other'] }
+  [K: symbol]: { types: Prisma.TypeMap<ExtArgs>["other"] }
 
     /**
    * ##  Prisma Client ʲˢ
@@ -76,7 +76,7 @@ export class PrismaClient<
    */
 
   constructor(optionsArg ?: Prisma.Subset<ClientOptions, Prisma.PrismaClientOptions>);
-  $on<V extends U>(eventType: V, callback: (event: V extends 'query' ? Prisma.QueryEvent : Prisma.LogEvent) => void): void;
+  $on<V extends U>(eventType: V, callback: (event: V extends "query" ? Prisma.QueryEvent : Prisma.LogEvent) => void): void;
 
   /**
    * Connect with the database
@@ -412,9 +412,9 @@ export namespace Prisma {
     [key in keyof T]: key extends keyof U ? T[key] : never
   } &
     (T extends SelectAndInclude
-      ? 'Please either choose `select` or `include`.'
+      ? "Please either choose `select` or `include`."
       : T extends SelectAndOmit
-        ? 'Please either choose `select` or `omit`.'
+        ? "Please either choose `select` or `omit`."
         : {})
 
   /**
@@ -448,7 +448,7 @@ export namespace Prisma {
   ? False
   : T extends Uint8Array
   ? False
-  : T extends BigInt
+  : T extends bigint
   ? False
   : T extends object
   ? True
@@ -609,13 +609,13 @@ export namespace Prisma {
 
   type FieldPaths<
     T,
-    U = Omit<T, '_avg' | '_sum' | '_count' | '_min' | '_max'>
+    U = Omit<T, "_avg" | "_sum" | "_count" | "_min" | "_max">
   > = IsObject<T> extends True ? U : T
 
   type GetHavingFields<T> = {
     [K in keyof T]: Or<
-      Or<Extends<'OR', K>, Extends<'AND', K>>,
-      Extends<'NOT', K>
+      Or<Extends<"OR", K>, Extends<"AND", K>>,
+      Extends<"NOT", K>
     > extends True
       ? // infer is only needed to not hit TS limit
         // based on the brilliant idea of Pierre-Antoine Mills
@@ -652,11 +652,11 @@ export namespace Prisma {
 
 
   export const ModelName: {
-    user: 'user',
-    session: 'session',
-    account: 'account',
-    verification: 'verification',
-    medicosProfile: 'medicosProfile'
+    user: "user",
+    session: "session",
+    account: "account",
+    verification: "verification",
+    medicosProfile: "medicosProfile"
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -667,7 +667,7 @@ export namespace Prisma {
   }
 
   interface TypeMapCb extends $Utils.Fn<{extArgs: $Extensions.InternalArgs, clientOptions: PrismaClientOptions }, $Utils.Record<string, any>> {
-    returns: Prisma.TypeMap<this['params']['extArgs'], this['params']['clientOptions']>
+    returns: Prisma.TypeMap<this["params"]["extArgs"], this["params"]["clientOptions"]>
   }
 
   export type TypeMap<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, ClientOptions = {}> = {
@@ -1052,7 +1052,7 @@ export namespace Prisma {
   }
   export const defineExtension: $Extensions.ExtendsHook<"define", Prisma.TypeMapCb, $Extensions.DefaultArgs>
   export type DefaultPrismaClient = PrismaClient
-  export type ErrorFormat = 'pretty' | 'colorless' | 'minimal'
+  export type ErrorFormat = "pretty" | "colorless" | "minimal"
   export interface PrismaClientOptions {
     /**
      * Overwrites the datasource url from your schema.prisma file
@@ -1097,13 +1097,13 @@ export namespace Prisma {
 
 
   /* Types for Logging */
-  export type LogLevel = 'info' | 'query' | 'warn' | 'error'
+  export type LogLevel = "info" | "query" | "warn" | "error"
   export type LogDefinition = {
     level: LogLevel
-    emit: 'stdout' | 'event'
+    emit: "stdout" | "event"
   }
 
-  export type GetLogType<T extends LogLevel | LogDefinition> = T extends LogDefinition ? T['emit'] extends 'event' ? T['level'] : never : never
+  export type GetLogType<T extends LogLevel | LogDefinition> = T extends LogDefinition ? T["emit"] extends "event" ? T["level"] : never : never
   export type GetEvents<T extends any> = T extends Array<LogLevel | LogDefinition> ?
     GetLogType<T[0]> | GetLogType<T[1]> | GetLogType<T[2]> | GetLogType<T[3]>
     : never
@@ -1125,26 +1125,26 @@ export namespace Prisma {
 
 
   export type PrismaAction =
-    | 'findUnique'
-    | 'findUniqueOrThrow'
-    | 'findMany'
-    | 'findFirst'
-    | 'findFirstOrThrow'
-    | 'create'
-    | 'createMany'
-    | 'createManyAndReturn'
-    | 'update'
-    | 'updateMany'
-    | 'upsert'
-    | 'delete'
-    | 'deleteMany'
-    | 'executeRaw'
-    | 'queryRaw'
-    | 'aggregate'
-    | 'count'
-    | 'runCommandRaw'
-    | 'findRaw'
-    | 'groupBy'
+    | "findUnique"
+    | "findUniqueOrThrow"
+    | "findMany"
+    | "findFirst"
+    | "findFirstOrThrow"
+    | "create"
+    | "createMany"
+    | "createManyAndReturn"
+    | "update"
+    | "updateMany"
+    | "upsert"
+    | "delete"
+    | "deleteMany"
+    | "executeRaw"
+    | "queryRaw"
+    | "aggregate"
+    | "count"
+    | "runCommandRaw"
+    | "findRaw"
+    | "groupBy"
 
   /**
    * These options are being passed into the middleware as "params"
@@ -1361,7 +1361,7 @@ export namespace Prisma {
   }
 
   export type GetUserAggregateType<T extends UserAggregateArgs> = {
-        [P in keyof T & keyof AggregateUser]: P extends '_count' | 'count'
+        [P in keyof T & keyof AggregateUser]: P extends "_count" | "count"
       ? T[P] extends true
         ? number
         : GetScalarType<T[P], AggregateUser[P]>
@@ -1400,9 +1400,9 @@ export namespace Prisma {
 
   type GetUserGroupByPayload<T extends userGroupByArgs> = Prisma.PrismaPromise<
     Array<
-      PickEnumerable<UserGroupByOutputType, T['by']> &
+      PickEnumerable<UserGroupByOutputType, T["by"]> &
         {
-          [P in ((keyof T) & (keyof UserGroupByOutputType))]: P extends '_count'
+          [P in ((keyof T) & (keyof UserGroupByOutputType))]: P extends "_count"
             ? T[P] extends boolean
               ? number
               : GetScalarType<T[P], UserGroupByOutputType[P]>
@@ -1484,12 +1484,12 @@ export namespace Prisma {
   type userGetPayload<S extends boolean | null | undefined | userDefaultArgs> = $Result.GetResult<Prisma.$userPayload, S>
 
   type userCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
-    Omit<userFindManyArgs, 'select' | 'include' | 'distinct'> & {
+    Omit<userFindManyArgs, "select" | "include" | "distinct"> & {
       select?: UserCountAggregateInputType | true
     }
 
   export interface userDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['user'], meta: { name: 'user' } }
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>["model"]["user"], meta: { name: "user" } }
     /**
      * Find zero or one User that matches the filter.
      * @param {userFindUniqueArgs} args - Arguments to find a User
@@ -1718,10 +1718,10 @@ export namespace Prisma {
     count<T extends userCountArgs>(
       args?: Subset<T, userCountArgs>,
     ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
+      T extends $Utils.Record<"select", any>
+        ? T["select"] extends true
           ? number
-          : GetScalarType<T['select'], UserCountAggregateOutputType>
+          : GetScalarType<T["select"], UserCountAggregateOutputType>
         : number
     >
 
@@ -1772,20 +1772,20 @@ export namespace Prisma {
     groupBy<
       T extends userGroupByArgs,
       HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
+        Extends<"skip", Keys<T>>,
+        Extends<"take", Keys<T>>
       >,
       OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: userGroupByArgs['orderBy'] }
-        : { orderBy?: userGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
+        ? { orderBy: userGroupByArgs["orderBy"] }
+        : { orderBy?: userGroupByArgs["orderBy"] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T["orderBy"]>>>,
+      ByFields extends MaybeTupleToUnion<T["by"]>,
       ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
+      HavingFields extends GetHavingFields<T["having"]>,
       HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
+      ByEmpty extends T["by"] extends never[] ? True : False,
       InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
+      ? "Error: \"by\" must not be empty."
       : HavingValid extends False
       ? {
           [P in HavingFields]: P extends ByFields
@@ -1794,13 +1794,13 @@ export namespace Prisma {
             ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
             : [
                 Error,
-                'Field ',
+                "Field ",
                 P,
-                ` in "having" needs to be provided in "by"`,
+                " in \"having\" needs to be provided in \"by\"",
               ]
         }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
+      : "take" extends Keys<T>
+      ? "orderBy" extends Keys<T>
         ? ByValid extends True
           ? {}
           : {
@@ -1809,8 +1809,8 @@ export namespace Prisma {
                 : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
             }[OrderFields]
         : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
+      : "skip" extends Keys<T>
+      ? "orderBy" extends Keys<T>
         ? ByValid extends True
           ? {}
           : {
@@ -1873,15 +1873,15 @@ export namespace Prisma {
    * Fields of the user model
    */ 
   interface userFieldRefs {
-    readonly id: FieldRef<"user", 'String'>
-    readonly name: FieldRef<"user", 'String'>
-    readonly email: FieldRef<"user", 'String'>
-    readonly emailVerified: FieldRef<"user", 'Boolean'>
-    readonly image: FieldRef<"user", 'String'>
-    readonly role: FieldRef<"user", 'String'>
-    readonly isActive: FieldRef<"user", 'Boolean'>
-    readonly createdAt: FieldRef<"user", 'DateTime'>
-    readonly updatedAt: FieldRef<"user", 'DateTime'>
+    readonly id: FieldRef<"user", "String">
+    readonly name: FieldRef<"user", "String">
+    readonly email: FieldRef<"user", "String">
+    readonly emailVerified: FieldRef<"user", "Boolean">
+    readonly image: FieldRef<"user", "String">
+    readonly role: FieldRef<"user", "String">
+    readonly isActive: FieldRef<"user", "Boolean">
+    readonly createdAt: FieldRef<"user", "DateTime">
+    readonly updatedAt: FieldRef<"user", "DateTime">
   }
     
 
@@ -2392,7 +2392,7 @@ export namespace Prisma {
   }
 
   export type GetSessionAggregateType<T extends SessionAggregateArgs> = {
-        [P in keyof T & keyof AggregateSession]: P extends '_count' | 'count'
+        [P in keyof T & keyof AggregateSession]: P extends "_count" | "count"
       ? T[P] extends true
         ? number
         : GetScalarType<T[P], AggregateSession[P]>
@@ -2430,9 +2430,9 @@ export namespace Prisma {
 
   type GetSessionGroupByPayload<T extends sessionGroupByArgs> = Prisma.PrismaPromise<
     Array<
-      PickEnumerable<SessionGroupByOutputType, T['by']> &
+      PickEnumerable<SessionGroupByOutputType, T["by"]> &
         {
-          [P in ((keyof T) & (keyof SessionGroupByOutputType))]: P extends '_count'
+          [P in ((keyof T) & (keyof SessionGroupByOutputType))]: P extends "_count"
             ? T[P] extends boolean
               ? number
               : GetScalarType<T[P], SessionGroupByOutputType[P]>
@@ -2505,12 +2505,12 @@ export namespace Prisma {
   type sessionGetPayload<S extends boolean | null | undefined | sessionDefaultArgs> = $Result.GetResult<Prisma.$sessionPayload, S>
 
   type sessionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
-    Omit<sessionFindManyArgs, 'select' | 'include' | 'distinct'> & {
+    Omit<sessionFindManyArgs, "select" | "include" | "distinct"> & {
       select?: SessionCountAggregateInputType | true
     }
 
   export interface sessionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['session'], meta: { name: 'session' } }
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>["model"]["session"], meta: { name: "session" } }
     /**
      * Find zero or one Session that matches the filter.
      * @param {sessionFindUniqueArgs} args - Arguments to find a Session
@@ -2739,10 +2739,10 @@ export namespace Prisma {
     count<T extends sessionCountArgs>(
       args?: Subset<T, sessionCountArgs>,
     ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
+      T extends $Utils.Record<"select", any>
+        ? T["select"] extends true
           ? number
-          : GetScalarType<T['select'], SessionCountAggregateOutputType>
+          : GetScalarType<T["select"], SessionCountAggregateOutputType>
         : number
     >
 
@@ -2793,20 +2793,20 @@ export namespace Prisma {
     groupBy<
       T extends sessionGroupByArgs,
       HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
+        Extends<"skip", Keys<T>>,
+        Extends<"take", Keys<T>>
       >,
       OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: sessionGroupByArgs['orderBy'] }
-        : { orderBy?: sessionGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
+        ? { orderBy: sessionGroupByArgs["orderBy"] }
+        : { orderBy?: sessionGroupByArgs["orderBy"] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T["orderBy"]>>>,
+      ByFields extends MaybeTupleToUnion<T["by"]>,
       ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
+      HavingFields extends GetHavingFields<T["having"]>,
       HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
+      ByEmpty extends T["by"] extends never[] ? True : False,
       InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
+      ? "Error: \"by\" must not be empty."
       : HavingValid extends False
       ? {
           [P in HavingFields]: P extends ByFields
@@ -2815,13 +2815,13 @@ export namespace Prisma {
             ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
             : [
                 Error,
-                'Field ',
+                "Field ",
                 P,
-                ` in "having" needs to be provided in "by"`,
+                " in \"having\" needs to be provided in \"by\"",
               ]
         }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
+      : "take" extends Keys<T>
+      ? "orderBy" extends Keys<T>
         ? ByValid extends True
           ? {}
           : {
@@ -2830,8 +2830,8 @@ export namespace Prisma {
                 : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
             }[OrderFields]
         : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
+      : "skip" extends Keys<T>
+      ? "orderBy" extends Keys<T>
         ? ByValid extends True
           ? {}
           : {
@@ -2892,14 +2892,14 @@ export namespace Prisma {
    * Fields of the session model
    */ 
   interface sessionFieldRefs {
-    readonly id: FieldRef<"session", 'String'>
-    readonly expiresAt: FieldRef<"session", 'DateTime'>
-    readonly token: FieldRef<"session", 'String'>
-    readonly createdAt: FieldRef<"session", 'DateTime'>
-    readonly updatedAt: FieldRef<"session", 'DateTime'>
-    readonly ipAddress: FieldRef<"session", 'String'>
-    readonly userAgent: FieldRef<"session", 'String'>
-    readonly userId: FieldRef<"session", 'String'>
+    readonly id: FieldRef<"session", "String">
+    readonly expiresAt: FieldRef<"session", "DateTime">
+    readonly token: FieldRef<"session", "String">
+    readonly createdAt: FieldRef<"session", "DateTime">
+    readonly updatedAt: FieldRef<"session", "DateTime">
+    readonly ipAddress: FieldRef<"session", "String">
+    readonly userAgent: FieldRef<"session", "String">
+    readonly userId: FieldRef<"session", "String">
   }
     
 
@@ -3389,7 +3389,7 @@ export namespace Prisma {
   }
 
   export type GetAccountAggregateType<T extends AccountAggregateArgs> = {
-        [P in keyof T & keyof AggregateAccount]: P extends '_count' | 'count'
+        [P in keyof T & keyof AggregateAccount]: P extends "_count" | "count"
       ? T[P] extends true
         ? number
         : GetScalarType<T[P], AggregateAccount[P]>
@@ -3432,9 +3432,9 @@ export namespace Prisma {
 
   type GetAccountGroupByPayload<T extends accountGroupByArgs> = Prisma.PrismaPromise<
     Array<
-      PickEnumerable<AccountGroupByOutputType, T['by']> &
+      PickEnumerable<AccountGroupByOutputType, T["by"]> &
         {
-          [P in ((keyof T) & (keyof AccountGroupByOutputType))]: P extends '_count'
+          [P in ((keyof T) & (keyof AccountGroupByOutputType))]: P extends "_count"
             ? T[P] extends boolean
               ? number
               : GetScalarType<T[P], AccountGroupByOutputType[P]>
@@ -3527,12 +3527,12 @@ export namespace Prisma {
   type accountGetPayload<S extends boolean | null | undefined | accountDefaultArgs> = $Result.GetResult<Prisma.$accountPayload, S>
 
   type accountCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
-    Omit<accountFindManyArgs, 'select' | 'include' | 'distinct'> & {
+    Omit<accountFindManyArgs, "select" | "include" | "distinct"> & {
       select?: AccountCountAggregateInputType | true
     }
 
   export interface accountDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['account'], meta: { name: 'account' } }
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>["model"]["account"], meta: { name: "account" } }
     /**
      * Find zero or one Account that matches the filter.
      * @param {accountFindUniqueArgs} args - Arguments to find a Account
@@ -3761,10 +3761,10 @@ export namespace Prisma {
     count<T extends accountCountArgs>(
       args?: Subset<T, accountCountArgs>,
     ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
+      T extends $Utils.Record<"select", any>
+        ? T["select"] extends true
           ? number
-          : GetScalarType<T['select'], AccountCountAggregateOutputType>
+          : GetScalarType<T["select"], AccountCountAggregateOutputType>
         : number
     >
 
@@ -3815,20 +3815,20 @@ export namespace Prisma {
     groupBy<
       T extends accountGroupByArgs,
       HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
+        Extends<"skip", Keys<T>>,
+        Extends<"take", Keys<T>>
       >,
       OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: accountGroupByArgs['orderBy'] }
-        : { orderBy?: accountGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
+        ? { orderBy: accountGroupByArgs["orderBy"] }
+        : { orderBy?: accountGroupByArgs["orderBy"] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T["orderBy"]>>>,
+      ByFields extends MaybeTupleToUnion<T["by"]>,
       ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
+      HavingFields extends GetHavingFields<T["having"]>,
       HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
+      ByEmpty extends T["by"] extends never[] ? True : False,
       InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
+      ? "Error: \"by\" must not be empty."
       : HavingValid extends False
       ? {
           [P in HavingFields]: P extends ByFields
@@ -3837,13 +3837,13 @@ export namespace Prisma {
             ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
             : [
                 Error,
-                'Field ',
+                "Field ",
                 P,
-                ` in "having" needs to be provided in "by"`,
+                " in \"having\" needs to be provided in \"by\"",
               ]
         }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
+      : "take" extends Keys<T>
+      ? "orderBy" extends Keys<T>
         ? ByValid extends True
           ? {}
           : {
@@ -3852,8 +3852,8 @@ export namespace Prisma {
                 : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
             }[OrderFields]
         : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
+      : "skip" extends Keys<T>
+      ? "orderBy" extends Keys<T>
         ? ByValid extends True
           ? {}
           : {
@@ -3914,19 +3914,19 @@ export namespace Prisma {
    * Fields of the account model
    */ 
   interface accountFieldRefs {
-    readonly id: FieldRef<"account", 'String'>
-    readonly accountId: FieldRef<"account", 'String'>
-    readonly providerId: FieldRef<"account", 'String'>
-    readonly userId: FieldRef<"account", 'String'>
-    readonly accessToken: FieldRef<"account", 'String'>
-    readonly refreshToken: FieldRef<"account", 'String'>
-    readonly idToken: FieldRef<"account", 'String'>
-    readonly accessTokenExpiresAt: FieldRef<"account", 'DateTime'>
-    readonly refreshTokenExpiresAt: FieldRef<"account", 'DateTime'>
-    readonly scope: FieldRef<"account", 'String'>
-    readonly password: FieldRef<"account", 'String'>
-    readonly createdAt: FieldRef<"account", 'DateTime'>
-    readonly updatedAt: FieldRef<"account", 'DateTime'>
+    readonly id: FieldRef<"account", "String">
+    readonly accountId: FieldRef<"account", "String">
+    readonly providerId: FieldRef<"account", "String">
+    readonly userId: FieldRef<"account", "String">
+    readonly accessToken: FieldRef<"account", "String">
+    readonly refreshToken: FieldRef<"account", "String">
+    readonly idToken: FieldRef<"account", "String">
+    readonly accessTokenExpiresAt: FieldRef<"account", "DateTime">
+    readonly refreshTokenExpiresAt: FieldRef<"account", "DateTime">
+    readonly scope: FieldRef<"account", "String">
+    readonly password: FieldRef<"account", "String">
+    readonly createdAt: FieldRef<"account", "DateTime">
+    readonly updatedAt: FieldRef<"account", "DateTime">
   }
     
 
@@ -4374,7 +4374,7 @@ export namespace Prisma {
   }
 
   export type GetVerificationAggregateType<T extends VerificationAggregateArgs> = {
-        [P in keyof T & keyof AggregateVerification]: P extends '_count' | 'count'
+        [P in keyof T & keyof AggregateVerification]: P extends "_count" | "count"
       ? T[P] extends true
         ? number
         : GetScalarType<T[P], AggregateVerification[P]>
@@ -4410,9 +4410,9 @@ export namespace Prisma {
 
   type GetVerificationGroupByPayload<T extends verificationGroupByArgs> = Prisma.PrismaPromise<
     Array<
-      PickEnumerable<VerificationGroupByOutputType, T['by']> &
+      PickEnumerable<VerificationGroupByOutputType, T["by"]> &
         {
-          [P in ((keyof T) & (keyof VerificationGroupByOutputType))]: P extends '_count'
+          [P in ((keyof T) & (keyof VerificationGroupByOutputType))]: P extends "_count"
             ? T[P] extends boolean
               ? number
               : GetScalarType<T[P], VerificationGroupByOutputType[P]>
@@ -4467,12 +4467,12 @@ export namespace Prisma {
   type verificationGetPayload<S extends boolean | null | undefined | verificationDefaultArgs> = $Result.GetResult<Prisma.$verificationPayload, S>
 
   type verificationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
-    Omit<verificationFindManyArgs, 'select' | 'include' | 'distinct'> & {
+    Omit<verificationFindManyArgs, "select" | "include" | "distinct"> & {
       select?: VerificationCountAggregateInputType | true
     }
 
   export interface verificationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['verification'], meta: { name: 'verification' } }
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>["model"]["verification"], meta: { name: "verification" } }
     /**
      * Find zero or one Verification that matches the filter.
      * @param {verificationFindUniqueArgs} args - Arguments to find a Verification
@@ -4701,10 +4701,10 @@ export namespace Prisma {
     count<T extends verificationCountArgs>(
       args?: Subset<T, verificationCountArgs>,
     ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
+      T extends $Utils.Record<"select", any>
+        ? T["select"] extends true
           ? number
-          : GetScalarType<T['select'], VerificationCountAggregateOutputType>
+          : GetScalarType<T["select"], VerificationCountAggregateOutputType>
         : number
     >
 
@@ -4755,20 +4755,20 @@ export namespace Prisma {
     groupBy<
       T extends verificationGroupByArgs,
       HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
+        Extends<"skip", Keys<T>>,
+        Extends<"take", Keys<T>>
       >,
       OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: verificationGroupByArgs['orderBy'] }
-        : { orderBy?: verificationGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
+        ? { orderBy: verificationGroupByArgs["orderBy"] }
+        : { orderBy?: verificationGroupByArgs["orderBy"] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T["orderBy"]>>>,
+      ByFields extends MaybeTupleToUnion<T["by"]>,
       ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
+      HavingFields extends GetHavingFields<T["having"]>,
       HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
+      ByEmpty extends T["by"] extends never[] ? True : False,
       InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
+      ? "Error: \"by\" must not be empty."
       : HavingValid extends False
       ? {
           [P in HavingFields]: P extends ByFields
@@ -4777,13 +4777,13 @@ export namespace Prisma {
             ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
             : [
                 Error,
-                'Field ',
+                "Field ",
                 P,
-                ` in "having" needs to be provided in "by"`,
+                " in \"having\" needs to be provided in \"by\"",
               ]
         }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
+      : "take" extends Keys<T>
+      ? "orderBy" extends Keys<T>
         ? ByValid extends True
           ? {}
           : {
@@ -4792,8 +4792,8 @@ export namespace Prisma {
                 : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
             }[OrderFields]
         : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
+      : "skip" extends Keys<T>
+      ? "orderBy" extends Keys<T>
         ? ByValid extends True
           ? {}
           : {
@@ -4853,12 +4853,12 @@ export namespace Prisma {
    * Fields of the verification model
    */ 
   interface verificationFieldRefs {
-    readonly id: FieldRef<"verification", 'String'>
-    readonly identifier: FieldRef<"verification", 'String'>
-    readonly value: FieldRef<"verification", 'String'>
-    readonly expiresAt: FieldRef<"verification", 'DateTime'>
-    readonly createdAt: FieldRef<"verification", 'DateTime'>
-    readonly updatedAt: FieldRef<"verification", 'DateTime'>
+    readonly id: FieldRef<"verification", "String">
+    readonly identifier: FieldRef<"verification", "String">
+    readonly value: FieldRef<"verification", "String">
+    readonly expiresAt: FieldRef<"verification", "DateTime">
+    readonly createdAt: FieldRef<"verification", "DateTime">
+    readonly updatedAt: FieldRef<"verification", "DateTime">
   }
     
 
@@ -5304,7 +5304,7 @@ export namespace Prisma {
   }
 
   export type GetMedicosProfileAggregateType<T extends MedicosProfileAggregateArgs> = {
-        [P in keyof T & keyof AggregateMedicosProfile]: P extends '_count' | 'count'
+        [P in keyof T & keyof AggregateMedicosProfile]: P extends "_count" | "count"
       ? T[P] extends true
         ? number
         : GetScalarType<T[P], AggregateMedicosProfile[P]>
@@ -5347,9 +5347,9 @@ export namespace Prisma {
 
   type GetMedicosProfileGroupByPayload<T extends medicosProfileGroupByArgs> = Prisma.PrismaPromise<
     Array<
-      PickEnumerable<MedicosProfileGroupByOutputType, T['by']> &
+      PickEnumerable<MedicosProfileGroupByOutputType, T["by"]> &
         {
-          [P in ((keyof T) & (keyof MedicosProfileGroupByOutputType))]: P extends '_count'
+          [P in ((keyof T) & (keyof MedicosProfileGroupByOutputType))]: P extends "_count"
             ? T[P] extends boolean
               ? number
               : GetScalarType<T[P], MedicosProfileGroupByOutputType[P]>
@@ -5442,12 +5442,12 @@ export namespace Prisma {
   type medicosProfileGetPayload<S extends boolean | null | undefined | medicosProfileDefaultArgs> = $Result.GetResult<Prisma.$medicosProfilePayload, S>
 
   type medicosProfileCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
-    Omit<medicosProfileFindManyArgs, 'select' | 'include' | 'distinct'> & {
+    Omit<medicosProfileFindManyArgs, "select" | "include" | "distinct"> & {
       select?: MedicosProfileCountAggregateInputType | true
     }
 
   export interface medicosProfileDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['medicosProfile'], meta: { name: 'medicosProfile' } }
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>["model"]["medicosProfile"], meta: { name: "medicosProfile" } }
     /**
      * Find zero or one MedicosProfile that matches the filter.
      * @param {medicosProfileFindUniqueArgs} args - Arguments to find a MedicosProfile
@@ -5676,10 +5676,10 @@ export namespace Prisma {
     count<T extends medicosProfileCountArgs>(
       args?: Subset<T, medicosProfileCountArgs>,
     ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
+      T extends $Utils.Record<"select", any>
+        ? T["select"] extends true
           ? number
-          : GetScalarType<T['select'], MedicosProfileCountAggregateOutputType>
+          : GetScalarType<T["select"], MedicosProfileCountAggregateOutputType>
         : number
     >
 
@@ -5730,20 +5730,20 @@ export namespace Prisma {
     groupBy<
       T extends medicosProfileGroupByArgs,
       HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
+        Extends<"skip", Keys<T>>,
+        Extends<"take", Keys<T>>
       >,
       OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: medicosProfileGroupByArgs['orderBy'] }
-        : { orderBy?: medicosProfileGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
+        ? { orderBy: medicosProfileGroupByArgs["orderBy"] }
+        : { orderBy?: medicosProfileGroupByArgs["orderBy"] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T["orderBy"]>>>,
+      ByFields extends MaybeTupleToUnion<T["by"]>,
       ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
+      HavingFields extends GetHavingFields<T["having"]>,
       HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
+      ByEmpty extends T["by"] extends never[] ? True : False,
       InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
+      ? "Error: \"by\" must not be empty."
       : HavingValid extends False
       ? {
           [P in HavingFields]: P extends ByFields
@@ -5752,13 +5752,13 @@ export namespace Prisma {
             ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
             : [
                 Error,
-                'Field ',
+                "Field ",
                 P,
-                ` in "having" needs to be provided in "by"`,
+                " in \"having\" needs to be provided in \"by\"",
               ]
         }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
+      : "take" extends Keys<T>
+      ? "orderBy" extends Keys<T>
         ? ByValid extends True
           ? {}
           : {
@@ -5767,8 +5767,8 @@ export namespace Prisma {
                 : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
             }[OrderFields]
         : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
+      : "skip" extends Keys<T>
+      ? "orderBy" extends Keys<T>
         ? ByValid extends True
           ? {}
           : {
@@ -5829,19 +5829,19 @@ export namespace Prisma {
    * Fields of the medicosProfile model
    */ 
   interface medicosProfileFieldRefs {
-    readonly id: FieldRef<"medicosProfile", 'String'>
-    readonly userId: FieldRef<"medicosProfile", 'String'>
-    readonly fullName: FieldRef<"medicosProfile", 'String'>
-    readonly professionalId: FieldRef<"medicosProfile", 'String'>
-    readonly studentType: FieldRef<"medicosProfile", 'String'>
-    readonly universityMatricula: FieldRef<"medicosProfile", 'String'>
-    readonly hospital: FieldRef<"medicosProfile", 'String'>
-    readonly otherHospital: FieldRef<"medicosProfile", 'String'>
-    readonly specialty: FieldRef<"medicosProfile", 'String'>
-    readonly userType: FieldRef<"medicosProfile", 'String'>
-    readonly isEmailVerified: FieldRef<"medicosProfile", 'Boolean'>
-    readonly createdAt: FieldRef<"medicosProfile", 'DateTime'>
-    readonly updatedAt: FieldRef<"medicosProfile", 'DateTime'>
+    readonly id: FieldRef<"medicosProfile", "String">
+    readonly userId: FieldRef<"medicosProfile", "String">
+    readonly fullName: FieldRef<"medicosProfile", "String">
+    readonly professionalId: FieldRef<"medicosProfile", "String">
+    readonly studentType: FieldRef<"medicosProfile", "String">
+    readonly universityMatricula: FieldRef<"medicosProfile", "String">
+    readonly hospital: FieldRef<"medicosProfile", "String">
+    readonly otherHospital: FieldRef<"medicosProfile", "String">
+    readonly specialty: FieldRef<"medicosProfile", "String">
+    readonly userType: FieldRef<"medicosProfile", "String">
+    readonly isEmailVerified: FieldRef<"medicosProfile", "Boolean">
+    readonly createdAt: FieldRef<"medicosProfile", "DateTime">
+    readonly updatedAt: FieldRef<"medicosProfile", "DateTime">
   }
     
 
@@ -6177,102 +6177,102 @@ export namespace Prisma {
    */
 
   export const TransactionIsolationLevel: {
-    Serializable: 'Serializable'
+    Serializable: "Serializable"
   };
 
   export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
   export const UserScalarFieldEnum: {
-    id: 'id',
-    name: 'name',
-    email: 'email',
-    emailVerified: 'emailVerified',
-    image: 'image',
-    role: 'role',
-    isActive: 'isActive',
-    createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    id: "id",
+    name: "name",
+    email: "email",
+    emailVerified: "emailVerified",
+    image: "image",
+    role: "role",
+    isActive: "isActive",
+    createdAt: "createdAt",
+    updatedAt: "updatedAt"
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
   export const SessionScalarFieldEnum: {
-    id: 'id',
-    expiresAt: 'expiresAt',
-    token: 'token',
-    createdAt: 'createdAt',
-    updatedAt: 'updatedAt',
-    ipAddress: 'ipAddress',
-    userAgent: 'userAgent',
-    userId: 'userId'
+    id: "id",
+    expiresAt: "expiresAt",
+    token: "token",
+    createdAt: "createdAt",
+    updatedAt: "updatedAt",
+    ipAddress: "ipAddress",
+    userAgent: "userAgent",
+    userId: "userId"
   };
 
   export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
 
 
   export const AccountScalarFieldEnum: {
-    id: 'id',
-    accountId: 'accountId',
-    providerId: 'providerId',
-    userId: 'userId',
-    accessToken: 'accessToken',
-    refreshToken: 'refreshToken',
-    idToken: 'idToken',
-    accessTokenExpiresAt: 'accessTokenExpiresAt',
-    refreshTokenExpiresAt: 'refreshTokenExpiresAt',
-    scope: 'scope',
-    password: 'password',
-    createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    id: "id",
+    accountId: "accountId",
+    providerId: "providerId",
+    userId: "userId",
+    accessToken: "accessToken",
+    refreshToken: "refreshToken",
+    idToken: "idToken",
+    accessTokenExpiresAt: "accessTokenExpiresAt",
+    refreshTokenExpiresAt: "refreshTokenExpiresAt",
+    scope: "scope",
+    password: "password",
+    createdAt: "createdAt",
+    updatedAt: "updatedAt"
   };
 
   export type AccountScalarFieldEnum = (typeof AccountScalarFieldEnum)[keyof typeof AccountScalarFieldEnum]
 
 
   export const VerificationScalarFieldEnum: {
-    id: 'id',
-    identifier: 'identifier',
-    value: 'value',
-    expiresAt: 'expiresAt',
-    createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    id: "id",
+    identifier: "identifier",
+    value: "value",
+    expiresAt: "expiresAt",
+    createdAt: "createdAt",
+    updatedAt: "updatedAt"
   };
 
   export type VerificationScalarFieldEnum = (typeof VerificationScalarFieldEnum)[keyof typeof VerificationScalarFieldEnum]
 
 
   export const MedicosProfileScalarFieldEnum: {
-    id: 'id',
-    userId: 'userId',
-    fullName: 'fullName',
-    professionalId: 'professionalId',
-    studentType: 'studentType',
-    universityMatricula: 'universityMatricula',
-    hospital: 'hospital',
-    otherHospital: 'otherHospital',
-    specialty: 'specialty',
-    userType: 'userType',
-    isEmailVerified: 'isEmailVerified',
-    createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    id: "id",
+    userId: "userId",
+    fullName: "fullName",
+    professionalId: "professionalId",
+    studentType: "studentType",
+    universityMatricula: "universityMatricula",
+    hospital: "hospital",
+    otherHospital: "otherHospital",
+    specialty: "specialty",
+    userType: "userType",
+    isEmailVerified: "isEmailVerified",
+    createdAt: "createdAt",
+    updatedAt: "updatedAt"
   };
 
   export type MedicosProfileScalarFieldEnum = (typeof MedicosProfileScalarFieldEnum)[keyof typeof MedicosProfileScalarFieldEnum]
 
 
   export const SortOrder: {
-    asc: 'asc',
-    desc: 'desc'
+    asc: "asc",
+    desc: "desc"
   };
 
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
   export const NullsOrder: {
-    first: 'first',
-    last: 'last'
+    first: "first",
+    last: "last"
   };
 
   export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
@@ -6286,28 +6286,28 @@ export namespace Prisma {
   /**
    * Reference to a field of type 'String'
    */
-  export type StringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String'>
+  export type StringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, "String">
     
 
 
   /**
    * Reference to a field of type 'Boolean'
    */
-  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, "Boolean">
     
 
 
   /**
    * Reference to a field of type 'DateTime'
    */
-  export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
+  export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, "DateTime">
     
 
 
   /**
    * Reference to a field of type 'Int'
    */
-  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, "Int">
     
   /**
    * Deep Input Types

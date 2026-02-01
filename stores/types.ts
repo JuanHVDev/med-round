@@ -2,7 +2,7 @@
 
 export interface Notification {
   id: string
-  type: 'success' | 'error' | 'warning' | 'info'
+  type: "success" | "error" | "warning" | "info"
   title: string
   message: string
   duration?: number
@@ -28,7 +28,7 @@ export interface RegistrationState {
   isSubmitting: boolean
   showErrorDialog: boolean
   errorMessage: string
-  submissionStatus: 'idle' | 'submitting' | 'success' | 'error'
+  submissionStatus: "idle" | "submitting" | "success" | "error"
   showVerificationMessage: boolean
   formData: RegistrationFormData
 }
@@ -47,14 +47,14 @@ export interface RegistrationActions {
 }
 
 export interface UIState {
-  theme: 'light' | 'dark'
+  theme: "light" | "dark"
   notifications: Notification[]
   loadingStates: Record<string, boolean>
   activeModals: Record<string, boolean>
 }
 
 export interface UIActions {
-  setTheme: (theme: 'light' | 'dark') => void
+  setTheme: (theme: "light" | "dark") => void
   addNotification: (notification: Notification) => void
   removeNotification: (id: string) => void
   setLoading: (key: string, loading: boolean) => void

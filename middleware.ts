@@ -1,16 +1,16 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
-import { auth } from '@/lib/auth';
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { auth } from "@/lib/auth";
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
   // Skip middleware for API routes and static files
   if (
-    pathname.startsWith('/api/') ||
-    pathname.startsWith('/_next/') ||
-    pathname.startsWith('/static/') ||
-    pathname.includes('.')
+    pathname.startsWith("/api/") ||
+    pathname.startsWith("/_next/") ||
+    pathname.startsWith("/static/") ||
+    pathname.includes(".")
   ) {
     return NextResponse.next();
   }
@@ -21,14 +21,14 @@ export async function middleware(request: NextRequest) {
   });
 
   // Redirect authenticated users from public routes to dashboard
-  if (session && (pathname === '/' || pathname === '/login' || pathname === '/register')) {
-    const dashboardUrl = new URL('/dashboard', request.url);
+  if (session && (pathname === "/" || pathname === "/login" || pathname === "/register")) {
+    const dashboardUrl = new URL("/dashboard", request.url);
     return NextResponse.redirect(dashboardUrl);
   }
 
   // Redirect to login if not authenticated on protected routes
-  if (!session && pathname !== '/' && pathname !== '/login' && pathname !== '/register') {
-    const loginUrl = new URL('/login', request.url);
+  if (!session && pathname !== "/" && pathname !== "/login" && pathname !== "/register") {
+    const loginUrl = new URL("/login", request.url);
     return NextResponse.redirect(loginUrl);
   }
 
@@ -44,9 +44,9 @@ export const config = {
      * - _next/image (image optimization files)
      * - static files with extensions
      */
-    '/((?!api|_next/static|_next/image|.*\\..*).*)',
+    "/((?!api|_next/static|_next/image|.*\\..*).*)",
   ],
 };
 
 // Use Node.js runtime to support Better Auth
-export const runtime = 'nodejs';
+export const runtime = "nodejs";

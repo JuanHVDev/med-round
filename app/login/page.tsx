@@ -1,28 +1,28 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { signIn, sendVerificationEmail } from '@/lib/auth-client';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { AlertCircle, Loader2 } from 'lucide-react';
+import { useState } from "react";
+import { signIn, sendVerificationEmail } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { AlertCircle, Loader2 } from "lucide-react";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [needsVerification, setNeedsVerification] = useState(false);
-  const [unverifiedEmail, setUnverifiedEmail] = useState('');
+  const [unverifiedEmail, setUnverifiedEmail] = useState("");
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setError('');
+    setError("");
     setNeedsVerification(false);
 
     try {
@@ -35,15 +35,15 @@ export default function LoginPage() {
         if (result.error.status === 403) {
           setNeedsVerification(true);
           setUnverifiedEmail(email);
-          setError('Por favor verifica tu email antes de iniciar sesión.');
+          setError("Por favor verifica tu email antes de iniciar sesión.");
         } else {
-          setError(result.error.message || 'Error en el inicio de sesión');
+          setError(result.error.message || "Error en el inicio de sesión");
         }
       } else {
-        router.push('/dashboard');
+        router.push("/dashboard");
       }
     } catch {
-      setError('Error al iniciar sesión');
+      setError("Error al iniciar sesión");
     } finally {
       setIsLoading(false);
     }
@@ -56,13 +56,13 @@ export default function LoginPage() {
     try {
       await sendVerificationEmail({
         email: unverifiedEmail,
-        callbackURL: '/dashboard',
+        callbackURL: "/dashboard",
       });
-      setError('');
+      setError("");
       setNeedsVerification(false);
-      alert('Email de verificación reenviado. Por favor revisa tu bandeja de entrada.');
+      alert("Email de verificación reenviado. Por favor revisa tu bandeja de entrada.");
     } catch {
-      setError('Error al reenviar el email de verificación.');
+      setError("Error al reenviar el email de verificación.");
     } finally {
       setIsLoading(false);
     }
@@ -145,7 +145,7 @@ export default function LoginPage() {
                   Iniciando...
                 </>
               ) : (
-                'Iniciar Sesión'
+                "Iniciar Sesión"
               )}
             </Button>
 

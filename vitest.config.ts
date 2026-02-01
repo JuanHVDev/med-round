@@ -1,5 +1,5 @@
-import { defineConfig } from 'vitest/config';
-import path from 'path';
+import { defineConfig } from "vitest/config";
+import path from "path";
 
 /**
  * Configuración de Vitest para MedRound
@@ -17,20 +17,20 @@ import path from 'path';
 export default defineConfig({
   test: {
     globals: true,
-    environment: 'node',
-    include: ['tests/**/*.{test,spec}.{ts,tsx}'],
+    environment: "node",
+    include: ["tests/**/*.{test,spec}.{ts,tsx}"],
     
     /**
      * Setup files - se ejecutan antes de cada archivo de test
      * setup.ts: Limpia la base de datos entre tests
      */
-    setupFiles: ['./tests/setup.ts'],
+    setupFiles: ["./tests/setup.ts"],
     
     /**
      * Global setup - se ejecuta UNA VEZ antes de todos los tests
      * global-setup.ts: Crea/resetea la BD de test y aplica migraciones
      */
-    globalSetup: './tests/global-setup.ts',
+    globalSetup: "./tests/global-setup.ts",
     
     /**
      * Timeout extendido para tests que usan Better Auth
@@ -41,27 +41,27 @@ export default defineConfig({
     /**
      * Configuración de hooks
      */
-    pool: 'forks',  // Aislamiento entre tests
+    pool: "forks",  // Aislamiento entre tests
     
     coverage: {
-      provider: 'v8',
-      reporter: ['text', 'json', 'html'],
+      provider: "v8",
+      reporter: ["text", "json", "html"],
       exclude: [
-        'node_modules/',
-        'tests/',
-        '**/*.d.ts',
-        '**/*.config.*',
-        '**/mocks/**',
+        "node_modules/",
+        "tests/",
+        "**/*.d.ts",
+        "**/*.config.*",
+        "**/mocks/**",
       ],
     },
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, '.'),
-      '@/lib': path.resolve(__dirname, './lib'),
-      '@/app': path.resolve(__dirname, './app'),
-      '@/components': path.resolve(__dirname, './components'),
-      '@/services': path.resolve(__dirname, './services'),
+      "@": path.resolve(__dirname, "."),
+      "@/lib": path.resolve(__dirname, "./lib"),
+      "@/app": path.resolve(__dirname, "./app"),
+      "@/components": path.resolve(__dirname, "./components"),
+      "@/services": path.resolve(__dirname, "./services"),
     },
   },
   
@@ -69,6 +69,6 @@ export default defineConfig({
    * Optimizaciones para tests
    */
   optimizeDeps: {
-    include: ['@prisma/client'],
+    include: ["@prisma/client"],
   },
 });

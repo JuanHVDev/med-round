@@ -1,18 +1,18 @@
-import { create } from 'zustand'
-import { devtools } from 'zustand/middleware'
-import type { UIStore } from './types'
+import { create } from "zustand"
+import { devtools } from "zustand/middleware"
+import type { UIStore } from "./types"
 
 export const useUIStore = create<UIStore>()(
   devtools(
     (set, get) => ({
       // Estado inicial
-      theme: 'light',
+      theme: "light",
       notifications: [],
       loadingStates: {},
       activeModals: {},
 
       // Acciones
-      setTheme: (theme: 'light' | 'dark') => {
+      setTheme: (theme: "light" | "dark") => {
         set({ theme })
       },
 
@@ -54,8 +54,8 @@ export const useUIStore = create<UIStore>()(
       }
     }),
     {
-      name: 'ui-store',
-      enabled: process.env.NODE_ENV === 'development',
+      name: "ui-store",
+      enabled: process.env.NODE_ENV === "development",
     }
   )
 )

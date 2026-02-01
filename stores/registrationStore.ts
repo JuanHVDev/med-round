@@ -1,19 +1,19 @@
-import { create } from 'zustand'
-import { devtools, persist } from 'zustand/middleware'
-import type { RegistrationStore, RegistrationFormData } from './types'
+import { create } from "zustand"
+import { devtools, persist } from "zustand/middleware"
+import type { RegistrationStore, RegistrationFormData } from "./types"
 
 const defaultFormData: RegistrationFormData = {
-  fullName: '',
-  email: '',
-  password: '',
-  confirmPassword: '',
-  professionalId: '',
+  fullName: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+  professionalId: "",
   studentType: undefined,
-  universityMatricula: '',
-  hospital: '',
-  otherHospital: '',
-  specialty: '',
-  userType: 'professional',
+  universityMatricula: "",
+  hospital: "",
+  otherHospital: "",
+  specialty: "",
+  userType: "professional",
 }
 
 export const useRegistrationStore = create<RegistrationStore>()(
@@ -24,8 +24,8 @@ export const useRegistrationStore = create<RegistrationStore>()(
         currentStep: 1,
         isSubmitting: false,
         showErrorDialog: false,
-        errorMessage: '',
-        submissionStatus: 'idle',
+        errorMessage: "",
+        submissionStatus: "idle",
         showVerificationMessage: false,
         formData: defaultFormData,
 
@@ -58,14 +58,14 @@ export const useRegistrationStore = create<RegistrationStore>()(
           set({ 
             showErrorDialog: true, 
             errorMessage: message,
-            submissionStatus: 'error'
+            submissionStatus: "error"
           })
         },
 
         hideError: () => {
           set({ 
             showErrorDialog: false, 
-            errorMessage: ''
+            errorMessage: ""
           })
         },
 
@@ -76,16 +76,16 @@ export const useRegistrationStore = create<RegistrationStore>()(
 
           set({ 
             isSubmitting: true, 
-            submissionStatus: 'submitting',
+            submissionStatus: "submitting",
             showErrorDialog: false,
-            errorMessage: ''
+            errorMessage: ""
           })
 
           try {
-            const response = await fetch('/api/register', {
-              method: 'POST',
+            const response = await fetch("/api/register", {
+              method: "POST",
               headers: {
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json",
               },
               body: JSON.stringify(formData as FormData),
             })
@@ -94,36 +94,36 @@ export const useRegistrationStore = create<RegistrationStore>()(
 
             if (!response.ok) {
               // Handle specific HTTP status codes
-              let errorMessage = 'Error en el registro'
+              let errorMessage = "Error en el registro"
               
               if (response.status === 409) {
-                errorMessage = 'El email ya está registrado. Por favor use otro email o inicie sesión.'
+                errorMessage = "El email ya está registrado. Por favor use otro email o inicie sesión."
               } else if (response.status === 400) {
-                errorMessage = result.error || 'Datos inválidos. Por favor revise todos los campos.'
+                errorMessage = result.error || "Datos inválidos. Por favor revise todos los campos."
               } else if (response.status === 500) {
-                errorMessage = 'Error del servidor. Por favor intente más tarde.'
+                errorMessage = "Error del servidor. Por favor intente más tarde."
               }
               
               throw new Error(errorMessage)
             }
 
-            console.log('Registration successful:', result)
+            console.log("Registration successful:", result)
             
             // Show verification message and clear persisted data
             set({ 
               isSubmitting: false, 
-              submissionStatus: 'success',
+              submissionStatus: "success",
               showVerificationMessage: true
             })
 
           } catch (error) {
-            console.error('Registration error:', error)
+            console.error("Registration error:", error)
             
             set({ 
               isSubmitting: false, 
-              submissionStatus: 'error',
+              submissionStatus: "error",
               showErrorDialog: true,
-              errorMessage: error instanceof Error ? error.message : 'Error al procesar el registro'
+              errorMessage: error instanceof Error ? error.message : "Error al procesar el registro"
             })
           }
         },
@@ -133,8 +133,8 @@ export const useRegistrationStore = create<RegistrationStore>()(
             currentStep: 1,
             isSubmitting: false,
             showErrorDialog: false,
-            errorMessage: '',
-            submissionStatus: 'idle',
+            errorMessage: "",
+            submissionStatus: "idle",
             showVerificationMessage: false,
             formData: defaultFormData
           })
@@ -152,7 +152,7 @@ export const useRegistrationStore = create<RegistrationStore>()(
         }
       }),
       {
-        name: 'registration-form-storage',
+        name: "registration-form-storage",
         partialize: (state) => ({ 
           formData: state.formData,
           currentStep: state.currentStep 
@@ -160,8 +160,8 @@ export const useRegistrationStore = create<RegistrationStore>()(
       }
     ),
     {
-      name: 'registration-store',
-      enabled: process.env.NODE_ENV === 'development',
+      name: "registration-store",
+      enabled: process.env.NODE_ENV === "development",
     }
   )
 )

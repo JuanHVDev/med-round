@@ -1,4 +1,4 @@
-import { Resend } from 'resend';
+import { Resend } from "resend";
 
 /**
  * Cliente de Resend para envío de emails
@@ -43,12 +43,12 @@ const EMAIL_TIMEOUT_MS = 10000; // 10 segundos
  * Se usa si no está configurado en variables de entorno
  * NOTA: Debe ser un dominio verificado en Resend
  */
-const DEFAULT_FROM_EMAIL = 'noreply@medround.app';
+const DEFAULT_FROM_EMAIL = "noreply@medround.app";
 
 /**
  * Nombre del remitente por defecto
  */
-const DEFAULT_FROM_NAME = 'MedRound';
+const DEFAULT_FROM_NAME = "MedRound";
 
 /**
  * Envía un email usando Resend con manejo de errores y timeout
@@ -79,10 +79,10 @@ const DEFAULT_FROM_NAME = 'MedRound';
 export async function sendEmail({ to, subject, text, html }: SendEmailParams): Promise<SendEmailResult> {
   // PASO 1: Verificar que la API key esté configurada
   if (!process.env.RESEND_API_KEY) {
-    console.error('❌ [Email] RESEND_API_KEY no está configurada');
+    console.error("❌ [Email] RESEND_API_KEY no está configurada");
     return { 
       success: false, 
-      error: 'Servicio de email no configurado. Contacta al administrador.' 
+      error: "Servicio de email no configurado. Contacta al administrador." 
     };
   }
 
@@ -116,10 +116,10 @@ export async function sendEmail({ to, subject, text, html }: SendEmailParams): P
 
     // PASO 6: Verificar si hubo error en la respuesta de Resend
     if (error) {
-      console.error('❌ [Email] Error de Resend API:', error);
+      console.error("❌ [Email] Error de Resend API:", error);
       return { 
         success: false, 
-        error: `Error del servicio de email: ${error.message || 'Error desconocido'}` 
+        error: `Error del servicio de email: ${error.message || "Error desconocido"}` 
       };
     }
 
@@ -129,18 +129,18 @@ export async function sendEmail({ to, subject, text, html }: SendEmailParams): P
     
   } catch (error) {
     // PASO 8: Manejar errores inesperados (timeout, network, etc.)
-    let errorMessage = 'Error desconocido al enviar email';
+    let errorMessage = "Error desconocido al enviar email";
     
     if (error instanceof Error) {
       // Detectar si fue un error de timeout
-      if (error.name === 'AbortError') {
+      if (error.name === "AbortError") {
         errorMessage = `Timeout: El email no pudo enviarse en ${EMAIL_TIMEOUT_MS/1000} segundos`;
       } else {
         errorMessage = error.message;
       }
     }
     
-    console.error('❌ [Email] Error inesperado:', errorMessage, error);
+    console.error("❌ [Email] Error inesperado:", errorMessage, error);
     return { success: false, error: errorMessage };
   }
 }

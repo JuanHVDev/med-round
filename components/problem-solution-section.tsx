@@ -68,13 +68,13 @@ const solutions = [
 export default function ProblemSolutionSection()
 {
   const [isVisible, setIsVisible] = useState(false);
-  const [activeTab, setActiveTab] = useState<'problem' | 'solution'>('problem');
+  const [activeTab, setActiveTab] = useState<"problem" | "solution">("problem");
 
   useEffect(() =>
   {
     const handleScroll = () =>
     {
-      const section = document.getElementById('problem-solution');
+      const section = document.getElementById("problem-solution");
       if (section)
       {
         const rect = section.getBoundingClientRect();
@@ -85,9 +85,9 @@ export default function ProblemSolutionSection()
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
     handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
@@ -99,11 +99,11 @@ export default function ProblemSolutionSection()
             <AlertTriangle className="w-4 h-4 mr-2" />
             Problema vs Solución
           </Badge>
-          <h2 className={`text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+          <h2 className={`text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
             De los papeles perdidos a la
             <span className="text-blue-600"> gestión digital</span>
           </h2>
-          <p className={`text-xl text-gray-600 max-w-3xl mx-auto transition-all duration-1000 delay-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+          <p className={`text-xl text-gray-600 max-w-3xl mx-auto transition-all duration-1000 delay-200 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
             Descubre cómo MedRound transforma los mayores desafíos del pase de visita
             en oportunidades de eficiencia.
           </p>
@@ -113,19 +113,19 @@ export default function ProblemSolutionSection()
         <div className="flex justify-center mb-12">
           <div className="inline-flex rounded-lg border border-gray-200 bg-white p-1 shadow-sm">
             <button
-              onClick={() => setActiveTab('problem')}
-              className={`px-6 py-2 rounded-md font-medium transition-all duration-300 ${activeTab === 'problem'
-                ? 'bg-red-600 text-white shadow-md'
-                : 'text-gray-600 hover:text-gray-900'
+              onClick={() => setActiveTab("problem")}
+              className={`px-6 py-2 rounded-md font-medium transition-all duration-300 ${activeTab === "problem"
+                ? "bg-red-600 text-white shadow-md"
+                : "text-gray-600 hover:text-gray-900"
                 }`}
             >
               Problemas Actuales
             </button>
             <button
-              onClick={() => setActiveTab('solution')}
-              className={`px-6 py-2 rounded-md font-medium transition-all duration-300 ${activeTab === 'solution'
-                ? 'bg-green-600 text-white shadow-md'
-                : 'text-gray-600 hover:text-gray-900'
+              onClick={() => setActiveTab("solution")}
+              className={`px-6 py-2 rounded-md font-medium transition-all duration-300 ${activeTab === "solution"
+                ? "bg-green-600 text-white shadow-md"
+                : "text-gray-600 hover:text-gray-900"
                 }`}
             >
               Soluciones MedRound
@@ -136,15 +136,15 @@ export default function ProblemSolutionSection()
         {/* Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
           {/* Problems Column */}
-          <div className={`space-y-6 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'
-            } ${activeTab === 'problem' ? 'scale-100' : 'scale-95 opacity-50'}`}>
+          <div className={`space-y-6 transition-all duration-1000 ${isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"
+            } ${activeTab === "problem" ? "scale-100" : "scale-95 opacity-50"}`}>
             <div className="flex items-center space-x-3 mb-4">
               <AlertTriangle className="w-8 h-8 text-red-600" />
               <h3 className="text-2xl font-bold text-gray-900">Desafíos Hospitalarios</h3>
             </div>
 
             {problems.map((problem, index) => (
-              <Card key={index} className={`border-red-200 bg-white shadow-lg hover:shadow-xl transition-all duration-300 ${activeTab === 'problem' ? 'hover:-translate-y-2' : ''
+              <Card key={index} className={`border-red-200 bg-white shadow-lg hover:shadow-xl transition-all duration-300 ${activeTab === "problem" ? "hover:-translate-y-2" : ""
                 }`} style={{ transitionDelay: `${index * 100}ms` }}>
                 <CardContent className="p-6">
                   <div className="flex items-start space-x-4">
@@ -166,15 +166,15 @@ export default function ProblemSolutionSection()
           </div>
 
           {/* Solutions Column */}
-          <div className={`space-y-6 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'
-            } ${activeTab === 'solution' ? 'scale-100' : 'scale-95 opacity-50'}`}>
+          <div className={`space-y-6 transition-all duration-1000 ${isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10"
+            } ${activeTab === "solution" ? "scale-100" : "scale-95 opacity-50"}`}>
             <div className="flex items-center space-x-3 mb-4">
               <TrendingUp className="w-8 h-8 text-green-600" />
               <h3 className="text-2xl font-bold text-gray-900">Soluciones MedRound</h3>
             </div>
 
             {solutions.map((solution, index) => (
-              <Card key={index} className={`border-green-200 bg-white shadow-lg hover:shadow-xl transition-all duration-300 ${activeTab === 'solution' ? 'hover:-translate-y-2' : ''
+              <Card key={index} className={`border-green-200 bg-white shadow-lg hover:shadow-xl transition-all duration-300 ${activeTab === "solution" ? "hover:-translate-y-2" : ""
                 }`} style={{ transitionDelay: `${index * 100}ms` }}>
                 <CardContent className="p-6">
                   <div className="flex items-start space-x-4">
@@ -198,7 +198,7 @@ export default function ProblemSolutionSection()
 
         {/* Statistics Bar */}
         <div className="bg-gradient-to-r from-blue-600 to-cyan-600 rounded-2xl p-8 text-white text-center">
-          <div className={`grid grid-cols-1 md:grid-cols-3 gap-8 transition-all duration-1000 ${isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+          <div className={`grid grid-cols-1 md:grid-cols-3 gap-8 transition-all duration-1000 ${isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
             }`}>
             <div>
               <div className="text-4xl font-bold mb-2">75%</div>
@@ -216,7 +216,7 @@ export default function ProblemSolutionSection()
         </div>
 
         {/* Call to Action */}
-        <div className={`text-center mt-16 transition-all duration-1000 delay-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+        <div className={`text-center mt-16 transition-all duration-1000 delay-200 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           }`}>
           <h3 className="text-2xl font-bold text-gray-900 mb-4">
             ¿Listo para resolver estos problemas?

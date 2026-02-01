@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+
+# Build output
+.next/
+dist/
+
+# Prisma generated files
+prisma/generated/
+
+# Test files
+coverage/
+
+# Misc
+*.min.js
+*.bundle.js

@@ -88,7 +88,7 @@ export default function FeaturesSection()
   {
     const handleScroll = () =>
     {
-      const section = document.getElementById('features');
+      const section = document.getElementById("features");
       if (section)
       {
         const rect = section.getBoundingClientRect();
@@ -99,9 +99,9 @@ export default function FeaturesSection()
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
     handleScroll(); // Check on mount
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
@@ -112,11 +112,11 @@ export default function FeaturesSection()
           <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-200 mb-4">
             Funcionalidades Principales
           </Badge>
-          <h2 className={`text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+          <h2 className={`text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
             Todo lo que necesitas para una
             <span className="text-blue-600"> gestión eficiente</span>
           </h2>
-          <p className={`text-xl text-gray-600 max-w-3xl mx-auto transition-all duration-1000 delay-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+          <p className={`text-xl text-gray-600 max-w-3xl mx-auto transition-all duration-1000 delay-200 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
             MedRound integra todas las herramientas necesarias para optimizar el pase de visita
             y la gestión de pendientes en tu centro médico.
           </p>
@@ -127,7 +127,7 @@ export default function FeaturesSection()
           {features.map((feature, index) => (
             <Card
               key={index}
-              className={`bg-white border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+              className={`bg-white border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
                 }`}
               style={{ transitionDelay: `${index * 100}ms` }}
             >
@@ -151,11 +151,11 @@ export default function FeaturesSection()
         {/* Advanced Features */}
         <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-2xl p-8 md:p-12">
           <div className="text-center mb-8">
-            <h3 className={`text-2xl md:text-3xl font-bold text-gray-900 mb-4 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+            <h3 className={`text-2xl md:text-3xl font-bold text-gray-900 mb-4 transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
               }`}>
               Funcionalidades Avanzadas
             </h3>
-            <p className={`text-gray-600 max-w-2xl mx-auto transition-all duration-1000 delay-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+            <p className={`text-gray-600 max-w-2xl mx-auto transition-all duration-1000 delay-200 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
               }`}>
               Características premium para una gestión médica de máximo nivel
             </p>
@@ -165,7 +165,7 @@ export default function FeaturesSection()
             {advancedFeatures.map((feature, index) => (
               <div
                 key={index}
-                className={`flex items-start space-x-4 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'
+                className={`flex items-start space-x-4 transition-all duration-1000 ${isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"
                   }`}
                 style={{ transitionDelay: `${(index + 6) * 100}ms` }}
               >
@@ -186,7 +186,7 @@ export default function FeaturesSection()
         </div>
 
         {/* Call to Action */}
-        <div className={`text-center mt-16 transition-all duration-1000 ${isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+        <div className={`text-center mt-16 transition-all duration-1000 ${isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
           }`}>
           <div className="inline-flex items-center justify-center p-6 bg-blue-600 rounded-full text-white animate-pulse">
             <Smartphone className="w-8 h-8" />

@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useSession } from '@/lib/auth-client';
+import { useEffect, useState } from "react";
+import { useSession } from "@/lib/auth-client";
 
 interface AuthProviderProps {
   children: React.ReactNode;

@@ -11,6 +11,7 @@ import {
   isBetterAuthError,
   isDatabaseError,
 } from "@/lib/errors";
+import { sanitizeText, sanitizeEmail, sanitizeProfileData } from "@/lib/sanitize";
 
 export interface IRegistrationService {
   register(data: RegistrationData): Promise<RegistrationResult>;
@@ -37,7 +38,19 @@ export class RegistrationService implements IRegistrationService {
     let createdUserId: string | null = null;
 
     try {
-      const userResult = await this.createUser(data);
+      // Sanitizar datos de entrada para prevenir XSS
+      const sanitizedData: RegistrationData = {
+        ...data,
+        fullName: sanitizeText(data.fullName),
+        email: sanitizeEmail(data.email),
+        professionalId: data.professionalId ? sanitizeText(data.professionalId) : undefined,
+        universityMatricula: data.universityMatricula ? sanitizeText(data.universityMatricula) : undefined,
+        hospital: sanitizeText(data.hospital),
+        otherHospital: data.otherHospital ? sanitizeText(data.otherHospital) : undefined,
+        specialty: sanitizeText(data.specialty),
+      };
+
+      const userResult = await this.createUser(sanitizedData);
       if (!userResult.success) {
         return {
           success: false,
@@ -62,7 +75,7 @@ export class RegistrationService implements IRegistrationService {
 
       const profileResult = await this.createMedicalProfile(
         createdUserId,
-        data
+        sanitizedData
       );
       if (!profileResult.success) {
         await this.cleanupUser(createdUserId);
@@ -165,16 +178,25 @@ export class RegistrationService implements IRegistrationService {
     | { success: false; error: { code: ErrorCode; message: string } }
   > {
     try {
+      // Doble verificación de sanitización antes de guardar en BD
+      const sanitizedProfile = sanitizeProfileData({
+        fullName: data.fullName,
+        hospital: data.hospital,
+        specialty: data.specialty,
+        professionalId: data.professionalId,
+        universityMatricula: data.universityMatricula,
+      });
+
       await this.prisma.medicosProfile.create({
         data: {
           userId,
-          fullName: data.fullName,
-          professionalId: data.professionalId ?? null,
+          fullName: sanitizedProfile.fullName,
+          professionalId: sanitizedProfile.professionalId,
           studentType: data.studentType ?? null,
-          universityMatricula: data.universityMatricula ?? null,
-          hospital: data.hospital,
-          otherHospital: data.otherHospital ?? null,
-          specialty: data.specialty,
+          universityMatricula: sanitizedProfile.universityMatricula,
+          hospital: sanitizedProfile.hospital,
+          otherHospital: data.otherHospital ? sanitizeText(data.otherHospital) : null,
+          specialty: sanitizedProfile.specialty,
           userType: data.userType,
         },
       });
