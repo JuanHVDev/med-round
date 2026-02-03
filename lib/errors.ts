@@ -43,6 +43,9 @@ export const ErrorCodes = {
   EMAIL_SEND_ERROR: "EMAIL_SEND_ERROR",
   EMAIL_TIMEOUT_ERROR: "EMAIL_TIMEOUT_ERROR",
   
+  // Errores de pacientes
+  PATIENT_NOT_FOUND: "PATIENT_NOT_FOUND",
+  
   // Errores generales
   UNKNOWN_ERROR: "UNKNOWN_ERROR",
   INTERNAL_ERROR: "INTERNAL_ERROR",
