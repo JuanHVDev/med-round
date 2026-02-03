@@ -26,7 +26,10 @@ const createPatientSchema = z.object({
   medicalRecordNumber: z.string().min(1, "Número de historia clínica requerido"),
   firstName: z.string().min(1, "Nombre requerido"),
   lastName: z.string().min(1, "Apellido requerido"),
-  dateOfBirth: z.string().datetime("Fecha de nacimiento inválida"),
+  dateOfBirth: z.string().refine((val) => {
+    const date = new Date(val);
+    return !isNaN(date.getTime());
+  }, { message: "Fecha de nacimiento inválida" }),
   gender: z.enum(["M", "F", "O"]).refine((val) => ["M", "F", "O"].includes(val), {
     message: "Género debe ser M, F u O",
   }),
@@ -88,7 +91,7 @@ export class PatientService {
           code: ErrorCodes.VALIDATION_ERROR,
           message: firstIssue?.message || "Datos inválidos",
           statusCode: 400,
-          details: validationResult.error.issues.map((e) => `${String(e.path[0])}: ${e.message}`).join(', '),
+          details: validationResult.error.issues.map((e) => `${String(e.path[0])}: ${e.message}`).join(", "),
         };
         return { success: false, error };
       }
@@ -298,7 +301,7 @@ export class PatientService {
           code: ErrorCodes.VALIDATION_ERROR,
           message: firstIssue?.message || "Datos inválidos",
           statusCode: 400,
-          details: validationResult.error.issues.map((e) => `${String(e.path[0])}: ${e.message}`).join(', '),
+          details: validationResult.error.issues.map((e) => `${String(e.path[0])}: ${e.message}`).join(", "),
         };
         return { success: false, error };
       }
