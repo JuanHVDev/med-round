@@ -12,7 +12,7 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = env("DATABASE_URL")
+  url      = "file:./medround_test.db"
 }
 
 // Copiar todos los modelos del schema.prisma principal
@@ -101,6 +101,118 @@ model medicosProfile {
   updatedAt            DateTime  @updatedAt @map("updated_at")
   
   user                 user      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  assignedTasks        task[]    @relation("AssignedTasks")
+  createdTasks         task[]    @relation("CreatedTasks")
   
   @@map("medicos_profile")
+}
+
+model patient {
+  id                      String     @id @default(uuid())
+  medicalRecordNumber     String     @unique @map("medical_record_number")
+  firstName               String     @map("first_name")
+  lastName                String     @map("last_name")
+  dateOfBirth             DateTime   @map("date_of_birth")
+  gender                  String
+  admissionDate           DateTime   @default(now()) @map("admission_date")
+  dischargedAt            DateTime?  @map("discharged_at")
+  bedNumber               String     @map("bed_number")
+  roomNumber              String?    @map("room_number")
+  service                 String
+  diagnosis               String
+  allergies               String?
+  isActive                Boolean    @default(true) @map("is_active")
+  hospital                String
+  attendingDoctor         String     @map("attending_doctor")
+  bloodType               String?    @map("blood_type")
+  emergencyContactName    String?    @map("emergency_contact_name")
+  emergencyContactPhone   String?    @map("emergency_contact_phone")
+  insuranceProvider       String?    @map("insurance_provider")
+  insuranceNumber         String?    @map("insurance_number")
+  weight                  Float?
+  height                  Float?
+  specialNotes            String?    @map("special_notes")
+  dietType                String?    @map("diet_type")
+  isolationPrecautions    String?    @map("isolation_precautions")
+  createdAt               DateTime   @default(now()) @map("created_at")
+  updatedAt               DateTime   @updatedAt @map("updated_at")
+
+  soapNotes   soapNote[]
+  tasks       task[]
+
+  @@index([hospital, isActive])
+  @@index([bedNumber, hospital])
+  @@map("patients")
+}
+
+model soapNote {
+  id                      String    @id @default(uuid())
+  patientId               String    @map("patient_id")
+  date                    DateTime  @default(now())
+  chiefComplaint          String    @map("chief_complaint")
+  historyOfPresentIllness String    @map("history_of_present_illness")
+  vitalSigns              String?   @map("vital_signs") // Almacenado como JSON string en SQLite
+  physicalExam            String    @map("physical_exam")
+  laboratoryResults       String?   @map("laboratory_results")
+  imagingResults          String?   @map("imaging_results")
+  assessment              String
+  plan                    String
+  medications             String?
+  pendingStudies          String?   @map("pending_studies")
+  authorId                String    @map("author_id")
+  hospital                String
+  patient                 patient   @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  createdAt               DateTime  @default(now()) @map("created_at")
+  updatedAt               DateTime  @updatedAt @map("updated_at")
+
+  @@index([patientId, date])
+  @@map("soap_notes")
+}
+
+// Nota: En SQLite no se soportan enums, se usan Strings con validación en app
+// Valores válidos para status: PENDING, IN_PROGRESS, COMPLETED, CANCELLED
+// Valores válidos para priority: LOW, MEDIUM, HIGH, URGENT
+// Valores válidos para type: LABORATORY, IMAGING, CONSULT, PROCEDURE, MEDICATION, OTHER
+
+model task {
+  id          String    @id @default(uuid())
+  title       String
+  description String?
+  status      String    @default("PENDING")
+  priority    String    @default("MEDIUM")
+  type        String    @default("OTHER")
+  patientId   String?   @map("patient_id")
+  patient     patient?  @relation(fields: [patientId], references: [id], onDelete: SetNull)
+  assignedTo  String    @map("assigned_to")
+  assignee    medicosProfile @relation("AssignedTasks", fields: [assignedTo], references: [id])
+  createdBy   String    @map("created_by")
+  creator     medicosProfile @relation("CreatedTasks", fields: [createdBy], references: [id])
+  dueDate     DateTime? @map("due_date")
+  completedAt DateTime? @map("completed_at")
+  hospital    String
+  service     String?
+  shift       String?
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  checklist   taskChecklistItem[]
+
+  @@index([assignedTo, status])
+  @@index([hospital, status])
+  @@map("tasks")
+}
+
+model taskChecklistItem {
+  id          String    @id @default(uuid())
+  taskId      String    @map("task_id")
+  task        task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  description String
+  isCompleted Boolean   @default(false) @map("is_completed")
+  completedAt DateTime? @map("completed_at")
+  completedBy String?   @map("completed_by")
+  order       Int       @default(0)
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  @@index([taskId])
+  @@map("task_checklist_items")
 }

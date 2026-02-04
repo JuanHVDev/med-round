@@ -24,15 +24,25 @@ function createPrismaClient(): PrismaClient {
   
   if (isSQLite) {
     console.log("📦 [Prisma] Modo SQLite (tests)")
+    // Para tests, especificar el schema de SQLite
+    return new PrismaClient({
+      datasources: {
+        db: {
+          url: databaseUrl
+        }
+      },
+      log: process.env.NODE_ENV === "development" 
+        ? ["query", "error", "warn"]
+        : ["error"],
+    })
   } else {
     console.log("📦 [Prisma] Modo PostgreSQL (producción)")
+    return new PrismaClient({
+      log: process.env.NODE_ENV === "development" 
+        ? ["query", "error", "warn"]
+        : ["error"],
+    })
   }
-  
-  return new PrismaClient({
-    log: process.env.NODE_ENV === "development" 
-      ? ["query", "error", "warn"]
-      : ["error"],
-  })
 }
 
 export const prisma = globalForPrisma.prisma ?? createPrismaClient()

@@ -9,8 +9,8 @@ type RateLimitResult = {
   resetTime: number;
 };
 
-const WINDOW_SIZE_MS = 60 * 1000; // 1 minuto
-const MAX_REQUESTS = 5;
+const DEFAULT_WINDOW_SIZE_MS = 60 * 1000; // 1 minuto
+const DEFAULT_MAX_REQUESTS = 5;
 
 /**
  * Rate limiting con Redis Upstash
@@ -20,27 +20,32 @@ const MAX_REQUESTS = 5;
  * - TTL automático para evitar memory leaks
  * - Operaciones atómicas (incr + expire)
  * - Funciona con IP o User ID
+ * 
+ * @param identifier Identificador único (IP, User ID, etc.)
+ * @param maxRequests Máximo de solicitudes permitidas (default: 5)
+ * @param windowSizeMs Ventana de tiempo en milisegundos (default: 60000ms = 1min)
  */
-export async function checkRateLimit(identifier: string): Promise<RateLimitResult> {
+export async function checkRateLimit(
+  identifier: string,
+  maxRequests: number = DEFAULT_MAX_REQUESTS,
+  windowSizeMs: number = DEFAULT_WINDOW_SIZE_MS
+): Promise<RateLimitResult> {
   const key = `ratelimit:${identifier}`;
   const now = Date.now();
-  
+
   try {
-    // Obtener conteo actual
     const currentCount = await redis.get<number>(key) || 0;
-    
+
     if (currentCount === 0) {
-      // Primera request en esta ventana
-      await redis.set(key, 1, { px: WINDOW_SIZE_MS });
+      await redis.set(key, 1, { px: windowSizeMs });
       return {
         allowed: true,
-        remaining: MAX_REQUESTS - 1,
-        resetTime: now + WINDOW_SIZE_MS,
+        remaining: maxRequests - 1,
+        resetTime: now + windowSizeMs,
       };
     }
-    
-    if (currentCount >= MAX_REQUESTS) {
-      // Límite alcanzado
+
+    if (currentCount >= maxRequests) {
       const ttl = await redis.pttl(key);
       return {
         allowed: false,
@@ -48,31 +53,28 @@ export async function checkRateLimit(identifier: string): Promise<RateLimitResul
         resetTime: now + ttl,
       };
     }
-    
-    // Incrementar contador
+
     const newCount = await redis.incr(key);
-    
+
     return {
       allowed: true,
-      remaining: MAX_REQUESTS - newCount,
+      remaining: maxRequests - newCount,
       resetTime: now + (await redis.pttl(key)),
     };
     
   } catch (error) {
     console.error("Redis rate limit error:", error);
-    // Fallback: permitir request si Redis falla
-    // En producción, podrías querer bloquear o usar cache local
     return {
       allowed: true,
       remaining: 1,
-      resetTime: now + WINDOW_SIZE_MS,
+      resetTime: now + DEFAULT_WINDOW_SIZE_MS,
     };
   }
 }
 
-export function getRateLimitHeaders(remaining: number, resetTime: number) {
+export function getRateLimitHeaders(remaining: number, resetTime: number, maxRequests: number = DEFAULT_MAX_REQUESTS) {
   return {
-    "X-RateLimit-Limit": MAX_REQUESTS.toString(),
+    "X-RateLimit-Limit": maxRequests.toString(),
     "X-RateLimit-Remaining": remaining.toString(),
     "X-RateLimit-Reset": Math.ceil(resetTime / 1000).toString(),
   };
