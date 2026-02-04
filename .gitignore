@@ -45,3 +45,6 @@ opencode.json
 PLAN.md
 # vitest
 /tests
+
+.env.test
+.env
