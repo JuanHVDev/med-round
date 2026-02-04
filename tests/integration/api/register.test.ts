@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
 import { NextRequest } from "next/server";
 import { POST } from "@/app/api/register/route";
 import { prisma } from "@/lib/prisma";
@@ -46,7 +46,7 @@ describe("POST /api/register - Integration Tests", () => {
           },
         },
       });
-    } catch (error) {
+    } catch {
       // Ignorar errores si no hay usuarios para eliminar
     }
   });

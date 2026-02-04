@@ -130,7 +130,7 @@ export const auth = betterAuth({
      * @param token - Token de verificación (no se usa directamente, usa la URL)
      * @param request - Request object de Next.js (no se usa actualmente)
      */
-    sendVerificationEmail: async ({ user, url, token }, request) =>
+    sendVerificationEmail: async ({ user, url }) =>
     {
       console.log(`🔄 [Auth] Iniciando envío de email de verificación para: ${user.email}`);
 
@@ -186,7 +186,7 @@ export const auth = betterAuth({
      * @param user - Datos del usuario verificado
      * @param request - Request object de Next.js
      */
-    afterEmailVerification: async (user, request) =>
+    afterEmailVerification: async (user) =>
     {
       console.log(`✅ [Auth] Email verificado exitosamente: ${user.email}`);
 

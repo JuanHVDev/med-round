@@ -2,9 +2,6 @@ import { PrismaClient } from "@prisma/client";
 import { z } from "zod";
 import {
   ErrorCodes,
-  ValidationError,
-  DuplicateError,
-  DatabaseError,
   type AppError,
 } from "@/lib/errors";
 import type {
