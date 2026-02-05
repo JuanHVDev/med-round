@@ -17,6 +17,10 @@ export const patientSchema = z.object({
   gender: z.enum(["M", "F", "O"], {
     message: "Género debe ser M (Masculino), F (Femenino) u O (Otro)",
   }),
+  admissionDate: z.string().refine((val) => {
+    const date = new Date(val);
+    return !isNaN(date.getTime());
+  }, { message: "Fecha de admisión inválida" }).optional(),
   bedNumber: z.string().min(1, "Número de cama requerido"),
   roomNumber: z.string().optional().nullable(),
   service: z.string().min(1, "Servicio requerido"),
@@ -34,6 +38,7 @@ export const patientSchema = z.object({
   specialNotes: z.string().max(1000, "Máximo 1000 caracteres").optional().nullable(),
   dietType: z.string().optional().nullable(),
   isolationPrecautions: z.string().optional().nullable(),
+  isActive: z.boolean().optional(),
 });
 
 export type PatientSchemaType = z.infer<typeof patientSchema>;

@@ -123,6 +123,8 @@ export async function POST(
           dateOfBirth: patientData.dateOfBirth || "1990-01-01", //默认值
           gender: (patientData.gender as "M" | "F" | "O") || "M",
           bedNumber: patientData.bedNumber,
+          admissionDate: new Date().toISOString(),
+          isActive: true,
           roomNumber: patientData.roomNumber,
           service: patientData.service || profile.specialty,
           diagnosis: patientData.diagnosis || "Sin diagnóstico",
