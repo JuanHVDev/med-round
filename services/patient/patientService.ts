@@ -77,7 +77,7 @@ export class PatientService
       const patientData = {
         ...data,
         dateOfBirth: new Date(data.dateOfBirth),
-        admissionDate: new Date(data.admissionDate),
+        admissionDate: data.admissionDate ? new Date(data.admissionDate) : new Date(),
       };
 
       // Crear paciente
@@ -150,7 +150,7 @@ export class PatientService
             data: {
               ...p,
               dateOfBirth: new Date(p.dateOfBirth),
-              admissionDate: new Date(p.admissionDate),
+              admissionDate: p.admissionDate ? new Date(p.admissionDate) : new Date(),
             },
           })
         )

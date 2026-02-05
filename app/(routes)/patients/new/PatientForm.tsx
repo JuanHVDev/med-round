@@ -38,6 +38,7 @@ export function PatientForm({ hospital }: PatientFormProps) {
   } = useForm<PatientFormData>({
     resolver: zodResolver(patientSchema),
     defaultValues: {
+      hospital: hospital,
       gender: undefined as unknown as "M" | "F" | "O",
       bloodType: undefined as unknown as "A+" | "A-" | "B+" | "B-" | "AB+" | "AB-" | "O+" | "O-",
     },
@@ -51,7 +52,7 @@ export function PatientForm({ hospital }: PatientFormProps) {
       const response = await fetch("/api/patients", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...data, hospital }),
+        body: JSON.stringify({ ...data, hospital, isActive: true }),
       });
 
       const result = await response.json();
@@ -76,7 +77,10 @@ export function PatientForm({ hospital }: PatientFormProps) {
         </div>
       )}
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-6"
+      >
         <Card>
           <CardHeader>
             <CardTitle>Información Básica</CardTitle>

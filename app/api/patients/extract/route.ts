@@ -23,10 +23,6 @@ const patientExtractionSchema = z.object({
   }))
 });
 
-/**
- * POST /api/patients/extract
- * Extrae datos de pacientes usando IA (Gemini 1.5 Flash)
- */
 export async function POST(request: NextRequest)
 {
   try
@@ -45,33 +41,39 @@ export async function POST(request: NextRequest)
       return NextResponse.json({ error: "No se proporcionó contenido para extraer" }, { status: 400 });
     }
 
-    // Configurar el prompt según el contenido
-    const prompt = `Extrae una lista de pacientes con su información detallada de los siguientes datos. 
-    Si algún dato no está presente, intenta inferirlo o deja un string vacío. 
+    const extractionPrompt = `Extrae una lista de pacientes con su información detallada de los siguientes datos.
+    Si algún dato no está presente, intenta inferirlo o deja un string vacío.
     El formato de fecha debe ser YYYY-MM-DD.
     Género debe ser M, F u O (donde M es Masculino, F es Femenino y O es Otro).
     
     Contenido a procesar:
     ${text || "Imagen adjunta"}`;
 
-    const model: LanguageModel = google("models/gemini-1.5-flash");
+    const model: LanguageModel = google("gemini-2.5-flash");
+
+    const generationOptions = image
+      ? {
+          messages: [
+            {
+              role: "user" as const,
+              content: [
+                { type: "text" as const, text: extractionPrompt },
+                {
+                  type: "image" as const,
+                  image: image.includes(",") ? image.split(",")[1] : image,
+                }
+              ]
+            }
+          ],
+        }
+      : {
+          prompt: extractionPrompt,
+        };
 
     const { object } = await generateObject({
       model,
       schema: patientExtractionSchema,
-      messages: image ? [
-        {
-          role: "user",
-          content: [
-            { type: "text", text: prompt },
-            {
-              type: "image",
-              image: image.includes(",") ? image.split(",")[1] : image,
-            }
-          ]
-        }
-      ] : undefined,
-      prompt: image ? undefined : prompt,
+      ...generationOptions,
     });
 
     return NextResponse.json(object);

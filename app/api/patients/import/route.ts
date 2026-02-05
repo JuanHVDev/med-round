@@ -98,7 +98,7 @@ export async function POST(
     }
 
     // 6. Procesar con IA
-    const model = google("gemini-1.5-flash");
+    const model = google("gemini-2.5-flash");
     const aiService = new AIExtractionService(model);
     
     let extractionResult;
