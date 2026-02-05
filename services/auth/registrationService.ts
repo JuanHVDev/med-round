@@ -1,15 +1,12 @@
 import type { PrismaClient } from "@prisma/client";
-import type { RegistrationData, RegistrationResult, ServiceError } from "../types/serviceTypes";
+import type { RegistrationData, RegistrationResult } from "../types/serviceTypes";
 import type { IEmailService } from "../email/emailService";
 import type { ErrorCode } from "@/lib/errors";
 import {
   ErrorCodes,
-  DatabaseError,
-  DuplicateError,
   parseBetterAuthError,
   createUnknownError,
   isBetterAuthError,
-  isDatabaseError,
 } from "@/lib/errors";
 import { sanitizeText, sanitizeEmail, sanitizeProfileData } from "@/lib/sanitize";
 
