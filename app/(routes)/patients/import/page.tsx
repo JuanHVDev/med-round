@@ -73,9 +73,19 @@ export default function ImportPage() {
     setState("importing");
 
     try {
-      // TODO: Implementar creación batch de pacientes
-      // Por ahora simulamos éxito
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      const response = await fetch("/api/patients/import/confirm", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ patients }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Error al importar pacientes");
+      }
+
+      setExtractedPatients(data.created);
       setState("success");
     } catch (err) {
       setError((err as Error).message);

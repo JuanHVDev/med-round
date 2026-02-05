@@ -2,11 +2,17 @@
  * Wrapper para pdf-parse que maneja la importación correcta
  */
 
-import { PDFParse } from "pdf-parse";
+interface PDFParseResult {
+  numpages: number;
+  numrender: number;
+  info: Record<string, string>;
+  metadata: Record<string, string> | null;
+  text: string;
+}
 
 export async function parsePDF(buffer: Buffer): Promise<string> {
-  // Usar any para evitar problemas de tipos
-  const parser = PDFParse as any;
-  const result = await parser(buffer);
+  const pdfModule = await import("pdf-parse");
+  const pdfParser = (pdfModule as unknown as { default: (buf: Buffer) => Promise<PDFParseResult> }).default;
+  const result = await pdfParser(buffer);
   return result.text;
 }

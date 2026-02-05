@@ -115,15 +115,14 @@ export class FileExtractionService {
 
   /**
    * Extrae texto de un archivo PDF
-   * 
+   *
    * @param buffer - Buffer del archivo PDF
    * @returns Texto plano extraído
    */
   private async extractFromPDF(buffer: Buffer): Promise<string> {
     try {
       const pdfModule = await getPdfParse();
-      // Usar default export o llamar directamente según la estructura del módulo
-      const pdfParser = (pdfModule as any).default || pdfModule;
+      const pdfParser = (pdfModule as unknown as { default: (buf: Buffer) => Promise<{ text: string }> }).default;
       const data = await pdfParser(buffer);
       return data.text;
     } catch (error) {
