@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { z } from "zod";
-import {
+import
+{
   ErrorCodes,
   type AppError,
 } from "@/lib/errors";
@@ -16,43 +17,17 @@ import type {
   PatientWithRelations,
 } from "./types";
 
+import { patientSchema } from "@/lib/schemas/patientSchema";
+
 /**
- * Schema de validación Zod para creación de paciente
+ * Schema de validación Zod para creación de paciente (reutilizado de lib/schemas)
  */
-const createPatientSchema = z.object({
-  medicalRecordNumber: z.string().min(1, "Número de historia clínica requerido"),
-  firstName: z.string().min(1, "Nombre requerido"),
-  lastName: z.string().min(1, "Apellido requerido"),
-  dateOfBirth: z.string().refine((val) => {
-    const date = new Date(val);
-    return !isNaN(date.getTime());
-  }, { message: "Fecha de nacimiento inválida" }),
-  gender: z.enum(["M", "F", "O"]).refine((val) => ["M", "F", "O"].includes(val), {
-    message: "Género debe ser M, F u O",
-  }),
-  bedNumber: z.string().min(1, "Número de cama requerido"),
-  roomNumber: z.string().optional(),
-  service: z.string().min(1, "Servicio requerido"),
-  diagnosis: z.string().min(1, "Diagnóstico requerido"),
-  allergies: z.string().optional(),
-  hospital: z.string().min(1, "Hospital requerido"),
-  attendingDoctor: z.string().min(1, "Médico tratante requerido"),
-  bloodType: z.string().optional(),
-  emergencyContactName: z.string().optional(),
-  emergencyContactPhone: z.string().optional(),
-  insuranceProvider: z.string().optional(),
-  insuranceNumber: z.string().optional(),
-  weight: z.number().positive().optional(),
-  height: z.number().positive().optional(),
-  specialNotes: z.string().optional(),
-  dietType: z.string().optional(),
-  isolationPrecautions: z.string().optional(),
-});
+const createPatientSchema = patientSchema;
 
 /**
  * Schema de validación Zod para actualización de paciente
  */
-const updatePatientSchema = createPatientSchema.partial();
+const updatePatientSchema = patientSchema.partial();
 
 /**
  * Servicio para gestión de pacientes
@@ -65,10 +40,12 @@ const updatePatientSchema = createPatientSchema.partial();
  * - Dar de alta (soft delete)
  * - Reactivar paciente
  */
-export class PatientService {
+export class PatientService
+{
   private prisma: PrismaClient;
 
-  constructor(prisma: PrismaClient) {
+  constructor(prisma: PrismaClient)
+  {
     this.prisma = prisma;
   }
 
@@ -78,11 +55,14 @@ export class PatientService {
    * @param data Datos del paciente a crear
    * @returns Resultado de la operación con el paciente creado o error
    */
-  async create(data: CreatePatientData): Promise<CreatePatientResult> {
-    try {
+  async create(data: CreatePatientData): Promise<CreatePatientResult>
+  {
+    try
+    {
       // Validar datos con Zod
       const validationResult = createPatientSchema.safeParse(data);
-      if (!validationResult.success) {
+      if (!validationResult.success)
+      {
         const firstIssue = validationResult.error.issues[0];
         const error: AppError = {
           code: ErrorCodes.VALIDATION_ERROR,
@@ -93,10 +73,11 @@ export class PatientService {
         return { success: false, error };
       }
 
-      // Convertir dateOfBirth de string a Date
+      // Convertir fechas de string a Date
       const patientData = {
         ...data,
         dateOfBirth: new Date(data.dateOfBirth),
+        admissionDate: new Date(data.admissionDate),
       };
 
       // Crear paciente
@@ -108,9 +89,11 @@ export class PatientService {
         success: true,
         patient: patient as PatientWithRelations,
       };
-    } catch (error) {
+    } catch (error)
+    {
       // Manejar error de constraint única (medicalRecordNumber duplicado)
-      if (error instanceof Error && (error as Error & { code?: string }).code === "P2002") {
+      if (error instanceof Error && (error as Error & { code?: string }).code === "P2002")
+      {
         const appError: AppError = {
           code: ErrorCodes.DUPLICATE_ERROR,
           message: "El número de historia clínica ya está registrado",
@@ -132,18 +115,88 @@ export class PatientService {
   }
 
   /**
+   * Crea múltiples pacientes en una transacción
+   * 
+   * @param patients Array de datos de pacientes a crear
+   * @returns Resultado de la operación
+   */
+  async createMany(patients: CreatePatientData[]): Promise<PatientOperationResult>
+  {
+    try
+    {
+      // Validar cada paciente
+      for (const data of patients)
+      {
+        const validationResult = createPatientSchema.safeParse(data);
+        if (!validationResult.success)
+        {
+          const firstIssue = validationResult.error.issues[0];
+          return {
+            success: false,
+            error: {
+              code: ErrorCodes.VALIDATION_ERROR,
+              message: `Error en paciente ${data.medicalRecordNumber}: ${firstIssue?.message}`,
+              statusCode: 400,
+              details: validationResult.error.issues.map((e) => `${String(e.path[0])}: ${e.message}`).join(", "),
+            },
+          };
+        }
+      }
+
+      // Crear en transacción
+      await this.prisma.$transaction(
+        patients.map((p) =>
+          this.prisma.patient.create({
+            data: {
+              ...p,
+              dateOfBirth: new Date(p.dateOfBirth),
+              admissionDate: new Date(p.admissionDate),
+            },
+          })
+        )
+      );
+
+      return { success: true };
+    } catch (error)
+    {
+      if (error instanceof Error && (error as Error & { code?: string }).code === "P2002")
+      {
+        return {
+          success: false,
+          error: {
+            code: ErrorCodes.DUPLICATE_ERROR,
+            message: "Uno o más números de historia clínica ya están registrados",
+            statusCode: 409,
+          },
+        };
+      }
+
+      const appError: AppError = {
+        code: ErrorCodes.DATABASE_ERROR,
+        message: "Error al crear pacientes masivamente",
+        statusCode: 500,
+        details: error instanceof Error ? error.message : "Error desconocido",
+      };
+      return { success: false, error: appError };
+    }
+  }
+
+  /**
    * Obtiene un paciente por su ID
    * 
    * @param id ID del paciente
    * @returns Resultado con el paciente o error si no existe
    */
-  async getById(id: string): Promise<GetPatientResult> {
-    try {
+  async getById(id: string): Promise<GetPatientResult>
+  {
+    try
+    {
       const patient = await this.prisma.patient.findUnique({
         where: { id },
       });
 
-      if (!patient) {
+      if (!patient)
+      {
         const error: AppError = {
           code: ErrorCodes.PATIENT_NOT_FOUND,
           message: "Paciente no encontrado",
@@ -157,7 +210,8 @@ export class PatientService {
         success: true,
         patient: patient as PatientWithRelations,
       };
-    } catch (error) {
+    } catch (error)
+    {
       const appError: AppError = {
         code: ErrorCodes.DATABASE_ERROR,
         message: "Error al buscar el paciente",
@@ -174,8 +228,10 @@ export class PatientService {
    * @param id ID del paciente
    * @returns Resultado con el paciente y relaciones o error
    */
-  async getByIdWithRelations(id: string): Promise<GetPatientResult> {
-    try {
+  async getByIdWithRelations(id: string): Promise<GetPatientResult>
+  {
+    try
+    {
       const patient = await this.prisma.patient.findUnique({
         where: { id },
         include: {
@@ -198,7 +254,8 @@ export class PatientService {
         },
       });
 
-      if (!patient) {
+      if (!patient)
+      {
         const error: AppError = {
           code: ErrorCodes.PATIENT_NOT_FOUND,
           message: "Paciente no encontrado",
@@ -212,7 +269,8 @@ export class PatientService {
         success: true,
         patient: patient as PatientWithRelations,
       };
-    } catch (error) {
+    } catch (error)
+    {
       const appError: AppError = {
         code: ErrorCodes.DATABASE_ERROR,
         message: "Error al buscar el paciente",
@@ -229,8 +287,10 @@ export class PatientService {
    * @param filters Filtros de búsqueda
    * @returns Lista de pacientes y metadata de paginación
    */
-  async list(filters: ListPatientsFilters): Promise<ListPatientsResult> {
-    try {
+  async list(filters: ListPatientsFilters): Promise<ListPatientsResult>
+  {
+    try
+    {
       const page = filters.page || 1;
       const limit = filters.limit || 20;
       const skip = (page - 1) * limit;
@@ -240,15 +300,18 @@ export class PatientService {
         hospital: filters.hospital,
       };
 
-      if (filters.isActive !== undefined) {
+      if (filters.isActive !== undefined)
+      {
         where.isActive = filters.isActive;
       }
 
-      if (filters.service) {
+      if (filters.service)
+      {
         where.service = filters.service;
       }
 
-      if (filters.bedNumber) {
+      if (filters.bedNumber)
+      {
         where.bedNumber = { contains: filters.bedNumber };
       }
 
@@ -270,7 +333,8 @@ export class PatientService {
         page,
         limit,
       };
-    } catch (error) {
+    } catch (error)
+    {
       const appError: AppError = {
         code: ErrorCodes.DATABASE_ERROR,
         message: "Error al listar pacientes",
@@ -288,11 +352,14 @@ export class PatientService {
    * @param data Datos a actualizar
    * @returns Resultado con el paciente actualizado o error
    */
-  async update(id: string, data: UpdatePatientData): Promise<UpdatePatientResult> {
-    try {
+  async update(id: string, data: UpdatePatientData): Promise<UpdatePatientResult>
+  {
+    try
+    {
       // Validar datos
       const validationResult = updatePatientSchema.safeParse(data);
-      if (!validationResult.success) {
+      if (!validationResult.success)
+      {
         const firstIssue = validationResult.error.issues[0];
         const error: AppError = {
           code: ErrorCodes.VALIDATION_ERROR,
@@ -305,7 +372,8 @@ export class PatientService {
 
       // Convertir dateOfBirth si está presente
       const updateData: Record<string, unknown> = { ...data };
-      if (data.dateOfBirth) {
+      if (data.dateOfBirth)
+      {
         updateData.dateOfBirth = new Date(data.dateOfBirth);
       }
 
@@ -318,9 +386,11 @@ export class PatientService {
         success: true,
         patient: patient as PatientWithRelations,
       };
-    } catch (error) {
+    } catch (error)
+    {
       // Manejar error de constraint única
-      if (error instanceof Error && (error as Error & { code?: string }).code === "P2002") {
+      if (error instanceof Error && (error as Error & { code?: string }).code === "P2002")
+      {
         const appError: AppError = {
           code: ErrorCodes.DUPLICATE_ERROR,
           message: "El número de historia clínica ya está registrado",
@@ -347,8 +417,10 @@ export class PatientService {
    * @param id ID del paciente
    * @returns Resultado de la operación
    */
-  async discharge(id: string): Promise<PatientOperationResult> {
-    try {
+  async discharge(id: string): Promise<PatientOperationResult>
+  {
+    try
+    {
       await this.prisma.patient.update({
         where: { id },
         data: {
@@ -358,7 +430,8 @@ export class PatientService {
       });
 
       return { success: true };
-    } catch (error) {
+    } catch (error)
+    {
       const appError: AppError = {
         code: ErrorCodes.DATABASE_ERROR,
         message: "Error al dar de alta al paciente",
@@ -376,8 +449,10 @@ export class PatientService {
    * @param id ID del paciente
    * @returns Resultado de la operación
    */
-  async reactivate(id: string): Promise<PatientOperationResult> {
-    try {
+  async reactivate(id: string): Promise<PatientOperationResult>
+  {
+    try
+    {
       await this.prisma.patient.update({
         where: { id },
         data: {
@@ -387,7 +462,8 @@ export class PatientService {
       });
 
       return { success: true };
-    } catch (error) {
+    } catch (error)
+    {
       const appError: AppError = {
         code: ErrorCodes.DATABASE_ERROR,
         message: "Error al reactivar al paciente",
@@ -405,8 +481,10 @@ export class PatientService {
    * @param hospital Nombre del hospital
    * @returns Resultado con el paciente o error
    */
-  async findByBed(bedNumber: string, hospital: string): Promise<GetPatientResult> {
-    try {
+  async findByBed(bedNumber: string, hospital: string): Promise<GetPatientResult>
+  {
+    try
+    {
       const patient = await this.prisma.patient.findFirst({
         where: {
           bedNumber,
@@ -415,7 +493,8 @@ export class PatientService {
         },
       });
 
-      if (!patient) {
+      if (!patient)
+      {
         const error: AppError = {
           code: ErrorCodes.PATIENT_NOT_FOUND,
           message: "Paciente no encontrado",
@@ -429,7 +508,8 @@ export class PatientService {
         success: true,
         patient: patient as PatientWithRelations,
       };
-    } catch (error) {
+    } catch (error)
+    {
       const appError: AppError = {
         code: ErrorCodes.DATABASE_ERROR,
         message: "Error al buscar el paciente",

@@ -11,19 +11,21 @@
 /**
  * Datos requeridos para crear un paciente
  */
-export interface CreatePatientData {
+export interface CreatePatientData
+{
   medicalRecordNumber: string;
   firstName: string;
   lastName: string;
   dateOfBirth: string; // ISO string, se convierte a Date
   gender: string;
+  admissionDate: string; // ISO string, se convierte a Date
   bedNumber: string;
   roomNumber?: string;
   service: string;
   diagnosis: string;
-  allergies?: string;
-  hospital: string;
   attendingDoctor: string;
+  hospital: string;
+  allergies?: string;
   bloodType?: string;
   emergencyContactName?: string;
   emergencyContactPhone?: string;
@@ -34,13 +36,15 @@ export interface CreatePatientData {
   specialNotes?: string;
   dietType?: string;
   isolationPrecautions?: string;
+  isActive: boolean;
 }
 
 /**
  * Datos para actualizar un paciente
  * Todos los campos son opcionales
  */
-export interface UpdatePatientData {
+export interface UpdatePatientData
+{
   medicalRecordNumber?: string;
   firstName?: string;
   lastName?: string;
@@ -68,7 +72,8 @@ export interface UpdatePatientData {
 /**
  * Filtros para listar pacientes
  */
-export interface ListPatientsFilters {
+export interface ListPatientsFilters
+{
   hospital: string;
   isActive?: boolean;
   service?: string;
@@ -80,7 +85,8 @@ export interface ListPatientsFilters {
 /**
  * Paciente con relaciones incluidas
  */
-export interface PatientWithRelations {
+export interface PatientWithRelations
+{
   id: string;
   medicalRecordNumber: string;
   firstName: string;
@@ -124,7 +130,8 @@ export interface PatientWithRelations {
 /**
  * Respuesta exitosa de creación
  */
-export interface CreatePatientSuccess {
+export interface CreatePatientSuccess
+{
   success: true;
   patient: PatientWithRelations;
 }
@@ -132,7 +139,8 @@ export interface CreatePatientSuccess {
 /**
  * Respuesta exitosa de obtención
  */
-export interface GetPatientSuccess {
+export interface GetPatientSuccess
+{
   success: true;
   patient: PatientWithRelations;
 }
@@ -140,7 +148,8 @@ export interface GetPatientSuccess {
 /**
  * Respuesta exitosa de listado
  */
-export interface ListPatientsSuccess {
+export interface ListPatientsSuccess
+{
   success: true;
   patients: PatientWithRelations[];
   total: number;
@@ -151,7 +160,8 @@ export interface ListPatientsSuccess {
 /**
  * Respuesta exitosa de actualización
  */
-export interface UpdatePatientSuccess {
+export interface UpdatePatientSuccess
+{
   success: true;
   patient: PatientWithRelations;
 }
@@ -159,14 +169,16 @@ export interface UpdatePatientSuccess {
 /**
  * Respuesta exitosa de operación simple
  */
-export interface PatientOperationSuccess {
+export interface PatientOperationSuccess
+{
   success: true;
 }
 
 /**
  * Respuesta de error
  */
-export interface PatientServiceError {
+export interface PatientServiceError
+{
   success: false;
   error: {
     code: string;

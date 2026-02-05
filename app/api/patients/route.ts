@@ -12,11 +12,14 @@ const patientService = new PatientService(prisma);
  * Lista pacientes con filtros y paginación
  * Rate limit: 10 req/min
  */
-export async function GET(request: NextRequest) {
-  try {
+export async function GET(request: NextRequest)
+{
+  try
+  {
     const session = await auth.api.getSession({ headers: request.headers });
 
-    if (!session?.user?.id) {
+    if (!session?.user?.id)
+    {
       return NextResponse.json(
         { error: "No autenticado" },
         { status: 401 }
@@ -25,7 +28,8 @@ export async function GET(request: NextRequest) {
 
     const rateLimit = await checkRateLimit(`patients:list:${session.user.id}`, 10, 60);
 
-    if (!rateLimit.allowed) {
+    if (!rateLimit.allowed)
+    {
       return NextResponse.json(
         { error: "Límite de solicitudes excedido" },
         {
@@ -36,9 +40,28 @@ export async function GET(request: NextRequest) {
     }
 
     const searchParams = request.nextUrl.searchParams;
+    let hospital = searchParams.get("hospital");
+
+    // Si no se proporciona hospital, extraerlo del perfil del médico
+    if (!hospital)
+    {
+      const profile = await prisma.medicosProfile.findUnique({
+        where: { userId: session.user.id },
+        select: { hospital: true }
+      });
+
+      if (!profile)
+      {
+        return NextResponse.json(
+          { error: "Perfil de médico no encontrado", code: "PROFILE_NOT_FOUND" },
+          { status: 404 }
+        );
+      }
+      hospital = profile.hospital;
+    }
 
     const filters: ListPatientsFilters = {
-      hospital: searchParams.get("hospital") || "",
+      hospital: hospital || "",
       isActive: searchParams.get("isActive") === "false" ? false : true,
       service: searchParams.get("service") || undefined,
       bedNumber: searchParams.get("bedNumber") || undefined,
@@ -48,7 +71,8 @@ export async function GET(request: NextRequest) {
 
     const result = await patientService.list(filters);
 
-    if (!result.success) {
+    if (!result.success)
+    {
       return NextResponse.json(
         { error: result.error.message, code: result.error.code },
         { status: result.error.statusCode }
@@ -61,12 +85,14 @@ export async function GET(request: NextRequest) {
         total: result.total,
         page: result.page,
         limit: result.limit,
+        hospital: hospital, // Enviar el nombre del hospital
       },
       {
         headers: getRateLimitHeaders(rateLimit.remaining || 9, rateLimit.resetTime),
       }
     );
-  } catch (error) {
+  } catch (error)
+  {
     console.error("Error en GET /api/patients:", error);
     return NextResponse.json(
       { error: "Error interno del servidor", code: "INTERNAL_ERROR" },
@@ -80,11 +106,14 @@ export async function GET(request: NextRequest) {
  * Crea un nuevo paciente
  * Rate limit: 10 req/min
  */
-export async function POST(request: NextRequest) {
-  try {
+export async function POST(request: NextRequest)
+{
+  try
+  {
     const session = await auth.api.getSession({ headers: request.headers });
 
-    if (!session?.user?.id) {
+    if (!session?.user?.id)
+    {
       return NextResponse.json(
         { error: "No autenticado" },
         { status: 401 }
@@ -93,7 +122,8 @@ export async function POST(request: NextRequest) {
 
     const rateLimit = await checkRateLimit(`patients:create:${session.user.id}`, 10, 60);
 
-    if (!rateLimit.allowed) {
+    if (!rateLimit.allowed)
+    {
       return NextResponse.json(
         { error: "Límite de solicitudes excedido" },
         {
@@ -107,7 +137,8 @@ export async function POST(request: NextRequest) {
 
     const result = await patientService.create(body);
 
-    if (!result.success) {
+    if (!result.success)
+    {
       return NextResponse.json(
         { error: result.error.message, code: result.error.code, details: result.error.details },
         {
@@ -124,7 +155,8 @@ export async function POST(request: NextRequest) {
         headers: getRateLimitHeaders(rateLimit.remaining || 9, rateLimit.resetTime),
       }
     );
-  } catch (error) {
+  } catch (error)
+  {
     console.error("Error en POST /api/patients:", error);
     return NextResponse.json(
       { error: "Error interno del servidor", code: "INTERNAL_ERROR" },
