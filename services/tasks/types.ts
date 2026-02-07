@@ -14,10 +14,20 @@ import type {
   TaskType,
   CreateTaskInput,
   UpdateTaskInput,
-  TaskFilters,
 } from "@/lib/schemas/taskSchema";
 
-export type { TaskPriority, TaskStatus, TaskType, CreateTaskInput, UpdateTaskInput, TaskFilters };
+export type { TaskPriority, TaskStatus, TaskType, CreateTaskInput, UpdateTaskInput };
+
+export interface TaskFilters {
+  status?: "PENDING" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED";
+  priority?: "LOW" | "MEDIUM" | "HIGH" | "URGENT";
+  patientId?: string;
+  assignedTo?: string;
+  hospital: string;
+  search?: string;
+  page: number;
+  limit: number;
+}
 
 export interface TaskWithRelations {
   id: string;

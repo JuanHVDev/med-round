@@ -46,9 +46,10 @@ export const taskFiltersSchema = z.object({
   patientId: z.string().uuid("ID de paciente inválido").optional(),
   assignedTo: z.string().uuid("ID de asignado inválido").optional(),
   hospital: z.string().optional(),
+  search: z.string().optional(),
   page: z.coerce.number().positive().default(1),
   limit: z.coerce.number().positive().max(100).default(20),
-}).strict();
+});
 
 export type TaskPriority = z.infer<typeof taskPrioritySchema>;
 export type TaskStatus = z.infer<typeof taskStatusSchema>;

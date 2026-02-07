@@ -3,7 +3,7 @@ import { auth } from "@/lib/auth";
 import { checkRateLimit, getRateLimitHeaders } from "@/lib/rate-limit";
 import { prisma } from "@/lib/prisma";
 import { TaskService } from "@/services/tasks/taskService";
-import type { CreateTaskInput } from "@/services/tasks/types";
+import type { CreateTaskInput, TaskFilters } from "@/services/tasks/types";
 
 const taskService = new TaskService(prisma);
 
@@ -36,15 +36,31 @@ export async function GET(request: NextRequest)
     }
 
     const { searchParams } = new URL(request.url);
-    const filters = {
-      status: searchParams.get("status") as "PENDING" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED" | undefined,
-      priority: searchParams.get("priority") as "LOW" | "MEDIUM" | "HIGH" | "URGENT" | undefined,
-      patientId: searchParams.get("patientId") || undefined,
-      assignedTo: searchParams.get("assignedTo") || undefined,
+
+    const filters: TaskFilters = {
       hospital: medicosProfile.hospital,
-      page: searchParams.get("page") ? parseInt(searchParams.get("page")!) : 1,
-      limit: searchParams.get("limit") ? parseInt(searchParams.get("limit")!) : 20,
+      page: parseInt(searchParams.get("page") || "1"),
+      limit: parseInt(searchParams.get("limit") || "20"),
     };
+
+    const status = searchParams.get("status");
+    if (status && ["PENDING", "IN_PROGRESS", "COMPLETED", "CANCELLED"].includes(status)) {
+      filters.status = status as "PENDING" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED";
+    }
+
+    const priority = searchParams.get("priority");
+    if (priority && ["LOW", "MEDIUM", "HIGH", "URGENT"].includes(priority)) {
+      filters.priority = priority as "LOW" | "MEDIUM" | "HIGH" | "URGENT";
+    }
+
+    const patientId = searchParams.get("patientId");
+    if (patientId) filters.patientId = patientId;
+
+    const assignedTo = searchParams.get("assignedTo");
+    if (assignedTo) filters.assignedTo = assignedTo;
+
+    const search = searchParams.get("search");
+    if (search) filters.search = search;
 
     const rateLimit = await checkRateLimit(`tasks:list:${medicosProfile.id}`);
     if (!rateLimit.allowed)

@@ -290,6 +290,14 @@ export class TaskService
         where.assignedTo = filters.assignedTo;
       }
 
+      if (filters.search)
+      {
+        where.OR = [
+          { title: { contains: filters.search, mode: "insensitive" } },
+          { description: { contains: filters.search, mode: "insensitive" } },
+        ];
+      }
+
       const [tasks, total] = await Promise.all([
         this.prisma.task.findMany({
           where,
