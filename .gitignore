@@ -51,6 +51,14 @@ next-env.d.ts
 # OpenCode
 opencode.json
 
+# Test reports
+/test-results/
+/playwright-report/
+/testsprite_tests/
+
+# Generated Prisma
+prisma/generated/
+
 # Test databases
 *.db
 prisma/*.db

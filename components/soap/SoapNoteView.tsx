@@ -29,6 +29,88 @@ interface SoapNoteViewProps {
   showActions?: boolean;
 }
 
+interface VitalSignsCardProps {
+  vitalSigns: VitalSigns | null;
+}
+
+function VitalSignsCard({ vitalSigns }: VitalSignsCardProps) {
+  if (!vitalSigns || Object.keys(vitalSigns).filter(k => vitalSigns[k as keyof VitalSigns] !== undefined).length === 0) {
+    return (
+      <div className="text-sm text-muted-foreground italic">
+        No se registraron signos vitales
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {vitalSigns.bloodPressure && (
+        <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg">
+          <Activity className="h-4 w-4 text-red-600" />
+          <div>
+            <p className="text-xs text-muted-foreground">PA</p>
+            <p className="font-medium">{vitalSigns.bloodPressure} mmHg</p>
+          </div>
+        </div>
+      )}
+      {vitalSigns.heartRate && (
+        <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg">
+          <Heart className="h-4 w-4 text-red-500" />
+          <div>
+            <p className="text-xs text-muted-foreground">FC</p>
+            <p className="font-medium">{vitalSigns.heartRate} lpm</p>
+          </div>
+        </div>
+      )}
+      {vitalSigns.temperature && (
+        <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg">
+          <Thermometer className="h-4 w-4 text-orange-500" />
+          <div>
+            <p className="text-xs text-muted-foreground">Temp</p>
+            <p className="font-medium">{vitalSigns.temperature} °C</p>
+          </div>
+        </div>
+      )}
+      {vitalSigns.respiratoryRate && (
+        <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg">
+          <Wind className="h-4 w-4 text-blue-500" />
+          <div>
+            <p className="text-xs text-muted-foreground">FR</p>
+            <p className="font-medium">{vitalSigns.respiratoryRate} rpm</p>
+          </div>
+        </div>
+      )}
+      {vitalSigns.oxygenSaturation && (
+        <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg">
+          <Droplets className="h-4 w-4 text-blue-600" />
+          <div>
+            <p className="text-xs text-muted-foreground">SpO2</p>
+            <p className="font-medium">{vitalSigns.oxygenSaturation}%</p>
+          </div>
+        </div>
+      )}
+      {vitalSigns.weight && (
+        <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg">
+          <Scale className="h-4 w-4" />
+          <div>
+            <p className="text-xs text-muted-foreground">Peso</p>
+            <p className="font-medium">{vitalSigns.weight} kg</p>
+          </div>
+        </div>
+      )}
+      {vitalSigns.height && (
+        <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg">
+          <Ruler className="h-4 w-4" />
+          <div>
+            <p className="text-xs text-muted-foreground">Talla</p>
+            <p className="font-medium">{vitalSigns.height} cm</p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function SoapNoteView({ note, onEdit, showActions = true }: SoapNoteViewProps) {
   const formatDate = (date: Date | string) => {
     const d = new Date(date);
@@ -39,84 +121,6 @@ export function SoapNoteView({ note, onEdit, showActions = true }: SoapNoteViewP
       hour: "2-digit",
       minute: "2-digit",
     });
-  };
-
-  const VitalSignsCard = ({ vitalSigns }: { vitalSigns: VitalSigns | null }) => {
-    if (!vitalSigns || Object.keys(vitalSigns).filter(k => vitalSigns[k as keyof VitalSigns] !== undefined).length === 0) {
-      return (
-        <div className="text-sm text-muted-foreground italic">
-          No se registraron signos vitales
-        </div>
-      );
-    }
-
-    return (
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {vitalSigns.bloodPressure && (
-          <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg">
-            <Activity className="h-4 w-4 text-red-600" />
-            <div>
-              <p className="text-xs text-muted-foreground">PA</p>
-              <p className="font-medium">{vitalSigns.bloodPressure} mmHg</p>
-            </div>
-          </div>
-        )}
-        {vitalSigns.heartRate && (
-          <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg">
-            <Heart className="h-4 w-4 text-red-500" />
-            <div>
-              <p className="text-xs text-muted-foreground">FC</p>
-              <p className="font-medium">{vitalSigns.heartRate} lpm</p>
-            </div>
-          </div>
-        )}
-        {vitalSigns.temperature && (
-          <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg">
-            <Thermometer className="h-4 w-4 text-orange-500" />
-            <div>
-              <p className="text-xs text-muted-foreground">Temp</p>
-              <p className="font-medium">{vitalSigns.temperature} °C</p>
-            </div>
-          </div>
-        )}
-        {vitalSigns.respiratoryRate && (
-          <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg">
-            <Wind className="h-4 w-4 text-blue-500" />
-            <div>
-              <p className="text-xs text-muted-foreground">FR</p>
-              <p className="font-medium">{vitalSigns.respiratoryRate} rpm</p>
-            </div>
-          </div>
-        )}
-        {vitalSigns.oxygenSaturation && (
-          <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg">
-            <Droplets className="h-4 w-4 text-blue-600" />
-            <div>
-              <p className="text-xs text-muted-foreground">SpO2</p>
-              <p className="font-medium">{vitalSigns.oxygenSaturation}%</p>
-            </div>
-          </div>
-        )}
-        {vitalSigns.weight && (
-          <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg">
-            <Scale className="h-4 w-4" />
-            <div>
-              <p className="text-xs text-muted-foreground">Peso</p>
-              <p className="font-medium">{vitalSigns.weight} kg</p>
-            </div>
-          </div>
-        )}
-        {vitalSigns.height && (
-          <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg">
-            <Ruler className="h-4 w-4" />
-            <div>
-              <p className="text-xs text-muted-foreground">Talla</p>
-              <p className="font-medium">{vitalSigns.height} cm</p>
-            </div>
-          </div>
-        )}
-      </div>
-    );
   };
 
   return (
