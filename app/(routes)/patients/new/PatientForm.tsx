@@ -146,7 +146,7 @@ export function PatientForm({ hospital }: PatientFormProps) {
               <Label htmlFor="bloodType">Tipo de Sangre</Label>
               <Select
                 value={watch("bloodType")}
-                onValueChange={(value) => setValue("bloodType", value as any)}
+                onValueChange={(value: string) => setValue("bloodType", value)}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Selecciona tipo" />
