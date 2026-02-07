@@ -370,11 +370,15 @@ export class PatientService
         return { success: false, error };
       }
 
-      // Convertir dateOfBirth si está presente
+      // Convertir fechas si están presentes
       const updateData: Record<string, unknown> = { ...data };
       if (data.dateOfBirth)
       {
         updateData.dateOfBirth = new Date(data.dateOfBirth);
+      }
+      if (data.admissionDate)
+      {
+        updateData.admissionDate = new Date(data.admissionDate);
       }
 
       const patient = await this.prisma.patient.update({

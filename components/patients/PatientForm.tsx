@@ -80,6 +80,7 @@ export function PatientForm({ initialData, isEditing = false }: PatientFormProps
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify(values),
       });
 

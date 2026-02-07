@@ -52,6 +52,7 @@ export function PatientForm({ hospital }: PatientFormProps) {
       const response = await fetch("/api/patients", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ ...data, hospital, isActive: true }),
       });
 

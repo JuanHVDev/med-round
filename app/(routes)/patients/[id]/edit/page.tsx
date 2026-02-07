@@ -19,7 +19,9 @@ export default function EditPatientPage({ params }: { params: Promise<{ id: stri
     {
       try
       {
-        const res = await fetch(`/api/patients/${id}`);
+        const res = await fetch(`/api/patients/${id}`, {
+          credentials: "include",
+        });
         const data = await res.json();
         if (data.patient)
         {

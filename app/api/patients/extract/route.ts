@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import { google } from "@ai-sdk/google";
 import { generateObject } from "ai";
@@ -27,7 +28,9 @@ export async function POST(request: NextRequest)
 {
   try
   {
-    const session = await auth.api.getSession({ headers: request.headers });
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
 
     if (!session?.user?.id)
     {

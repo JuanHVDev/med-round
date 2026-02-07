@@ -6,6 +6,7 @@
 
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { PatientService } from "@/services/patient/patientService";
@@ -30,7 +31,9 @@ async function getPatient(id: string) {
 }
 
 export default async function PatientDetailPage({ params }: PatientDetailPageProps) {
-  const session = await auth.api.getSession();
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
   if (!session?.user?.id) {
     return (

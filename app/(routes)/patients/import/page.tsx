@@ -49,6 +49,7 @@ export default function ImportPage() {
     try {
       const response = await fetch("/api/patients/import", {
         method: "POST",
+        credentials: "include",
         body: formData,
       });
 
@@ -76,6 +77,7 @@ export default function ImportPage() {
       const response = await fetch("/api/patients/import/confirm", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ patients }),
       });
 

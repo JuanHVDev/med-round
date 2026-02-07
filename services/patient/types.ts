@@ -49,6 +49,7 @@ export interface UpdatePatientData
   firstName?: string;
   lastName?: string;
   dateOfBirth?: string;
+  admissionDate?: string;
   gender?: string;
   bedNumber?: string;
   roomNumber?: string | null;

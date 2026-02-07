@@ -13,6 +13,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
+import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import { checkRateLimit, getRateLimitHeaders } from "@/lib/rate-limit";
 import { FileExtractionService } from "@/services/import/fileExtractionService";
@@ -36,7 +37,9 @@ export async function POST(
 ): Promise<NextResponse<ImportApiResponse | { error: string; details?: string }>> {
   try {
     // 1. Verificar autenticación
-    const session = await auth.api.getSession({ headers: request.headers });
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
 
     if (!session?.user?.id) {
       return NextResponse.json(
