@@ -34,7 +34,7 @@ describe("patientSchema", () =>
   it("debería fallar si faltan campos obligatorios", () =>
   {
     const invalidData = { ...validData };
-    const { firstName: _unused, ...invalidDataWithoutName } = invalidData;
+    const { firstName, ...invalidDataWithoutName } = invalidData;
     const result = patientSchema.safeParse(invalidDataWithoutName);
     expect(result.success).toBe(false);
   });

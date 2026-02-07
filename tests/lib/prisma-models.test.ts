@@ -55,7 +55,7 @@ describe("Modelos de Prisma - Fase 2", () => {
 
     it("debería rechazar creación sin campos requeridos", async () => {
       await expect(
-        prisma.patient.create({ data: { firstName: "Juan" } as any })
+        prisma.patient.create({ data: { firstName: "Juan" } as unknown as Record<string, unknown> })
       ).rejects.toThrow();
     });
 
@@ -210,7 +210,7 @@ describe("Modelos de Prisma - Fase 2", () => {
           description: "Tomar signos vitales cada 4 horas",
           status: "PENDING",
           priority: "HIGH",
-          type: "MEDICATION" as any,
+          type: "MEDICATION" as const,
           dueDate: new Date(),
           assignedTo: "Dr. Test",
           createdBy: "test-user-123",

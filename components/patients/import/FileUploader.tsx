@@ -70,7 +70,7 @@ export function FileUploader({
     if (file.type === "application/pdf" || file.name.endsWith(".pdf")) {
       return <FileText className="h-8 w-8 text-red-500" />;
     }
-    return <Image className="h-8 w-8 text-blue-500" />;
+    return <Image className="h-8 w-8 text-blue-500" aria-hidden="true" />;
   };
 
   return (
@@ -120,9 +120,9 @@ export function FileUploader({
             </div>
 
             <div className="flex gap-4 mt-4">
-              <FileSpreadsheet className="h-8 w-8 text-green-500" />
-              <FileText className="h-8 w-8 text-red-500" />
-              <Image className="h-8 w-8 text-blue-500" />
+              <FileSpreadsheet className="h-8 w-8 text-green-500" aria-hidden="true" />
+              <FileText className="h-8 w-8 text-red-500" aria-hidden="true" />
+              <Image className="h-8 w-8 text-blue-500" aria-hidden="true" />
             </div>
           </div>
         </Card>

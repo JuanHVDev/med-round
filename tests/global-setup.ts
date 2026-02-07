@@ -10,7 +10,6 @@
  */
 
 import { execSync } from "child_process";
-import path from "path";
 import dotenv from "dotenv";
 
 const envConfig = dotenv.config({ path: ".env.test" });

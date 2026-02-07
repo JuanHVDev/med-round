@@ -24,7 +24,7 @@ import
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, Save, User, Hospital, Activity, Phone, ShieldAlert } from "lucide-react";
+import { Loader2, Save, User, Hospital, Activity, Phone } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

@@ -17,7 +17,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import Link from "next/link";
 
 interface PatientFormProps {
@@ -146,7 +146,7 @@ export function PatientForm({ hospital }: PatientFormProps) {
               <Label htmlFor="bloodType">Tipo de Sangre</Label>
               <Select
                 value={watch("bloodType")}
-                onValueChange={(value: string) => setValue("bloodType", value)}
+                onValueChange={(value: string) => setValue("bloodType", value as "A+" | "A-" | "B+" | "B-" | "AB+" | "AB-" | "O+" | "O-")}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Selecciona tipo" />

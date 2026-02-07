@@ -55,7 +55,7 @@ describe("AIExtractionService", () => {
         },
       };
 
-      vi.mocked(generateObject).mockResolvedValue(mockResponse as any);
+      vi.mocked(generateObject).mockResolvedValue(mockResponse as GenerateObjectResult<unknown>);
 
       const result = await service.extractFromText("Paciente: Juan Pérez");
 
@@ -84,7 +84,7 @@ describe("AIExtractionService", () => {
         },
       };
 
-      vi.mocked(generateObject).mockResolvedValue(mockResponse as any);
+      vi.mocked(generateObject).mockResolvedValue(mockResponse as GenerateObjectResult<unknown>);
 
       const result = await service.extractFromText("Lista de pacientes");
 
@@ -99,7 +99,7 @@ describe("AIExtractionService", () => {
         },
       };
 
-      vi.mocked(generateObject).mockResolvedValue(mockResponse as any);
+      vi.mocked(generateObject).mockResolvedValue(mockResponse as GenerateObjectResult<unknown>);
 
       const result = await service.extractFromText("Documento vacío");
 
@@ -123,7 +123,7 @@ describe("AIExtractionService", () => {
         },
       };
 
-      vi.mocked(generateObject).mockResolvedValue(mockResponse as any);
+      vi.mocked(generateObject).mockResolvedValue(mockResponse as GenerateObjectResult<unknown>);
 
       const base64Image = "fake-base64-data";
       const result = await service.extractFromImage(base64Image);
@@ -136,12 +136,11 @@ describe("AIExtractionService", () => {
     it("debe incluir imagen en el prompt", async () => {
       vi.mocked(generateObject).mockResolvedValue({
         object: { patients: [] },
-      } as any);
+      } as unknown);
 
       await service.extractFromImage("base64-data");
 
-      // Verificar que se llamó con messages que incluyen imagen
-      const callArgs = vi.mocked(generateObject).mock.calls[0][0];
+      const callArgs = vi.mocked(generateObject).mock.calls[0][0] as { messages: Array<{ content: Array<{ type: string }> }> };
       expect(callArgs.messages).toBeDefined();
       expect(callArgs.messages[0].content).toHaveLength(2);
       expect(callArgs.messages[0].content[1].type).toBe("image");
@@ -152,7 +151,7 @@ describe("AIExtractionService", () => {
     it("debe manejar respuesta nula del modelo", async () => {
       vi.mocked(generateObject).mockResolvedValue({
         object: { patients: null },
-      } as any);
+      } as unknown);
 
       const result = await service.extractFromText("texto");
 

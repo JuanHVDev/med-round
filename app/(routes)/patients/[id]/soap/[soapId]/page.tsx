@@ -37,12 +37,6 @@ export default function SoapNoteDetailPage() {
     fetchNote();
   }, [soapId]);
 
-  const handleSuccess = () => {
-    setIsEditing(false);
-    router.refresh();
-    window.location.reload();
-  };
-
   if (isLoading) {
     return (
       <div className="container mx-auto py-8 px-4 max-w-4xl">

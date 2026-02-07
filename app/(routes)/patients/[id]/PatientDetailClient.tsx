@@ -1,11 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Calendar, User, Activity, AlertTriangle, Phone, FileText, Plus, Loader2 } from "lucide-react";
+import { ArrowLeft, Calendar, User, Activity, AlertTriangle, Phone, FileText, Plus } from "lucide-react";
 import { SoapNoteList } from "@/components/soap";
 import type { SoapNoteWithRelations } from "@/services/soap/types";
 
@@ -41,8 +40,6 @@ interface PatientDetailClientProps {
 }
 
 export function PatientDetailClient({ patient }: PatientDetailClientProps) {
-  const [isLoading, setIsLoading] = useState(false);
-
   const age = new Date().getFullYear() - new Date(patient.dateOfBirth).getFullYear();
   const admissionDate = new Date(patient.admissionDate).toLocaleDateString("es-ES");
 
