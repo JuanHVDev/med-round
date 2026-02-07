@@ -58,7 +58,7 @@ export function PatientForm({ initialData, isEditing = false }: PatientFormProps
       allergies: initialData?.allergies || "",
       hospital: initialData?.hospital || "",
       attendingDoctor: initialData?.attendingDoctor || "",
-      bloodType: initialData?.bloodType || "",
+      bloodType: initialData?.bloodType || undefined,
       emergencyContactName: initialData?.emergencyContactName || "",
       emergencyContactPhone: initialData?.emergencyContactPhone || "",
       dietType: initialData?.dietType || "",

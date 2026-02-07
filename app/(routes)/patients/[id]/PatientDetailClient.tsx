@@ -1,51 +1,47 @@
-/**
- * Página de detalle de paciente
- *
- * Muestra información completa del paciente con sus notas SOAP y tareas
- */
+"use client";
 
-import { notFound } from "next/navigation";
+import { useState } from "react";
 import Link from "next/link";
-import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
-import { PatientService } from "@/services/patient/patientService";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Calendar, User, Activity, AlertTriangle, Phone, FileText, Plus } from "lucide-react";
+import { ArrowLeft, Calendar, User, Activity, AlertTriangle, Phone, FileText, Plus, Loader2 } from "lucide-react";
+import { SoapNoteList } from "@/components/soap";
+import type { SoapNoteWithRelations } from "@/services/soap/types";
 
-interface PatientDetailPageProps {
-  params: Promise<{ id: string }>;
+interface PatientDetailClientProps {
+  patient: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    medicalRecordNumber: string;
+    dateOfBirth: string;
+    gender: string;
+    admissionDate: string;
+    service: string;
+    bedNumber: string;
+    roomNumber: string | null;
+    diagnosis: string;
+    allergies: string | null;
+    specialNotes: string | null;
+    bloodType: string | null;
+    attendingDoctor: string;
+    hospital: string;
+    insuranceProvider: string | null;
+    insuranceNumber: string | null;
+    weight: number | null;
+    height: number | null;
+    dietType: string | null;
+    isolationPrecautions: string | null;
+    emergencyContactName: string | null;
+    emergencyContactPhone: string | null;
+    isActive: boolean;
+    soapNotes?: SoapNoteWithRelations[];
+  };
 }
 
-async function getPatient(id: string) {
-  const patientService = new PatientService(prisma);
-  const result = await patientService.getByIdWithRelations(id);
-
-  if (!result.success) {
-    return null;
-  }
-
-  return result.patient;
-}
-
-export default async function PatientDetailPage({ params }: PatientDetailPageProps) {
-  const session = await auth.api.getSession();
-
-  if (!session?.user?.id) {
-    return (
-      <div className="container mx-auto py-8 px-4">
-        <p>No autenticado</p>
-      </div>
-    );
-  }
-
-  const { id } = await params;
-  const patient = await getPatient(id);
-
-  if (!patient) {
-    notFound();
-  }
+export function PatientDetailClient({ patient }: PatientDetailClientProps) {
+  const [isLoading, setIsLoading] = useState(false);
 
   const age = new Date().getFullYear() - new Date(patient.dateOfBirth).getFullYear();
   const admissionDate = new Date(patient.admissionDate).toLocaleDateString("es-ES");
@@ -139,62 +135,29 @@ export default async function PatientDetailPage({ params }: PatientDetailPagePro
             </CardContent>
           </Card>
 
-{patient.soapNotes && patient.soapNotes.length > 0 ? (
-            <Card>
-              <CardHeader>
-                <div className="flex justify-between items-center">
-                  <CardTitle className="flex items-center gap-2">
-                    <FileText className="h-5 w-5" />
-                    Notas SOAP ({patient.soapNotes.length})
-                  </CardTitle>
-                  <Link href={`/patients/${patient.id}/soap/new`}>
-                    <Button variant="outline" size="sm">
-                      <Plus className="mr-2 h-4 w-4" />
-                      Nueva Nota
-                    </Button>
-                  </Link>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {patient.soapNotes.map((note) => (
-                    <Link
-                      key={note.id}
-                      href={`/patients/${patient.id}/soap/${note.id}`}
-                      className="block p-4 border rounded-lg hover:bg-muted/50 transition-colors"
-                    >
-                      <div className="flex justify-between items-start mb-2">
-                        <span className="text-sm text-muted-foreground">
-                          {new Date(note.date).toLocaleDateString("es-ES")}
-                        </span>
-                      </div>
-                      <p className="font-medium">{note.chiefComplaint}</p>
-                    </Link>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          ) : (
-            <Card>
-              <CardHeader>
+          <Card>
+            <CardHeader>
+              <div className="flex justify-between items-center">
                 <CardTitle className="flex items-center gap-2">
                   <FileText className="h-5 w-5" />
-                  Notas SOAP
+                  Notas SOAP ({patient.soapNotes?.length || 0})
                 </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-6">
-                  <p className="text-muted-foreground mb-4">No hay notas SOAP registradas</p>
-                  <Link href={`/patients/${patient.id}/soap/new`}>
-                    <Button>
-                      <Plus className="mr-2 h-4 w-4" />
-                      Crear Primera Nota SOAP
-                    </Button>
-                  </Link>
-                </div>
-              </CardContent>
-            </Card>
-          )}
+                <Link href={`/patients/${patient.id}/soap/new`}>
+                  <Button size="sm">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Nueva Nota
+                  </Button>
+                </Link>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <SoapNoteList
+                notes={patient.soapNotes || []}
+                patientId={patient.id}
+                onCreateNew={() => window.location.href = `/patients/${patient.id}/soap/new`}
+              />
+            </CardContent>
+          </Card>
         </div>
 
         <div className="space-y-6">
@@ -277,29 +240,6 @@ export default async function PatientDetailPage({ params }: PatientDetailPagePro
               </CardContent>
             </Card>
           )}
-
-          {patient.tasks && patient.tasks.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Tareas Pendientes ({patient.tasks.length})</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  {patient.tasks.slice(0, 5).map((task) => (
-                    <div
-                      key={task.id}
-                      className="flex items-center justify-between p-2 border rounded"
-                    >
-                      <span className="text-sm">{task.title}</span>
-                      <Badge variant={getStatusVariant(task.status)}>
-                        {getStatusLabel(task.status)}
-                      </Badge>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          )}
         </div>
       </div>
     </div>
@@ -336,33 +276,5 @@ function getGenderLabel(gender: string): string {
       return "Otro";
     default:
       return gender;
-  }
-}
-
-function getStatusVariant(status: string): "default" | "secondary" | "destructive" | "outline" {
-  switch (status) {
-    case "COMPLETED":
-      return "default";
-    case "IN_PROGRESS":
-      return "secondary";
-    case "CANCELLED":
-      return "destructive";
-    default:
-      return "outline";
-  }
-}
-
-function getStatusLabel(status: string): string {
-  switch (status) {
-    case "PENDING":
-      return "Pendiente";
-    case "IN_PROGRESS":
-      return "En progreso";
-    case "COMPLETED":
-      return "Completada";
-    case "CANCELLED":
-      return "Cancelada";
-    default:
-      return status;
   }
 }

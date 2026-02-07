@@ -248,38 +248,38 @@ model handover {
   shiftDate           DateTime        @map("shift_date")
   startTime           DateTime        @map("start_time")
   endTime             DateTime?       @map("end_time")
-  
+
   // Información del médico que entrega
   createdBy           String          @map("created_by")
   creator             medicosProfile  @relation(fields: [createdBy], references: [id], onDelete: Cascade)
-  
+
   // Estado del handover
   status              HandoverStatus  @default(DRAFT)
-  
+
   // Pacientes incluidos (JSON array de IDs)
   includedPatientIds  Json            @map("included_patient_ids")
-  
+
   // Tareas pendientes incluidas (JSON array de IDs)
   includedTaskIds     Json            @map("included_task_ids")
-  
+
   // Checklist de items obligatorios
   checklistItems      Json            @map("checklist_items")
-  
+
   // Notas adicionales del turno
   generalNotes        String?         @map("general_notes")
-  
+
   // Resumen generado automáticamente (markdown/texto)
   generatedSummary    String?         @map("generated_summary")
-  
+
   // Pacientes críticos identificados (JSON)
   criticalPatients    Json?           @map("critical_patients")
-  
+
   // Timestamp de finalización
   finalizedAt         DateTime?       @map("finalized_at")
-  
+
   // URL del PDF generado (si aplica)
   pdfUrl              String?         @map("pdf_url")
-  
+
   // Control de versiones
   version             Int             @default(1)
   

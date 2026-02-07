@@ -98,6 +98,7 @@ export class AIExtractionService {
         patients: object.patients as ExtractedPatient[],
       };
     } catch (error) {
+      console.error("Error en extracción IA:", error);
       return {
         success: false,
         patients: [],
@@ -140,6 +141,7 @@ export class AIExtractionService {
         patients: object.patients as ExtractedPatient[],
       };
     } catch (error) {
+      console.error("Error en extracción IA (imagen):", error);
       return {
         success: false,
         patients: [],
