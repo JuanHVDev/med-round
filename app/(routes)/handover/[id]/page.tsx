@@ -10,11 +10,12 @@
 
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Loader2, CheckCircle, Clock, AlertTriangle } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { HandoverDetailClient } from "./HandoverDetailClient";
+import type { HandoverWithRelations, PatientHandoverInfo } from "@/services/handover/types";
 import { headers } from "next/headers";
 
 interface HandoverPageProps {
@@ -84,9 +85,35 @@ export default async function HandoverDetailPage({ params }: HandoverPageProps) 
       <HandoverDetailClient
         handover={{
           ...handover,
-          criticalPatients: criticalPatients as never,
-        }}
-        patients={patients}
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          shiftType: handover.shiftType as any,
+          shiftDate: new Date(handover.shiftDate),
+          startTime: new Date(handover.startTime),
+          endTime: handover.endTime ? new Date(handover.endTime) : undefined,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          creatorName: (handover.creator as any)?.fullName || undefined,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          status: handover.status as any,
+          includedPatientIds: (handover.includedPatientIds || []) as string[],
+          includedTaskIds: (handover.includedTaskIds || []) as string[],
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          checklistItems: (handover.checklistItems || []) as any[],
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          criticalPatients: criticalPatients as any,
+          finalizedAt: handover.finalizedAt ? new Date(handover.finalizedAt) : undefined,
+          createdAt: new Date(handover.createdAt),
+          updatedAt: new Date(handover.updatedAt),
+        } as HandoverWithRelations}
+         
+        patients={(patients || []).map(p => ({
+          ...p,
+          createdAt: new Date(p.createdAt),
+          updatedAt: new Date(p.updatedAt),
+          dateOfBirth: new Date(p.dateOfBirth),
+          admissionDate: p.admissionDate ? new Date(p.admissionDate) : undefined,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          status: (p as any).status,
+        })) as PatientHandoverInfo[]}
       />
     </div>
   );

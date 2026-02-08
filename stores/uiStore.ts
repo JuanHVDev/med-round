@@ -5,13 +5,15 @@ import type { UIStore } from "./types"
 export const useUIStore = create<UIStore>()(
   devtools(
     (set, get) => ({
-      // Estado inicial
       theme: "light",
       notifications: [],
       loadingStates: {},
       activeModals: {},
+      sidebarCollapsed: false,
+      searchDialogOpen: false,
+      commandPaletteOpen: false,
+      filtersPanelOpen: false,
 
-      // Acciones
       setTheme: (theme: "light" | "dark") => {
         set({ theme })
       },
@@ -22,7 +24,6 @@ export const useUIStore = create<UIStore>()(
         
         set({ notifications: newNotifications })
 
-        // Auto-remove notification after duration (if specified)
         if (notification.duration && notification.duration > 0) {
           setTimeout(() => {
             get().removeNotification(notification.id)
@@ -51,7 +52,43 @@ export const useUIStore = create<UIStore>()(
         set({
           activeModals: { ...activeModals, [modal]: newState }
         })
-      }
+      },
+
+      setSidebarCollapsed: (collapsed: boolean) => {
+        set({ sidebarCollapsed: collapsed })
+      },
+
+      toggleSidebarCollapsed: () => {
+        const { sidebarCollapsed } = get()
+        set({ sidebarCollapsed: !sidebarCollapsed })
+      },
+
+      setSearchDialogOpen: (open: boolean) => {
+        set({ searchDialogOpen: open })
+      },
+
+      toggleSearchDialog: () => {
+        const { searchDialogOpen } = get()
+        set({ searchDialogOpen: !searchDialogOpen })
+      },
+
+      setCommandPaletteOpen: (open: boolean) => {
+        set({ commandPaletteOpen: open })
+      },
+
+      toggleCommandPalette: () => {
+        const { commandPaletteOpen } = get()
+        set({ commandPaletteOpen: !commandPaletteOpen })
+      },
+
+      setFiltersPanelOpen: (open: boolean) => {
+        set({ filtersPanelOpen: open })
+      },
+
+      toggleFiltersPanel: () => {
+        const { filtersPanelOpen } = get()
+        set({ filtersPanelOpen: !filtersPanelOpen })
+      },
     }),
     {
       name: "ui-store",

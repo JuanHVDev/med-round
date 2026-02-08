@@ -1,21 +1,6 @@
 import type { NextConfig } from "next";
 import withBundleAnalyzer from "@next/bundle-analyzer";
 
-/**
- * Configuración de Content Security Policy (CSP) permisiva inicial.
- *
- * Esta configuración proporciona protección XSS básica mientras permite
- * flexibilidad para desarrollo. Se recomienda endurecer en producción:
- *
- * - 'unsafe-inline' en scripts: Permitido temporalmente, remover cuando
- *   se eliminen todos los inline scripts
- * - 'unsafe-eval': Necesario para algunas librerías, remover si es posible
- * - img-src 'https:': Permitir imágenes de cualquier HTTPS, restringir a
- *   dominios específicos cuando sea posible
- *
- * @see {@link https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP} CSP MDN
- * @see {@link https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html} OWASP CSP
- */
 const ContentSecurityPolicy = `
   default-src 'self';
   script-src 'self' 'unsafe-inline' 'unsafe-eval';
@@ -31,16 +16,19 @@ const ContentSecurityPolicy = `
 `.replace(/\s{2,}/g, " ").trim();
 
 const nextConfig: NextConfig = {
-  // Bundle analyzer - only enabled when ANALYZE=true
-  // Run: ANALYZE=true npm run build
+  poweredByHeader: false,
 
-  /**
-   * Headers de seguridad HTTP.
-   *
-   * Configuración de headers de seguridad aplicados a todas las rutas.
-   * Estos headers protegen contra vulnerabilidades comunes como XSS,
-   * clickjacking, MIME sniffing, etc.
-   */
+  compress: true,
+
+  images: {
+    formats: ["image/avif", "image/webp"],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    minimumCacheTTL: 31536000,
+    dangerouslyAllowSVG: false,
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+  },
+
   async headers() {
     return [
       {
@@ -80,7 +68,6 @@ const nextConfig: NextConfig = {
   },
 };
 
-// Enable bundle analyzer only when ANALYZE environment variable is set
 const bundleAnalyzerConfig = withBundleAnalyzer({
   enabled: process.env.ANALYZE === "true",
 })(nextConfig);

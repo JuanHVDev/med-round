@@ -237,7 +237,6 @@ export function HandoverBuilder({ hospital, existingHandoverId }: HandoverBuilde
       <h3 className="text-lg font-medium">Buscar y Seleccionar Tareas</h3>
 
       <TaskSearch
-        hospital={hospital}
         selectedTasks={selectedTasks}
         onSelect={handleSelectTask}
         onDeselect={handleDeselectTask}

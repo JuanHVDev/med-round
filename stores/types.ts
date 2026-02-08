@@ -51,6 +51,10 @@ export interface UIState {
   notifications: Notification[]
   loadingStates: Record<string, boolean>
   activeModals: Record<string, boolean>
+  sidebarCollapsed: boolean
+  searchDialogOpen: boolean
+  commandPaletteOpen: boolean
+  filtersPanelOpen: boolean
 }
 
 export interface UIActions {
@@ -59,6 +63,14 @@ export interface UIActions {
   removeNotification: (id: string) => void
   setLoading: (key: string, loading: boolean) => void
   toggleModal: (modal: string, state?: boolean) => void
+  setSidebarCollapsed: (collapsed: boolean) => void
+  toggleSidebarCollapsed: () => void
+  setSearchDialogOpen: (open: boolean) => void
+  toggleSearchDialog: () => void
+  setCommandPaletteOpen: (open: boolean) => void
+  toggleCommandPalette: () => void
+  setFiltersPanelOpen: (open: boolean) => void
+  toggleFiltersPanel: () => void
 }
 
 export type RegistrationStore = RegistrationState & RegistrationActions

@@ -15,13 +15,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { useTasks, type TaskWithRelations } from "@/hooks/useTasks";
+import { useTasks, type Task } from "@/hooks/useTasks";
 import type { TaskPriority } from "@/lib/schemas/taskSchema";
 
 interface TaskSearchProps {
-  hospital: string;
-  selectedTasks: TaskWithRelations[];
-  onSelect: (task: TaskWithRelations) => void;
+  selectedTasks: Task[];
+  onSelect: (task: Task) => void;
   onDeselect: (taskId: string) => void;
 }
 
@@ -40,7 +39,6 @@ const priorityIcons: Record<TaskPriority, typeof Clock> = {
 };
 
 export function TaskSearch({
-  hospital,
   selectedTasks,
   onSelect,
   onDeselect,
@@ -60,7 +58,7 @@ export function TaskSearch({
         task.patient?.bedNumber?.toLowerCase().includes(search.toLowerCase()))
   );
 
-  const handleSelect = (task: TaskWithRelations) => {
+  const handleSelect = (task: Task) => {
     onSelect(task);
   };
 
