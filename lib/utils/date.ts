@@ -18,12 +18,18 @@ export function formatDate(
   customPattern?: string
 ): string {
   if (customPattern) {
-    return format(new Date(date), customPattern);
+    return format(new Date(date), customPattern, { locale: es });
   }
 
-  const month = options?.month || "MMM";
-  const year = options?.year || "yyyy";
-  const pattern = `d ${month} ${year}`;
+  const monthOption = options?.month;
+  let pattern: string;
+  if (monthOption === "long") {
+    pattern = "d 'de' MMMM 'de' yyyy";
+  } else if (monthOption === "short") {
+    pattern = "d MMM. yyyy";
+  } else {
+    pattern = "d MMM. yyyy";
+  }
 
   return format(new Date(date), pattern, { locale: es });
 }
@@ -32,7 +38,7 @@ export function formatDateTime(
   date: Date | number,
   includeSeconds: boolean = false
 ): string {
-  const dateStr = format(new Date(date), "d MMM yyyy", { locale: es });
+  const dateStr = format(new Date(date), "d MMM. yyyy", { locale: es });
   const timeStr = includeSeconds
     ? format(new Date(date), "HH:mm:ss")
     : format(new Date(date), "HH:mm");
@@ -122,10 +128,10 @@ export type ShiftType = "morning" | "afternoon" | "night";
 export function getShiftLabel(date: Date = new Date()): string {
   const hour = date.getHours();
 
-  if (hour >= 6 && hour < 13) {
+  if (hour >= 7 && hour < 12) {
     return "Mañana";
   }
-  if (hour >= 13 && hour < 19) {
+  if (hour >= 12 && hour < 18) {
     return "Tarde";
   }
   return "Noche";

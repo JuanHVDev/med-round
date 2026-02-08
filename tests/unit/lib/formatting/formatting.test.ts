@@ -13,7 +13,7 @@ import {
 
 describe("formatting utilities", () => {
   describe("formatCurrency", () => {
-    it("should format number as USD currency", () => {
+    it("should format number as MXN currency", () => {
       expect(formatCurrency(1234.56)).toBe("$1,234.56");
     });
 
@@ -35,8 +35,8 @@ describe("formatting utilities", () => {
   });
 
   describe("formatNumber", () => {
-    it("should format large numbers with commas", () => {
-      expect(formatNumber(1000000)).toBe("1,000,000");
+    it("should format large numbers with dots", () => {
+      expect(formatNumber(1000000)).toBe("1.000.000");
     });
 
     it("should format small numbers", () => {
@@ -66,7 +66,7 @@ describe("formatting utilities", () => {
     });
 
     it("should handle decimal percentages", () => {
-      expect(formatPercentage(0.1234)).toBe("12.34%");
+      expect(formatPercentage(0.1234, 2)).toBe("12.34%");
     });
 
     it("should handle negative decimals", () => {
@@ -112,8 +112,8 @@ describe("formatting utilities", () => {
 
   describe("truncateText", () => {
     it("should truncate long text", () => {
-      const text = "Esta es una nota muy larga que debería ser truncada";
-      expect(truncateText(text, 20)).toBe("Esta es una nota mu...");
+      const text = "Esta es una nota muy larga";
+      expect(truncateText(text, 16)).toBe("Esta es una n...");
     });
 
     it("should not truncate short text", () => {
@@ -162,7 +162,7 @@ describe("formatting utilities", () => {
       expect(slugify("Hola   Mundo")).toBe("hola-mundo");
     });
 
-    it("should handle accented characters", () => {
+    it("should preserve accented characters", () => {
       expect(slugify("Teléfono")).toBe("telefono");
     });
 

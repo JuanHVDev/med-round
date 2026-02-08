@@ -1,14 +1,15 @@
 export function formatCurrency(
   value: number,
-  currency: string = "USD",
-  locale: string = "es-ES"
+  currency: string = "MXN",
+  locale: string = "es-MX"
 ): string {
-  return new Intl.NumberFormat(locale, {
+  const formatter = new Intl.NumberFormat(locale, {
     style: "currency",
     currency,
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
-  }).format(value);
+  });
+  return formatter.format(value).replace("MX$", "MXN ");
 }
 
 export function formatNumber(
@@ -21,7 +22,7 @@ export function formatNumber(
 export function formatPercentage(
   value: number,
   decimals: number = 0,
-  locale: string = "es-ES"
+  locale: string = "en-US"
 ): string {
   return new Intl.NumberFormat(locale, {
     style: "percent",
@@ -66,7 +67,18 @@ export function truncateText(
   suffix: string = "..."
 ): string {
   if (text.length <= maxLength) return text;
-  return text.slice(0, maxLength - suffix.length) + suffix;
+  if (maxLength <= suffix.length) return text.slice(0, maxLength);
+  const segmenter = new Intl.Segmenter("es", { granularity: "grapheme" });
+  const segments = Array.from(segmenter.segment(text));
+  const truncatedLength = maxLength - suffix.length;
+  let result = "";
+  let charCount = 0;
+  for (const segment of segments) {
+    if (charCount >= truncatedLength) break;
+    result += segment.segment;
+    charCount++;
+  }
+  return result + suffix;
 }
 
 export function capitalizeFirst(str: string): string {
@@ -77,12 +89,12 @@ export function capitalizeFirst(str: string): string {
 export function slugify(text: string): string {
   return text
     .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
     .trim()
     .replace(/[^\w\s-]/g, "")
     .replace(/[\s_-]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "");
+    .replace(/^-+|-+$/g, "");
 }
 
 export function formatInitials(name: string): string {
