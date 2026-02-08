@@ -12,6 +12,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { renderToBuffer } from "@react-pdf/renderer";
 import type { ReactElement } from "react";
+import type { DocumentProps } from "@react-pdf/renderer";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit, getRateLimitHeaders } from "@/lib/rate-limit";
@@ -191,7 +192,7 @@ export async function GET(
       criticalPatients: criticalPatients || [],
     });
 
-    const pdfBuffer = await renderToBuffer(pdfElement as ReactElement);
+    const pdfBuffer = await renderToBuffer(pdfElement as ReactElement<DocumentProps>);
 
     const uint8Array = new Uint8Array(pdfBuffer);
 
