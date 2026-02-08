@@ -8,6 +8,7 @@ npm run dev                 # Start Next.js dev server on http://localhost:3000
 npm run build               # Build production application
 npm run start               # Start production server
 npm run lint                # Run ESLint with auto-fix
+npm run analyze             # Bundle analysis
 
 # Testing (Vitest)
 npm run test                # Run tests in watch mode
@@ -16,118 +17,64 @@ npm run test:coverage       # Run tests with coverage report
 npm run test:run            # Run all tests once (CI mode)
 npm run test:unit           # Run unit tests only
 npm run test:integration    # Run integration tests only
+npm run test:e2e            # Run E2E tests with Playwright
+npm run test:e2e:ui         # Run E2E tests with Playwright UI
 
 # Single test commands
 npx vitest run tests/services/handover/handoverService.test.ts  # Single file
 npx vitest run -t "should create handover"                      # Single test by name
-npx vitest run tests/services --reporter=verbose               # With verbose output
 
 # Database (PostgreSQL for dev/prod, SQLite for tests)
 npm run db:generate         # Generate Prisma client
-npm run db:migrate          # Create and run migrations (interactive)
+npm run db:migrate          # Create and run migrations
 npm run db:push             # Push schema changes (dev only)
 npm run db:studio           # Open Prisma Studio GUI
-
-# Test database commands
-npm run db:test:generate    # Generate Prisma client for SQLite tests
-npm run db:test:migrate     # Run migrations on test database
 ```
 
 ## Project Structure
 
 ```
-app/                        # Next.js 16 App Router
-├── api/                    # API routes (route.ts files)
-├── (routes)/               # Page routes (grouped routes)
-├── layout.tsx              # Root layout
-└── globals.css             # Tailwind CSS v4 imports
-
-components/                 # React components
-├── ui/                     # shadcn/ui components
-├── providers/              # Context providers
-├── forms/                  # Form components
-├── patients/               # Patient-specific components
-├── soap/                   # SOAP note components
-├── tasks/                  # Task/Kanban components
-└── handover/               # Handover components
-
-lib/                        # Utilities and configurations
-├── auth.ts                 # Better Auth server config
-├── auth-client.ts          # Better Auth client
-├── prisma.ts               # Prisma singleton client
-├── errors.ts               # Custom error classes
-├── rate-limit.ts           # Redis rate limiting
-├── email.ts                # Email service
-└── utils.ts                # cn() utility
-
-services/                   # Business logic layer
-├── patient/                # Patient CRUD services
-├── soap/                   # SOAP note services
-├── tasks/                  # Task management services
-├── handover/               # Handover services (Fase 5)
-└── types/                  # Service type definitions
-
+app/                        # Next.js 16 App Router (pages, layouts, API)
+components/                 # React components (ui/, forms/, patients/, soap/, tasks/, handover/)
+lib/                        # Utilities (auth.ts, prisma.ts, errors.ts, rate-limit.ts, utils.ts)
+services/                   # Business logic layer (patient/, soap/, tasks/, handover/)
 stores/                     # Zustand state stores
 hooks/                      # Custom React hooks
-tests/                      # Test suites
-├── services/               # Unit tests for services
-├── lib/                    # Unit tests for lib/
-├── integration/            # Integration tests
-├── setup.ts                # Vitest setup (runs before each file)
-└── global-setup.ts         # Global setup (runs once)
-
-prisma/
-├── schema.prisma           # PostgreSQL schema (production)
-└── schema.test.prisma      # SQLite schema (testing)
+tests/                      # Test suites (services/, lib/, integration/)
+prisma/                     # schema.prisma (PostgreSQL), schema.test.prisma (SQLite)
 ```
 
 ## TypeScript & Code Style
 
-### Import Organization
-```typescript
-// 1. External libraries
-import { NextRequest, NextResponse } from "next/server";
-import type { Metadata } from "next";
-
-// 2. Internal modules (@/* alias)
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-
-// 3. Type imports (use `import type`)
-import type { RegistrationData } from "@/services/types";
-```
+### Import Order
+1. External libraries (`next/server`, `react`)
+2. Internal modules (`@/lib/utils`, `@/components/...`)
+3. Type imports (`import type`)
 
 ### Naming Conventions
 - **Components**: PascalCase (`Button.tsx`, `HandoverBuilder.tsx`)
 - **Files/Folders**: camelCase (`utils.ts`, `handoverService.ts`)
 - **Constants**: UPPER_SNAKE_CASE
-- **Database Models**: PascalCase in Prisma, camelCase in code
-- **API Routes**: lowercase (`route.ts`)
 - **Variables/Functions**: camelCase
+- **API Routes**: lowercase (`route.ts`)
 
 ### Formatting Rules
-- **Double quotes** enforced by ESLint
-- No semicolons (Next.js default)
-- 2 spaces indentation
-- Max 100 characters per line
+- Double quotes, no semicolons, 2 spaces indentation, max 100 chars/line
 - **Never use `any`** - strict TypeScript enforced
+- Use `cn()` utility for Tailwind class merging
 
 ## Component Patterns
 
 ### Server Component (default)
 ```typescript
-export default async function Page() {
-  return <div>Content</div>;
-}
+export default async function Page() { return <div>Content</div>; }
 ```
 
 ### Client Component
 ```typescript
 "use client";
 import { useState } from "react";
-export function ClientComponent() {
-  const [state, setState] = useState();
-}
+export function ClientComponent() { const [state, setState] = useState(); }
 ```
 
 ### UI Component (shadcn/ui style)
@@ -140,62 +87,34 @@ function Button({ className, ...props }: React.ComponentProps<"button">) {
 }
 ```
 
-## Testing Guidelines (TDD Approach)
+## Testing Guidelines (TDD)
 
 ### Test Structure (AAA Pattern)
 ```typescript
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-// Mock external modules with vi.hoisted
-const mockFns = vi.hoisted(() => ({
-  get: vi.fn(),
-  set: vi.fn(),
-}));
+const mockFns = vi.hoisted(() => ({ get: vi.fn(), set: vi.fn() }));
+vi.mock("@upstash/redis", () => ({ Redis: { fromEnv: () => mockFns } }));
 
-vi.mock("@upstash/redis", () => ({
-  Redis: { fromEnv: () => mockFns },
-}));
-
-// Import after mocks
 import { functionToTest } from "@/lib/module";
 
 describe("Feature Name", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
-  it("should do something specific", async () => {
-    // Arrange
+  beforeEach(() => vi.clearAllMocks());
+  it("should do something", async () => {
     mockFns.get.mockResolvedValue(0);
-    
-    // Act
     const result = await functionToTest();
-    
-    // Assert
     expect(result.allowed).toBe(true);
-    expect(mockFns.set).toHaveBeenCalledWith(
-      expect.any(String),
-      expect.any(Number),
-      expect.any(Object)
-    );
   });
 });
 ```
 
 ### Test Categories
-- **Unit tests**: Mock external dependencies (Redis, DB, email)
-- **Integration tests**: Test API routes with real SQLite database
-- **E2E tests**: Full user flows (minimal, use sparingly)
-
-### TDD Workflow
-1. Write tests first (tests should fail)
-2. Implement minimal code to make tests pass
-3. Refactor if needed
-4. Run `npm run lint` before committing
+- **Unit tests**: Mock external deps (Redis, DB, email)
+- **Integration tests**: Real SQLite database
+- **E2E tests**: Playwright for full user flows
 
 ## Error Handling
 
-### Custom Error Classes (lib/errors.ts)
 ```typescript
 import { ErrorCodes, ZodValidationError, RateLimitError } from "@/lib/errors";
 
@@ -203,81 +122,42 @@ try {
   // logic
 } catch (error) {
   if (error instanceof ZodValidationError) {
-    return NextResponse.json(
-      { error: error.message, code: error.code },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: error.message }, { status: 400 });
   }
-  
   console.error("Error:", error);
-  return NextResponse.json(
-    { error: "Error interno", code: ErrorCodes.INTERNAL_ERROR },
-    { status: 500 }
-  );
+  return NextResponse.json({ error: "Error interno", code: ErrorCodes.INTERNAL_ERROR }, { status: 500 });
 }
 ```
 
-### HTTP Status Codes
-- `400` - Bad Request (validation errors)
-- `401` - Unauthorized (no session)
-- `403` - Forbidden (no permission)
-- `409` - Conflict (duplicate user)
-- `429` - Rate limit exceeded
-- `500` - Internal server error
+**HTTP Status Codes**: 400 (validation), 401 (unauthorized), 403 (forbidden), 409 (conflict), 429 (rate limit), 500 (internal)
 
 ## Database & Auth Patterns
 
-### Prisma Singleton
 ```typescript
 import { prisma } from "@/lib/prisma";
 const user = await prisma.user.findUnique({ where: { id } });
-```
 
-### Better Auth Session Check
-```typescript
 import { auth } from "@/lib/auth";
 const session = await auth.api.getSession({ headers: request.headers });
-if (!session) {
-  return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-}
-```
+if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-### Rate Limiting
-```typescript
-import { checkRateLimit, getRateLimitHeaders } from "@/lib/rate-limit";
+import { checkRateLimit } from "@/lib/rate-limit";
 const rateLimit = await checkRateLimit(`action:${ip}`);
-if (!rateLimit.allowed) {
-  return NextResponse.json(
-    { error: "Rate limit exceeded" },
-    { status: 429, headers: getRateLimitHeaders(0, rateLimit.resetTime) }
-  );
-}
 ```
 
 ## Key Conventions
 
-- **Spanish UI**: All user-facing text in Spanish (`lang="es"`)
-- **Medical Domain**: App for medical professionals
+- **Spanish UI**: All user-facing text in Spanish
 - **Server Components**: Default, use `"use client"` only when needed
 - **Security**: Never log secrets, validate all inputs
-- **Comments**: Technical comments in English, user text in Spanish
+- **Comments**: Technical in English, user text in Spanish
 - **Git**: Conventional commits (`feat:`, `fix:`, `refactor:`, `test:`)
-- **Styling**: Tailwind CSS v4 with `cn()` utility from `@/lib/utils`
 
 ## Troubleshooting
 
-**Test database locked:**
 ```bash
-rm medround_test.db && npm run db:test:migrate
-```
-
-**Prisma client out of sync:**
-```bash
-npm run db:generate        # For PostgreSQL
-npm run db:test:generate   # For SQLite tests
-```
-
-**ESLint errors:**
-```bash
-npm run lint  # Auto-fix most issues
+# Test database locked
+rm medround_test.db && npm run db:generate && npx vitest run tests/integration
+# Prisma client out of sync
+npm run db:generate && npm run db:push
 ```

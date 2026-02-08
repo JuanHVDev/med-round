@@ -68,6 +68,7 @@ export async function GET(request: NextRequest)
       isActive: searchParams.get("isActive") === "false" ? false : true,
       service: searchParams.get("service") || undefined,
       bedNumber: searchParams.get("bedNumber") || undefined,
+      search: searchParams.get("search") || undefined,
       page: searchParams.get("page") ? parseInt(searchParams.get("page")!, 10) : undefined,
       limit: searchParams.get("limit") ? parseInt(searchParams.get("limit")!, 10) : undefined,
     };

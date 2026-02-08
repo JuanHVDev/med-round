@@ -315,6 +315,16 @@ export class PatientService
         where.bedNumber = { contains: filters.bedNumber };
       }
 
+      if (filters.search)
+      {
+        where.OR = [
+          { firstName: { contains: filters.search, mode: "insensitive" } },
+          { lastName: { contains: filters.search, mode: "insensitive" } },
+          { medicalRecordNumber: { contains: filters.search, mode: "insensitive" } },
+          { bedNumber: { contains: filters.search, mode: "insensitive" } },
+        ];
+      }
+
       // Ejecutar query y count en paralelo
       const [patients, total] = await this.prisma.$transaction([
         this.prisma.patient.findMany({

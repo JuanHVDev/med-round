@@ -79,6 +79,7 @@ export interface ListPatientsFilters
   isActive?: boolean;
   service?: string;
   bedNumber?: string;
+  search?: string;
   page?: number;
   limit?: number;
 }

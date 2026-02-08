@@ -16,6 +16,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { EmailService } from "./email/emailService";
 import { RegistrationService } from "./auth/registrationService";
+import { HandoverService } from "./handover/handoverService";
 
 /**
  * Servicio de email con retry logic y timeout
@@ -37,3 +38,10 @@ export const registrationService = new RegistrationService(
   },
   emailService
 );
+
+/**
+ * Servicio de handover (Entrega de Guardia)
+ * Maneja CRUD de handovers, detección de pacientes críticos
+ * y generación de resúmenes
+ */
+export const handoverService = new HandoverService(prisma);
