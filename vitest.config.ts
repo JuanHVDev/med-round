@@ -7,9 +7,8 @@ export default defineConfig({
     environment: "node",
     include: ["tests/**/*.{test,spec}.{ts,tsx}"],
     setupFiles: ["./tests/setup.ts"],
-    globalSetup: "./tests/global-setup.ts",
+    // globalSetup: "./tests/global-setup.ts",
     testTimeout: 15000,
-    pool: "forks",
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html"],
