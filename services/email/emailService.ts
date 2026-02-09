@@ -1,4 +1,4 @@
-import { resend } from "@/lib/email";
+import { getResendClient, sendEmail as sendEmailLib } from "@/lib/email";
 import type { EmailOptions, EmailResult } from "../types/serviceTypes";
 import { ErrorCodes } from "@/lib/errors";
 
@@ -94,31 +94,28 @@ export class EmailService implements IEmailService {
   }
 
   private async sendEmail(options: EmailOptions): Promise<EmailResult> {
-    const from = process.env.EMAIL_FROM ?? "noreply@medround.app";
-    const fromName = process.env.EMAIL_FROM_NAME ?? "MedRound";
-
-    const { data, error } = await resend.emails.send({
-      from: `${fromName} <${from}>`,
+    const result = await sendEmailLib({
       to: options.to,
       subject: options.subject,
+      text: options.text || "",
       html: options.html,
-      text: options.text,
     });
 
-    if (error) {
+    if (!result.success) {
       return {
         success: false,
         error: {
           code: ErrorCodes.EMAIL_SEND_ERROR,
-          message: error.message,
-          details: error.name ? `Error name: ${error.name}` : undefined,
+          message: result.error || "Error al enviar email",
         },
       };
     }
 
     return {
       success: true,
-      messageId: data?.id ?? "unknown",
+      messageId: typeof result.data === "object" && result.data !== null 
+        ? (result.data as { id?: string }).id ?? "unknown" 
+        : "unknown",
     };
   }
 

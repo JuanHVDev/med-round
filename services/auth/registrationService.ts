@@ -175,10 +175,15 @@ export class RegistrationService implements IRegistrationService {
     | { success: false; error: { code: ErrorCode; message: string } }
   > {
     try {
+      // Si el hospital es "Otro", usar el valor de otherHospital
+      const hospitalValue = data.hospital === "Otro" && data.otherHospital
+        ? data.otherHospital
+        : data.hospital;
+
       // Doble verificación de sanitización antes de guardar en BD
       const sanitizedProfile = sanitizeProfileData({
         fullName: data.fullName,
-        hospital: data.hospital,
+        hospital: hospitalValue,
         specialty: data.specialty,
         professionalId: data.professionalId,
         universityMatricula: data.universityMatricula,

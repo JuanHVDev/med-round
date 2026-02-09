@@ -5,10 +5,10 @@ const ContentSecurityPolicy = `
   default-src 'self';
   script-src 'self' 'unsafe-inline' 'unsafe-eval';
   style-src 'self' 'unsafe-inline';
-  img-src 'self' data: https:;
-  font-src 'self';
-  connect-src 'self';
-  media-src 'self';
+  img-src 'self' data: https: blob:;
+  font-src 'self' data:;
+  connect-src 'self' https://api.openai.com https://api.google.com;
+  media-src 'self' data: blob:;
   object-src 'none';
   frame-ancestors 'self';
   base-uri 'self';
@@ -27,6 +27,21 @@ const nextConfig: NextConfig = {
     minimumCacheTTL: 31536000,
     dangerouslyAllowSVG: false,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**",
+      },
+    ],
+  },
+
+  experimental: {
+    optimizeCss: true,
+    optimizePackageImports: ["lucide-react", "framer-motion", "@radix-ui/react-*"],
+  },
+
+  compiler: {
+    removeConsole: process.env.NODE_ENV === "production",
   },
 
   async headers() {
@@ -61,6 +76,33 @@ const nextConfig: NextConfig = {
           {
             key: "Strict-Transport-Security",
             value: "max-age=31536000; includeSubDomains; preload",
+          },
+        ],
+      },
+      {
+        source: "/:all/(.*)",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+      {
+        source: "/images/:all*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+      {
+        source: "/fonts/:all*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
           },
         ],
       },

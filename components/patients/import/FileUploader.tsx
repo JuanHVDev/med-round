@@ -63,7 +63,8 @@ export function FileUploader({
     setSelectedFile(null);
   };
 
-  const getFileIcon = (file: File) => {
+  const getFileIcon = (file: File | null) => {
+    if (!file) return <FileText className="h-8 w-8 text-gray-500" />;
     if (file.type === "text/csv" || file.name.endsWith(".csv")) {
       return <FileSpreadsheet className="h-8 w-8 text-green-500" />;
     }
@@ -88,16 +89,16 @@ export function FileUploader({
       )}
 
       {!selectedFile ? (
-        <Card
-          {...getRootProps()}
-          className={cn(
-            "border-2 border-dashed p-12 text-center cursor-pointer transition-all",
-            isDragActive && "border-primary bg-primary/5 scale-105",
-            isProcessing && "opacity-50 cursor-not-allowed",
-            !isDragActive && !isProcessing && "hover:border-primary/50 hover:bg-muted/50"
-          )}
-        >
-          <input {...getInputProps()} />
+        <div {...getRootProps()} className="outline-none">
+          <Card
+            className={cn(
+              "border-2 border-dashed p-12 text-center cursor-pointer transition-all",
+              isDragActive && "border-primary bg-primary/5 scale-105",
+              isProcessing && "opacity-50 cursor-not-allowed",
+              !isDragActive && !isProcessing && "hover:border-primary/50 hover:bg-muted/50"
+            )}
+          >
+            <input {...getInputProps()} />
           
           <div className="flex flex-col items-center gap-4">
             {isProcessing ? (
@@ -126,14 +127,15 @@ export function FileUploader({
             </div>
           </div>
         </Card>
+      </div>
       ) : (
         <Card className="p-6">
           <div className="flex items-center gap-4">
-            {getFileIcon(selectedFile)}
+            {selectedFile && getFileIcon(selectedFile)}
             <div className="flex-1 min-w-0">
-              <p className="font-medium truncate">{selectedFile.name}</p>
+              <p className="font-medium truncate">{selectedFile?.name}</p>
               <p className="text-sm text-muted-foreground">
-                {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
+                {selectedFile ? (selectedFile.size / 1024 / 1024).toFixed(2) : "0"} MB
               </p>
             </div>
             {!isProcessing && (

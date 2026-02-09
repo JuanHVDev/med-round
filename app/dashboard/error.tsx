@@ -17,47 +17,36 @@ export default function DashboardError({
   }, [error]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50">
-      {/* Header */}
-      <div className="bg-white/80 backdrop-blur-sm border-b border-border shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 items-center">
-            <h1 className="text-xl font-semibold text-foreground">Dashboard</h1>
+    <div className="p-6">
+      <Card className="max-w-md mx-auto bg-card/50 border-primary/10 backdrop-blur-sm">
+        <CardHeader className="text-center">
+          <div className="mx-auto mb-4 w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center">
+            <AlertCircle className="h-8 w-8 text-red-500" />
           </div>
-        </div>
-      </div>
+          <CardTitle className="text-xl font-display">Error en el Dashboard</CardTitle>
+          <CardDescription>
+            No se pudo cargar la información del dashboard. Por favor, intenta nuevamente.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <Button
+            onClick={reset}
+            className="w-full gap-2"
+            variant="default"
+          >
+            <RefreshCw className="h-4 w-4" />
+            Reintentar
+          </Button>
 
-      {/* Error Content */}
-      <div className="max-w-7xl mx-auto py-12 sm:px-6 lg:px-8">
-        <Card className="max-w-md mx-auto modern-card">
-          <CardHeader className="text-center">
-            <div className="mx-auto mb-4 w-16 h-16 bg-destructive/10 rounded-full flex items-center justify-center">
-              <AlertCircle className="h-8 w-8 text-destructive" />
-            </div>
-            <CardTitle className="text-xl">Error en el Dashboard</CardTitle>
-            <CardDescription>
-              No se pudo cargar la información del dashboard. Por favor, intenta nuevamente.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <Button
-              onClick={reset}
-              className="w-full btn-primary gap-2"
-            >
-              <RefreshCw className="h-4 w-4" />
-              Reintentar
-            </Button>
-
-            <Button
-              variant="outline"
-              onClick={() => window.location.reload()}
-              className="w-full"
-            >
-              Recargar página
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
+          <Button
+            variant="outline"
+            onClick={() => window.location.reload()}
+            className="w-full hover:bg-primary/5"
+          >
+            Recargar página
+          </Button>
+        </CardContent>
+      </Card>
     </div>
   );
 }

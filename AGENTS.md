@@ -29,6 +29,7 @@ npm run db:generate         # Generate Prisma client
 npm run db:migrate          # Create and run migrations
 npm run db:push             # Push schema changes (dev only)
 npm run db:studio           # Open Prisma Studio GUI
+npm run db:seed             # Seed database with initial data
 ```
 
 ## Project Structure
@@ -51,6 +52,8 @@ prisma/                     # schema.prisma (PostgreSQL), schema.test.prisma (SQ
 2. Internal modules (`@/lib/utils`, `@/components/...`)
 3. Type imports (`import type`)
 
+**Path Aliases**: `@/*` maps to `.//*`, `@/lib` → `./lib`, `@/app` → `./app`, `@/components` → `./components`, `@/services` → `./services`
+
 ### Naming Conventions
 - **Components**: PascalCase (`Button.tsx`, `HandoverBuilder.tsx`)
 - **Files/Folders**: camelCase (`utils.ts`, `handoverService.ts`)
@@ -61,7 +64,7 @@ prisma/                     # schema.prisma (PostgreSQL), schema.test.prisma (SQ
 ### Formatting Rules
 - Double quotes, no semicolons, 2 spaces indentation, max 100 chars/line
 - **Never use `any`** - strict TypeScript enforced
-- Use `cn()` utility for Tailwind class merging
+- Use `cn()` utility for Tailwind class merging (combines clsx + tailwind-merge for dynamic classes)
 
 ## Component Patterns
 
@@ -109,9 +112,9 @@ describe("Feature Name", () => {
 ```
 
 ### Test Categories
-- **Unit tests**: Mock external deps (Redis, DB, email)
-- **Integration tests**: Real SQLite database
-- **E2E tests**: Playwright for full user flows
+- **Unit**: Mock external deps (Redis, DB, email)
+- **Integration**: Real SQLite database  
+- **E2E**: Playwright for full user flows
 
 ## Error Handling
 
@@ -149,15 +152,14 @@ const rateLimit = await checkRateLimit(`action:${ip}`);
 
 - **Spanish UI**: All user-facing text in Spanish
 - **Server Components**: Default, use `"use client"` only when needed
-- **Security**: Never log secrets, validate all inputs
+- **Security**: Never log secrets, validate all inputs, security headers by default
 - **Comments**: Technical in English, user text in Spanish
 - **Git**: Conventional commits (`feat:`, `fix:`, `refactor:`, `test:`)
 
 ## Troubleshooting
 
 ```bash
-# Test database locked
-rm medround_test.db && npm run db:generate && npx vitest run tests/integration
-# Prisma client out of sync
-npm run db:generate && npm run db:push
+# Test database locked: rm medround_test.db && npm run db:generate && npx vitest run tests/integration
+# Prisma client out of sync: npm run db:generate && npm run db:push
+# Coverage exclusions: tests/, mocks/, *.config.*, *.d.ts
 ```

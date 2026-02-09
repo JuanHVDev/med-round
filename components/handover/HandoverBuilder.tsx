@@ -13,23 +13,21 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Users, ClipboardList, CheckCircle, ArrowRight, ArrowLeft, Loader2 } from "lucide-react";
+import { Plus, Users, ClipboardList, CheckCircle, ArrowRight, ArrowLeft, Loader2, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { useHandover } from "@/hooks/useHandover";
 import { usePatients, type PatientListItem } from "@/hooks/usePatients";
-import { useTasks } from "@/hooks/useTasks";
 import type { Task as TaskType } from "@/hooks/useTasks";
 import { CriticalPatientCard } from "./CriticalPatientCard";
-import { PatientSearchDialog } from "./PatientSearchDialog";
 import { PatientMultiSelect } from "./PatientMultiSelect";
 import { TaskSearch } from "./TaskSearchDialog";
-import { HandoverSummary } from "./HandoverSummary";
-import { GeneratePDFButton } from "./GeneratePDFButton";
+import { MedRoundLogo } from "@/components/ui/med-round-logo";
 import type { CriticalPatientInfo } from "@/services/handover/types";
 
 type Step = "info" | "patients" | "tasks" | "notes" | "review";
@@ -45,7 +43,7 @@ interface HandoverBuilderProps {
   existingHandoverId?: string;
 }
 
-export function HandoverBuilder({ hospital, existingHandoverId }: HandoverBuilderProps) {
+export function HandoverBuilder({ hospital }: HandoverBuilderProps) {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState<Step>("info");
   const [formData, setFormData] = useState({
@@ -61,15 +59,11 @@ export function HandoverBuilder({ hospital, existingHandoverId }: HandoverBuilde
   const {
     createHandover,
     updateHandover,
-    finalizeHandover,
     isCreating,
-    isUpdating,
-    isFinalizing,
   } = useHandover({ hospital });
 
   const { data: patientsData } = usePatients({ hospital, limit: 100 });
   
-  // Computar selectedPatients basado en los datos disponibles
   const selectedPatients = patientsData?.patients.filter(
     (patient) => formData.includedPatientIds.includes(patient.id)
   ) || [];
@@ -77,7 +71,7 @@ export function HandoverBuilder({ hospital, existingHandoverId }: HandoverBuilde
   const [criticalPatients, setCriticalPatients] = useState<CriticalPatientInfo[]>([]);
 
   const steps = [
-    { id: "info", label: "Información del Turno", icon: ClipboardList },
+    { id: "info", label: "Información", icon: FileText },
     { id: "patients", label: "Pacientes", icon: Users },
     { id: "tasks", label: "Tareas", icon: ClipboardList },
     { id: "notes", label: "Notas", icon: CheckCircle },
@@ -143,27 +137,34 @@ export function HandoverBuilder({ hospital, existingHandoverId }: HandoverBuilde
   };
 
   const renderStepInfo = () => (
-    <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="service">Servicio</Label>
+    <div className="space-y-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className="space-y-3">
+          <Label htmlFor="service" className="flex items-center gap-2">
+            <ClipboardList className="h-4 w-4 text-primary" />
+            Servicio
+          </Label>
           <Input
             id="service"
             placeholder="Ej: Urgencias, planta, UCI..."
             value={formData.service}
             onChange={(e) => setFormData({ ...formData, service: e.target.value })}
+            className="bg-card/50 border-primary/20 focus:border-primary/50"
           />
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="shiftType">Tipo de Turno</Label>
+        <div className="space-y-3">
+          <Label htmlFor="shiftType" className="flex items-center gap-2">
+            <Users className="h-4 w-4 text-primary" />
+            Tipo de Turno
+          </Label>
           <Select
             value={formData.shiftType}
             onValueChange={(value) =>
               setFormData({ ...formData, shiftType: value as "MORNING" | "AFTERNOON" | "NIGHT" })
             }
           >
-            <SelectTrigger>
+            <SelectTrigger className="bg-card/50 border-primary/20 focus:border-primary/50">
               <SelectValue placeholder="Seleccionar turno" />
             </SelectTrigger>
             <SelectContent>
@@ -176,23 +177,31 @@ export function HandoverBuilder({ hospital, existingHandoverId }: HandoverBuilde
           </Select>
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="shiftDate">Fecha del Turno</Label>
+        <div className="space-y-3">
+          <Label htmlFor="shiftDate" className="flex items-center gap-2">
+            <FileText className="h-4 w-4 text-primary" />
+            Fecha del Turno
+          </Label>
           <Input
             id="shiftDate"
             type="date"
             value={formData.shiftDate}
             onChange={(e) => setFormData({ ...formData, shiftDate: e.target.value })}
+            className="bg-card/50 border-primary/20 focus:border-primary/50 font-mono"
           />
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="startTime">Hora de Inicio</Label>
+        <div className="space-y-3">
+          <Label htmlFor="startTime" className="flex items-center gap-2">
+            <CheckCircle className="h-4 w-4 text-primary" />
+            Hora de Inicio
+          </Label>
           <Input
             id="startTime"
             type="time"
             value={formData.startTime}
             onChange={(e) => setFormData({ ...formData, startTime: e.target.value })}
+            className="bg-card/50 border-primary/20 focus:border-primary/50 font-mono"
           />
         </div>
       </div>
@@ -200,9 +209,12 @@ export function HandoverBuilder({ hospital, existingHandoverId }: HandoverBuilde
   );
 
   const renderStepPatients = () => (
-    <div className="space-y-4">
+    <div className="space-y-5">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-medium">Seleccionar Pacientes</h3>
+        <h3 className="text-lg font-semibold font-display flex items-center gap-2">
+          <Users className="h-5 w-5 text-primary" />
+          Seleccionar Pacientes
+        </h3>
         <p className="text-sm text-muted-foreground">
           Marca los pacientes que quieres incluir en este handover
         </p>
@@ -218,8 +230,8 @@ export function HandoverBuilder({ hospital, existingHandoverId }: HandoverBuilde
 
       {criticalPatients.length > 0 && (
         <div className="mt-6">
-          <h3 className="text-lg font-medium mb-3 flex items-center gap-2">
-            <span className="text-red-500">⚠️</span>
+          <h3 className="text-lg font-semibold mb-3 flex items-center gap-2 font-display">
+            <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
             Pacientes Críticos Detectados
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -233,8 +245,11 @@ export function HandoverBuilder({ hospital, existingHandoverId }: HandoverBuilde
   );
 
   const renderStepTasks = () => (
-    <div className="space-y-4">
-      <h3 className="text-lg font-medium">Buscar y Seleccionar Tareas</h3>
+    <div className="space-y-5">
+      <h3 className="text-lg font-semibold font-display flex items-center gap-2">
+        <ClipboardList className="h-5 w-5 text-primary" />
+        Buscar y Seleccionar Tareas
+      </h3>
 
       <TaskSearch
         selectedTasks={selectedTasks}
@@ -245,12 +260,15 @@ export function HandoverBuilder({ hospital, existingHandoverId }: HandoverBuilde
   );
 
   const renderStepNotes = () => (
-    <div className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="generalNotes">Notas Generales del Turno</Label>
-        <textarea
+    <div className="space-y-5">
+      <div className="space-y-3">
+        <Label htmlFor="generalNotes" className="flex items-center gap-2 font-display">
+          <FileText className="h-4 w-4 text-primary" />
+          Notas Generales del Turno
+        </Label>
+        <Textarea
           id="generalNotes"
-          className="w-full min-h-[200px] p-3 border rounded-lg resize-none"
+          className="w-full min-h-[200px] p-4 bg-card/50 border-primary/20 focus:border-primary/50 resize-none font-mono"
           placeholder="Escribe aquí cualquier información relevante para el próximo turno..."
           value={formData.generalNotes}
           onChange={(e) => setFormData({ ...formData, generalNotes: e.target.value })}
@@ -263,48 +281,52 @@ export function HandoverBuilder({ hospital, existingHandoverId }: HandoverBuilde
   );
 
   const renderStepReview = () => (
-    <div className="space-y-4">
-      <Card>
-        <CardHeader>
-          <CardTitle>Resumen del Handover</CardTitle>
+    <div className="space-y-5">
+      <Card className="bg-card/50 border-primary/10">
+        <CardHeader className="bg-primary/5 border-b border-primary/10 pb-4">
+          <div className="flex items-center gap-2">
+            <CheckCircle className="h-5 w-5 text-primary" />
+            <CardTitle className="font-display">Resumen del Handover</CardTitle>
+          </div>
           <CardDescription>Revisa la información antes de finalizar</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="pt-6 space-y-5">
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Servicio</p>
-              <p className="font-semibold">{formData.service || "No especificado"}</p>
+
+            <div className="p-3 bg-primary/5 rounded-lg border border-primary/10">
+              <p className="text-xs text-muted-foreground font-display">Servicio</p>
+              <p className="font-semibold font-mono">{formData.service || "No especificado"}</p>
             </div>
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Turno</p>
-              <p className="font-semibold">
+            <div className="p-3 bg-primary/5 rounded-lg border border-primary/10">
+              <p className="text-xs text-muted-foreground font-display">Turno</p>
+              <p className="font-semibold font-mono">
                 {shiftTypes.find((s) => s.value === formData.shiftType)?.label || "No especificado"}
               </p>
             </div>
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Fecha</p>
-              <p className="font-semibold">{formData.shiftDate}</p>
+            <div className="p-3 bg-primary/5 rounded-lg border border-primary/10">
+              <p className="text-xs text-muted-foreground font-display">Fecha</p>
+              <p className="font-semibold font-mono">{formData.shiftDate}</p>
             </div>
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Pacientes</p>
-              <p className="font-semibold">{selectedPatients.length}</p>
+            <div className="p-3 bg-cyan-500/5 rounded-lg border border-cyan-500/10">
+              <p className="text-xs text-muted-foreground font-display">Pacientes</p>
+              <p className="font-semibold font-mono text-cyan-600">{selectedPatients.length}</p>
             </div>
-            <div>
-              <p className="text-sm font-medium text-muted-foreground">Tareas</p>
-              <p className="font-semibold">{selectedTasks.length}</p>
+            <div className="p-3 bg-teal-500/5 rounded-lg border border-teal-500/10">
+              <p className="text-xs text-muted-foreground font-display">Tareas</p>
+              <p className="font-semibold font-mono text-teal-600">{selectedTasks.length}</p>
             </div>
           </div>
 
           {selectedTasks.length > 0 && (
-            <div>
-              <p className="text-sm font-medium text-muted-foreground mb-2">Tareas Incluidas</p>
-              <div className="space-y-1 max-h-[150px] overflow-y-auto">
+            <div className="p-3 bg-primary/5 rounded-lg border border-primary/10">
+              <p className="text-xs text-muted-foreground mb-2 font-display">Tareas Incluidas</p>
+              <div className="space-y-1 max-h-[120px] overflow-y-auto">
                 {selectedTasks.slice(0, 5).map((task) => (
-                  <p key={task.id} className="text-sm">
-                    • {task.title}
+                  <p key={task.id} className="text-sm flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                    {task.title}
                     {task.patient && (
-                      <span className="text-muted-foreground">
-                        {" "}
+                      <span className="text-muted-foreground font-mono text-xs">
                         ({task.patient.firstName} {task.patient.lastName})
                       </span>
                     )}
@@ -319,15 +341,16 @@ export function HandoverBuilder({ hospital, existingHandoverId }: HandoverBuilde
             </div>
           )}
 
-          <div>
-            <p className="text-sm font-medium text-muted-foreground mb-2">Notas</p>
-            <p className="text-sm">{formData.generalNotes || "Sin notas adicionales"}</p>
+          <div className="p-3 bg-primary/5 rounded-lg border border-primary/10">
+            <p className="text-xs text-muted-foreground mb-2 font-display">Notas</p>
+            <p className="text-sm font-mono">{formData.generalNotes || "Sin notas adicionales"}</p>
           </div>
 
           {criticalPatients.length > 0 && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-              <p className="text-sm font-medium text-red-800">
-                ⚠️ {criticalPatients.length} paciente(s) crítico(s) detectado(s)
+            <div className="bg-red-500/5 border border-red-500/20 rounded-lg p-4">
+              <p className="text-sm font-semibold text-red-600 flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                {criticalPatients.length} paciente(s) crítico(s) detectado(s)
               </p>
             </div>
           )}
@@ -356,13 +379,12 @@ export function HandoverBuilder({ hospital, existingHandoverId }: HandoverBuilde
   const isCurrentStepValid = (): boolean => {
     switch (currentStep) {
       case "info":
-        return formData.service.length > 0 && formData.shiftType.length > 0;
+        const hasService = formData.service.length > 0;
+        const hasShiftType = formData.shiftType.length > 0;
+        return hasService && hasShiftType;
       case "patients":
-        return true;
       case "tasks":
-        return true;
       case "notes":
-        return true;
       case "review":
         return true;
       default:
@@ -374,8 +396,11 @@ export function HandoverBuilder({ hospital, existingHandoverId }: HandoverBuilde
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Nueva Entrega de Guardia</h1>
-          <p className="text-muted-foreground">Hospital: {hospital}</p>
+          <h1 className="text-2xl font-display font-bold flex items-center gap-3">
+            <MedRoundLogo size="sm" />
+            Nueva Entrega de Guardia
+          </h1>
+          <p className="text-muted-foreground font-mono text-sm mt-1">Hospital: {hospital}</p>
         </div>
       </div>
 
@@ -389,34 +414,37 @@ export function HandoverBuilder({ hospital, existingHandoverId }: HandoverBuilde
             <div key={step.id} className="flex items-center gap-2">
               <div
                 className={cn(
-                  "flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors",
-                  isActive && "bg-blue-100 text-blue-800",
-                  isCompleted && "bg-green-100 text-green-800",
-                  !isActive && !isCompleted && "bg-gray-100 text-gray-600"
+                  "flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all",
+                  isActive && "bg-primary/10 text-primary border-2 border-primary/30 shadow-lg shadow-primary/5",
+                  isCompleted && "bg-primary/5 text-primary border-2 border-primary/20",
+                  !isActive && !isCompleted && "bg-muted/50 text-muted-foreground"
                 )}
               >
                 <StepIcon className="h-4 w-4" />
-                <span className="hidden sm:inline">{step.label}</span>
+                <span className="hidden sm:inline font-display">{step.label}</span>
               </div>
-              {index < steps.length - 1 && <ArrowRight className="h-4 w-4 text-gray-400 flex-shrink-0" />}
+              {index < steps.length - 1 && (
+                <ArrowRight className="h-4 w-4 text-primary/30 flex-shrink-0" />
+              )}
             </div>
           );
         })}
       </div>
 
-      <Card>
+      <Card className="bg-card/50 border-primary/10">
         <CardContent className="pt-6">
           {renderCurrentStep()}
         </CardContent>
       </Card>
 
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between border-t border-primary/10 pt-6">
         <Button
           variant="outline"
           onClick={prevStep}
           disabled={currentStep === "info"}
+          className="gap-2 border-primary/20 hover:bg-primary/5"
         >
-          <ArrowLeft className="h-4 w-4 mr-2" />
+          <ArrowLeft className="h-4 w-4" />
           Anterior
         </Button>
 
@@ -424,18 +452,20 @@ export function HandoverBuilder({ hospital, existingHandoverId }: HandoverBuilde
           <Button
             onClick={handleCreateHandover}
             disabled={isCreating}
+            variant="glow"
+            className="gap-2"
           >
             {isCreating ? (
-              <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
-              <CheckCircle className="h-4 w-4 mr-2" />
+              <CheckCircle className="h-4 w-4" />
             )}
             Finalizar Handover
           </Button>
         ) : (
-          <Button onClick={nextStep} disabled={!isCurrentStepValid()}>
+          <Button onClick={nextStep} disabled={!isCurrentStepValid()} variant="glow" className="gap-2">
             Siguiente
-            <ArrowRight className="h-4 w-4 ml-2" />
+            <ArrowRight className="h-4 w-4" />
           </Button>
         )}
       </div>

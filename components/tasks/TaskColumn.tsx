@@ -16,23 +16,31 @@ interface TaskColumnProps {
 const columnConfigs = {
   PENDING: {
     title: "Pendientes",
-    bgColor: "bg-gray-50 dark:bg-gray-900/50",
-    borderColor: "border-gray-200 dark:border-gray-700",
+    bgColor: "bg-card",
+    borderColor: "border-amber-500/20",
+    accentColor: "text-amber-400",
+    dotColor: "bg-amber-500",
   },
   IN_PROGRESS: {
     title: "En Progreso",
-    bgColor: "bg-blue-50 dark:bg-blue-900/20",
-    borderColor: "border-blue-200 dark:border-blue-800",
+    bgColor: "bg-card",
+    borderColor: "border-cyan-500/20",
+    accentColor: "text-cyan-400",
+    dotColor: "bg-cyan-500",
   },
   COMPLETED: {
     title: "Completadas",
-    bgColor: "bg-green-50 dark:bg-green-900/20",
-    borderColor: "border-green-200 dark:border-green-800",
+    bgColor: "bg-card",
+    borderColor: "border-emerald-500/20",
+    accentColor: "text-emerald-400",
+    dotColor: "bg-emerald-500",
   },
   CANCELLED: {
     title: "Canceladas",
-    bgColor: "bg-red-50 dark:bg-red-900/20",
-    borderColor: "border-red-200 dark:border-red-800",
+    bgColor: "bg-card",
+    borderColor: "border-red-500/20",
+    accentColor: "text-red-400",
+    dotColor: "bg-red-500",
   },
 };
 
@@ -45,17 +53,23 @@ export function TaskColumn({ id, tasks, onTaskClick }: TaskColumnProps) {
     <div
       ref={setNodeRef}
       className={cn(
-        "flex flex-col rounded-xl border-2 p-4 min-h-[500px] transition-colors",
+        "flex flex-col rounded-xl border p-4 min-h-[500px] transition-all duration-300",
         config.bgColor,
         config.borderColor,
-        isOver && "ring-2 ring-primary-500 ring-offset-2"
+        isOver && "ring-2 ring-primary/30 bg-primary/5"
       )}
     >
       <div className="flex items-center justify-between mb-4">
-        <h2 className="font-semibold text-gray-900 dark:text-gray-100">
-          {config.title}
-        </h2>
-        <span className="flex items-center justify-center h-6 px-2 text-xs font-medium rounded-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+        <div className="flex items-center gap-2">
+          <span className={cn("w-2 h-2 rounded-full", config.dotColor)} />
+          <h2 className="font-semibold font-display">
+            {config.title}
+          </h2>
+        </div>
+        <span className={cn(
+          "flex items-center justify-center h-6 px-3 text-xs font-medium rounded-full",
+          "bg-primary/10 text-primary"
+        )}>
           {tasks.length}
         </span>
       </div>
@@ -74,7 +88,10 @@ export function TaskColumn({ id, tasks, onTaskClick }: TaskColumnProps) {
           ))}
 
           {tasks.length === 0 && (
-            <div className="flex items-center justify-center flex-1 text-sm text-gray-500 dark:text-gray-400 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-lg">
+            <div className={cn(
+              "flex items-center justify-center flex-1 text-sm border-2 border-dashed rounded-lg",
+              "border-primary/20 text-muted-foreground"
+            )}>
               Sin tareas
             </div>
           )}

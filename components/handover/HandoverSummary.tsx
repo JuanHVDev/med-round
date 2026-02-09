@@ -57,7 +57,7 @@ export function HandoverSummary({
     <div className={cn("space-y-6", className)}>
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold">Resumen de Guardia</h2>
+          <h2 className="text-2xl font-bold font-display">Resumen de Guardia</h2>
           <p className="text-muted-foreground">
             {handover.service} - {shiftLabels[handover.shiftType]} | {formatDate(handover.shiftDate)}
           </p>
@@ -65,54 +65,55 @@ export function HandoverSummary({
         <div className="flex items-center gap-2">
           <span
             className={cn(
-              "px-3 py-1 rounded-full text-sm font-medium",
-              handover.status === "FINALIZED" && "bg-green-100 text-green-800",
-              handover.status === "IN_PROGRESS" && "bg-blue-100 text-blue-800",
-              handover.status === "DRAFT" && "bg-gray-100 text-gray-800"
+              "px-3 py-1 rounded-full text-sm font-medium gap-1 flex items-center",
+              handover.status === "FINALIZED" && "bg-green-500/10 text-green-600 border border-green-500/20",
+              handover.status === "IN_PROGRESS" && "bg-cyan-500/10 text-cyan-600 border border-cyan-500/20",
+              handover.status === "DRAFT" && "bg-primary/10 text-primary border border-primary/20"
             )}
           >
+            <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
             {statusLabels[handover.status]}
           </span>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-blue-50 p-4 rounded-lg">
+        <div className="bg-cyan-500/5 border border-cyan-500/10 p-4 rounded-lg">
           <div className="flex items-center gap-2">
-            <Users className="h-5 w-5 text-blue-600" />
-            <span className="text-sm text-blue-600">Pacientes</span>
+            <Users className="h-5 w-5 text-cyan-500" />
+            <span className="text-sm text-cyan-600 font-medium">Pacientes</span>
           </div>
-          <p className="text-2xl font-bold text-blue-900 mt-1">
+          <p className="text-2xl font-bold text-cyan-900 mt-1 font-mono">
             {handover.includedPatientIds.length}
           </p>
         </div>
 
-        <div className="bg-purple-50 p-4 rounded-lg">
+        <div className="bg-teal-500/5 border border-teal-500/10 p-4 rounded-lg">
           <div className="flex items-center gap-2">
-            <ClipboardList className="h-5 w-5 text-purple-600" />
-            <span className="text-sm text-purple-600">Tareas</span>
+            <ClipboardList className="h-5 w-5 text-teal-500" />
+            <span className="text-sm text-teal-600 font-medium">Tareas</span>
           </div>
-          <p className="text-2xl font-bold text-purple-900 mt-1">
+          <p className="text-2xl font-bold text-teal-900 mt-1 font-mono">
             {handover.includedTaskIds.length}
           </p>
         </div>
 
-        <div className="bg-red-50 p-4 rounded-lg">
+        <div className="bg-red-500/5 border border-red-500/10 p-4 rounded-lg">
           <div className="flex items-center gap-2">
-            <AlertTriangle className="h-5 w-5 text-red-600" />
-            <span className="text-sm text-red-600">Críticos</span>
+            <AlertTriangle className="h-5 w-5 text-red-500" />
+            <span className="text-sm text-red-600 font-medium">Críticos</span>
           </div>
-          <p className="text-2xl font-bold text-red-900 mt-1">
+          <p className="text-2xl font-bold text-red-900 mt-1 font-mono">
             {criticalPatients.length}
           </p>
         </div>
 
-        <div className="bg-green-50 p-4 rounded-lg">
+        <div className="bg-green-500/5 border border-green-500/10 p-4 rounded-lg">
           <div className="flex items-center gap-2">
-            <FileText className="h-5 w-5 text-green-600" />
-            <span className="text-sm text-green-600">Versión</span>
+            <FileText className="h-5 w-5 text-green-500" />
+            <span className="text-sm text-green-600 font-medium">Versión</span>
           </div>
-          <p className="text-2xl font-bold text-green-900 mt-1">
+          <p className="text-2xl font-bold text-green-900 mt-1 font-mono">
             v{handover.version}
           </p>
         </div>
@@ -120,7 +121,7 @@ export function HandoverSummary({
 
       {criticalPatients.length > 0 && (
         <div className="space-y-3">
-          <h3 className="text-lg font-semibold flex items-center gap-2">
+          <h3 className="text-lg font-semibold flex items-center gap-2 font-display">
             <AlertTriangle className="h-5 w-5 text-red-500" />
             Pacientes Críticos ({criticalPatients.length})
           </h3>
@@ -128,15 +129,16 @@ export function HandoverSummary({
             {criticalPatients.map((patient) => (
               <div
                 key={patient.patientId}
-                className="bg-red-50 border border-red-200 rounded-lg p-3"
+                className="bg-red-500/5 border border-red-500/20 rounded-lg p-3 hover:bg-red-500/10 transition-colors"
               >
                 <div className="flex items-center justify-between">
-                  <span className="font-semibold">Cama {patient.bedNumber}</span>
-                  <span className="text-sm text-red-600">
+                  <span className="font-semibold font-mono">Cama {patient.bedNumber}</span>
+                  <span className="text-sm text-red-600 flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
                     {patient.pendingTasksCount} tareas
                   </span>
                 </div>
-                <p className="font-medium">{patient.patientName}</p>
+                <p className="font-medium mt-1">{patient.patientName}</p>
                 <p className="text-sm text-red-700 mt-1">{patient.reason}</p>
               </div>
             ))}
@@ -147,17 +149,17 @@ export function HandoverSummary({
       {handover.generatedSummary && (
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold">Resumen Generado</h3>
+            <h3 className="text-lg font-semibold font-display">Resumen Generado</h3>
             <div className="flex items-center gap-2">
               {onGeneratePdf && (
-                <Button size="sm" onClick={onGeneratePdf}>
+                <Button size="sm" variant="outline" onClick={onGeneratePdf}>
                   <Download className="h-4 w-4 mr-1" />
                   Descargar PDF
                 </Button>
               )}
             </div>
           </div>
-          <div className="bg-gray-50 rounded-lg p-4 border max-h-96 overflow-auto">
+          <div className="bg-card/50 border border-primary/10 rounded-lg p-4 max-h-96 overflow-auto">
             <pre className="whitespace-pre-wrap text-sm font-mono">
               {handover.generatedSummary}
             </pre>
@@ -168,20 +170,20 @@ export function HandoverSummary({
       {handover.generalNotes && (
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold">Notas Generales</h3>
+            <h3 className="text-lg font-semibold font-display">Notas Generales</h3>
             {onEditNotes && (
               <Button variant="ghost" size="sm" onClick={onEditNotes}>
                 Editar
               </Button>
             )}
           </div>
-          <div className="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
+          <div className="bg-amber-500/5 border border-amber-500/20 rounded-lg p-4">
             <p className="whitespace-pre-wrap text-sm">{handover.generalNotes}</p>
           </div>
         </div>
       )}
 
-      <div className="text-xs text-muted-foreground text-right">
+      <div className="text-xs text-muted-foreground text-right font-mono">
         Generado: {formatDate(handover.createdAt)} | Última actualización:{" "}
         {formatDate(handover.updatedAt)}
       </div>

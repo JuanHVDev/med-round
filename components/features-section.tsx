@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import
-{
+import { Button } from "@/components/ui/button";
+import {
   Smartphone,
   Bell,
   Lock,
@@ -13,7 +13,9 @@ import
   Clock,
   BarChart3,
   Cloud,
-  RefreshCw
+  RefreshCw,
+  ArrowRight,
+  Activity
 } from "lucide-react";
 import Link from "next/link";
 
@@ -22,43 +24,43 @@ const features = [
     icon: Smartphone,
     title: "Acceso Móvil",
     description: "Consulta y actualiza información desde cualquier dispositivo móvil en tiempo real.",
-    color: "text-blue-600",
-    bgColor: "bg-blue-100"
+    color: "text-cyan-400",
+    gradient: "from-cyan-500/20"
   },
   {
     icon: Bell,
     title: "Notificaciones Inteligentes",
     description: "Recibe alertas automáticas sobre tareas pendientes y cambios críticos.",
-    color: "text-cyan-600",
-    bgColor: "bg-cyan-100"
+    color: "text-teal-400",
+    gradient: "from-teal-500/20"
   },
   {
     icon: Lock,
     title: "Seguridad de Datos",
     description: "Cifrado de extremo a extremo y cumplimiento de normativas médicas.",
-    color: "text-green-600",
-    bgColor: "bg-green-100"
+    color: "text-emerald-400",
+    gradient: "from-emerald-500/20"
   },
   {
     icon: FileCheck,
     title: "Gestión de Tareas",
     description: "Organiza, prioriza y da seguimiento a todas las actividades médicas.",
-    color: "text-purple-600",
-    bgColor: "bg-purple-100"
+    color: "text-violet-400",
+    gradient: "from-violet-500/20"
   },
   {
     icon: UserCheck,
     title: "Control de Acceso",
     description: "Permisos granulares para diferentes roles médicos y administrativos.",
-    color: "text-orange-600",
-    bgColor: "bg-orange-100"
+    color: "text-amber-400",
+    gradient: "from-amber-500/20"
   },
   {
     icon: Clock,
     title: "Historial Completo",
     description: "Registro detallado de todas las acciones y cambios realizados.",
-    color: "text-red-600",
-    bgColor: "bg-red-100"
+    color: "text-rose-400",
+    gradient: "from-rose-500/20"
   }
 ];
 
@@ -80,132 +82,140 @@ const advancedFeatures = [
   }
 ];
 
-export default function FeaturesSection()
-{
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() =>
-  {
-    const handleScroll = () =>
-    {
-      const section = document.getElementById("features");
-      if (section)
-      {
-        const rect = section.getBoundingClientRect();
-        if (rect.top < window.innerHeight && rect.bottom > 0)
-        {
-          setIsVisible(true);
-        }
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    handleScroll(); // Check on mount
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
+export default function FeaturesSection() {
   return (
-    <section id="features" className="py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-200 mb-4">
+    <section id="features" className="py-24 bg-background relative">
+      <div className="fixed inset-0 bg-grid opacity-30 pointer-events-none" />
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <Badge className="bg-primary/10 text-primary mb-4 hover:bg-primary/20">
             Funcionalidades Principales
           </Badge>
-          <h2 className={`text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
-            Todo lo que necesitas para una
-            <span className="text-blue-600"> gestión eficiente</span>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold text-foreground mb-4">
+            Todo lo que necesitas para una{" "}
+            <span className="text-gradient">gestión eficiente</span>
           </h2>
-          <p className={`text-xl text-gray-600 max-w-3xl mx-auto transition-all duration-1000 delay-200 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             MedRound integra todas las herramientas necesarias para optimizar el pase de visita
             y la gestión de pendientes en tu centro médico.
           </p>
-        </div>
+        </motion.div>
 
-        {/* Main Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16"
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          variants={{
+            show: { transition: { staggerChildren: 0.1 } }
+          }}
+        >
           {features.map((feature, index) => (
-            <Card
+            <motion.div
               key={index}
-              className={`bg-white border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-                }`}
-              style={{ transitionDelay: `${index * 100}ms` }}
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                show: { opacity: 1, y: 0 }
+              }}
             >
-              <CardHeader className="pb-4">
-                <div className={`w-14 h-14 ${feature.bgColor} rounded-full flex items-center justify-center mb-4`}>
-                  <feature.icon className={`w-7 h-7 ${feature.color}`} />
-                </div>
-                <CardTitle className="text-xl font-semibold text-gray-900">
-                  {feature.title}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 leading-relaxed">
-                  {feature.description}
-                </p>
-              </CardContent>
-            </Card>
+              <Card className="h-full group hover:border-primary/30 transition-all duration-300">
+                <CardHeader className="pb-4">
+                  <div className={`w-14 h-14 bg-gradient-to-br ${feature.gradient} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                    <feature.icon className={`w-7 h-7 ${feature.color}`} />
+                  </div>
+                  <CardTitle className="text-xl font-display font-semibold text-foreground">
+                    {feature.title}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground leading-relaxed">
+                    {feature.description}
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
-        {/* Advanced Features */}
-        <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-2xl p-8 md:p-12">
+        <motion.div
+          className="bg-gradient-to-br from-primary/10 via-card to-accent/10 rounded-3xl p-8 md:p-12 border border-primary/20"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.3 }}
+        >
           <div className="text-center mb-8">
-            <h3 className={`text-2xl md:text-3xl font-bold text-gray-900 mb-4 transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-              }`}>
+            <h3 className="text-2xl md:text-3xl font-display font-bold text-foreground mb-4">
               Funcionalidades Avanzadas
             </h3>
-            <p className={`text-gray-600 max-w-2xl mx-auto transition-all duration-1000 delay-200 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-              }`}>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
               Características premium para una gestión médica de máximo nivel
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {advancedFeatures.map((feature, index) => (
-              <div
+              <motion.div
                 key={index}
-                className={`flex items-start space-x-4 transition-all duration-1000 ${isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"
-                  }`}
-                style={{ transitionDelay: `${(index + 6) * 100}ms` }}
+                className="flex items-start gap-4 p-6 rounded-xl bg-background/50 hover:bg-background transition-colors"
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.4 + index * 0.1 }}
               >
-                <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-md flex-shrink-0">
-                  <feature.icon className="w-6 h-6 text-blue-600" />
+                <div className="w-12 h-12 bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <feature.icon className="w-6 h-6 text-primary" />
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-1">
+                  <h4 className="font-semibold text-foreground mb-1">
                     {feature.title}
                   </h4>
-                  <p className="text-gray-600 text-sm leading-relaxed">
+                  <p className="text-sm text-muted-foreground leading-relaxed">
                     {feature.description}
                   </p>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
 
-        {/* Call to Action */}
-        <div className={`text-center mt-16 transition-all duration-1000 ${isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
-          }`}>
-          <div className="inline-flex items-center justify-center p-6 bg-blue-600 rounded-full text-white animate-pulse">
-            <Smartphone className="w-8 h-8" />
+        <motion.div
+          className="text-center mt-16"
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.5 }}
+        >
+          <div className="inline-flex items-center justify-center p-4 bg-gradient-to-br from-primary/20 to-accent/20 rounded-full mb-6">
+            <Activity className="w-8 h-8 text-primary" />
           </div>
-          <h3 className="text-2xl font-bold text-gray-900 mt-4 mb-2">
+          <h3 className="text-2xl font-display font-bold text-foreground mt-4 mb-2">
             ¿Listo para transformar tu gestión hospitalaria?
           </h3>
-          <p className="text-gray-600 mb-6">
+          <p className="text-muted-foreground mb-8 max-w-xl mx-auto">
             Únete a los hospitales que ya optimizaron sus procesos con MedRound
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/demo" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
-              Solicitar Demo
+            <Link href="/demo">
+              <Button variant="glow" size="lg" className="gap-2">
+                Solicitar Demo
+                <ArrowRight className="w-4 h-4" />
+              </Button>
             </Link>
-            <Link href="/demo" className="border border-blue-600 text-blue-600 hover:bg-blue-50 px-8 py-3 rounded-lg font-semibold transition-all duration-300">
-              Ver Funcionamiento
+            <Link href="/demo">
+              <Button variant="outline" size="lg" className="gap-2">
+                Ver Funcionamiento
+              </Button>
             </Link>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

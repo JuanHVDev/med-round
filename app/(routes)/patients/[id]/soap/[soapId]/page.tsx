@@ -41,7 +41,7 @@ export default function SoapNoteDetailPage() {
     return (
       <div className="container mx-auto py-8 px-4 max-w-4xl">
         <div className="flex items-center justify-center min-h-[400px]">
-          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+          <Loader2 className="h-8 w-8 animate-spin text-primary/50" />
         </div>
       </div>
     );
@@ -54,7 +54,7 @@ export default function SoapNoteDetailPage() {
           <ArrowLeft className="mr-2 h-4 w-4" />
           Volver
         </Button>
-        <div className="text-center py-12">
+        <div className="text-center py-12 bg-card/50 border border-primary/10 rounded-xl backdrop-blur-sm">
           <p className="text-red-500">{error || "Nota no encontrada"}</p>
         </div>
       </div>
@@ -63,33 +63,35 @@ export default function SoapNoteDetailPage() {
 
   return (
     <div className="container mx-auto py-8 px-4 max-w-4xl">
-      <Button variant="ghost" onClick={() => router.back()} className="mb-6">
-        <ArrowLeft className="mr-2 h-4 w-4" />
-        Volver al paciente
-      </Button>
-
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Nota SOAP</h1>
+      <div className="flex items-center justify-between mb-6">
+        <Button variant="ghost" onClick={() => router.back()} className="hover:bg-primary/5">
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Volver al paciente
+        </Button>
         {!isEditing && (
-          <Button onClick={() => setIsEditing(true)}>
+          <Button onClick={() => setIsEditing(true)} variant="glow">
             <Edit className="mr-2 h-4 w-4" />
             Editar
           </Button>
         )}
       </div>
 
-      {isEditing ? (
-        <SoapNoteForm
-          patientId={patientId}
-          initialData={{
-            ...note,
-            vitalSigns: note.vitalSigns as Record<string, unknown>,
-          }}
-          isEditing={true}
-        />
-      ) : (
-        <SoapNoteView note={note} />
-      )}
+      <div className="bg-card/50 border border-primary/10 rounded-xl backdrop-blur-sm p-6">
+        <h1 className="text-2xl font-display font-bold mb-6">Nota SOAP</h1>
+
+        {isEditing ? (
+          <SoapNoteForm
+            patientId={patientId}
+            initialData={{
+              ...note,
+              vitalSigns: note.vitalSigns as Record<string, unknown>,
+            }}
+            isEditing={true}
+          />
+        ) : (
+          <SoapNoteView note={note} />
+        )}
+      </div>
     </div>
   );
 }

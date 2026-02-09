@@ -1,6 +1,6 @@
 /**
  * Página de importación de pacientes
- * 
+ *
  * Flujo:
  * 1. Usuario sube archivo (CSV, PDF, imagen)
  * 2. Backend procesa con IA (Google Gemini)
@@ -99,12 +99,12 @@ export default function ImportPage() {
     <div className="container mx-auto py-8 px-4 max-w-5xl">
       <div className="mb-8">
         <Link href="/patients">
-          <Button variant="ghost" className="mb-4">
+          <Button variant="ghost" className="mb-4 hover:bg-primary/5">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Volver a Pacientes
           </Button>
         </Link>
-        <h1 className="text-3xl font-bold mb-2">Importar Pacientes</h1>
+        <h1 className="text-3xl font-display font-bold mb-2">Importar Pacientes</h1>
         <p className="text-muted-foreground">
           Sube un archivo CSV, PDF o imagen. La IA extraerá automáticamente la información.
         </p>
@@ -117,7 +117,7 @@ export default function ImportPage() {
       )}
 
       {state === "upload" && (
-        <Card className="p-6">
+        <Card className="p-6 bg-card/50 border-primary/10 backdrop-blur-sm">
           <FileUploader
             onFileSelected={handleFileSelected}
             isProcessing={false}
@@ -126,9 +126,12 @@ export default function ImportPage() {
       )}
 
       {state === "processing" && (
-        <Card className="p-12 text-center">
+        <Card className="p-12 text-center bg-card/50 border-primary/10 backdrop-blur-sm">
           <Loader2 className="h-12 w-12 animate-spin mx-auto mb-4 text-primary" />
-          <h3 className="text-lg font-medium mb-2">Procesando con IA...</h3>
+          <h3 className="text-lg font-medium mb-2 flex items-center justify-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse" />
+            Procesando con IA...
+          </h3>
           <p className="text-muted-foreground">
             Esto puede tomar unos segundos
           </p>
@@ -144,9 +147,12 @@ export default function ImportPage() {
       )}
 
       {state === "importing" && (
-        <Card className="p-12 text-center">
+        <Card className="p-12 text-center bg-card/50 border-primary/10 backdrop-blur-sm">
           <Loader2 className="h-12 w-12 animate-spin mx-auto mb-4 text-primary" />
-          <h3 className="text-lg font-medium mb-2">Importando pacientes...</h3>
+          <h3 className="text-lg font-medium mb-2 flex items-center justify-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse" />
+            Importando pacientes...
+          </h3>
           <p className="text-muted-foreground">
             Creando {extractedPatients.length} pacientes en el sistema
           </p>
@@ -154,15 +160,17 @@ export default function ImportPage() {
       )}
 
       {state === "success" && (
-        <Card className="p-12 text-center">
-          <CheckCircle className="h-16 w-16 mx-auto mb-4 text-green-500" />
-          <h3 className="text-2xl font-bold mb-2">¡Importación Exitosa!</h3>
+        <Card className="p-12 text-center bg-card/50 border-primary/10 backdrop-blur-sm">
+          <div className="h-16 w-16 rounded-full bg-emerald-500/20 flex items-center justify-center mx-auto mb-4">
+            <CheckCircle className="h-10 w-10 text-emerald-500" />
+          </div>
+          <h3 className="text-2xl font-display font-bold mb-2">¡Importación Exitosa!</h3>
           <p className="text-muted-foreground mb-6">
             Se han importado {extractedPatients.length} pacientes correctamente
           </p>
           <div className="flex justify-center gap-4">
             <Link href="/patients">
-              <Button>Ver Pacientes</Button>
+              <Button variant="glow">Ver Pacientes</Button>
             </Link>
             <Button variant="outline" onClick={() => setState("upload")}>
               Importar Más

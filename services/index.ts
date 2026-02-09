@@ -17,6 +17,7 @@ import { auth } from "@/lib/auth";
 import { EmailService } from "./email/emailService";
 import { RegistrationService } from "./auth/registrationService";
 import { HandoverService } from "./handover/handoverService";
+import { DashboardService } from "./dashboard/dashboardService";
 
 /**
  * Servicio de email con retry logic y timeout
@@ -45,3 +46,9 @@ export const registrationService = new RegistrationService(
  * y generación de resúmenes
  */
 export const handoverService = new HandoverService(prisma);
+
+/**
+ * Servicio de Dashboard
+ * Proporciona estadísticas, pacientes recientes y tareas pendientes
+ */
+export const dashboardService = new DashboardService(prisma);

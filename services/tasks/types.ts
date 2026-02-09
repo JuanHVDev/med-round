@@ -23,7 +23,7 @@ export interface TaskFilters {
   priority?: "LOW" | "MEDIUM" | "HIGH" | "URGENT";
   patientId?: string;
   assignedTo?: string;
-  hospital: string;
+  hospital?: string;
   search?: string;
   page: number;
   limit: number;

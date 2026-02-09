@@ -93,7 +93,7 @@ export function TaskBoard({ tasks, onTaskUpdate, onTaskClick }: TaskBoardProps) 
       onDragEnd={handleDragEnd}
       onDragCancel={handleDragCancel}
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4 bg-card rounded-xl border border-primary/10">
         {columns.map((column) => (
           <TaskColumn
             key={column.id}

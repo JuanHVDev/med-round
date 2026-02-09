@@ -12,7 +12,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 interface Patient {
   id: string;
   name: string;
-  bedNumber: number;
+  bedNumber: string;
   lastVisit?: Date;
   condition?: string;
 }

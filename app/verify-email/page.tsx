@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Loader2, CheckCircle, XCircle } from "lucide-react";
 import Link from "next/link";
+import { MedRoundLogo } from "@/components/ui/med-round-logo";
 
 export default function VerifyEmailPage() {
   const searchParams = useSearchParams();
@@ -57,9 +58,13 @@ export default function VerifyEmailPage() {
   }, [token]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-cyan-50 p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
+    <div className="min-h-screen flex items-center justify-center bg-grid-pattern relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-cyan-500/5 pointer-events-none" />
+      <Card className="w-full max-w-md bg-card/80 backdrop-blur-xl border-primary/20 shadow-xl shadow-primary/5">
+        <CardHeader className="text-center pt-8">
+          <div className="flex justify-center mb-4">
+            <MedRoundLogo size="lg" />
+          </div>
           <div className="mx-auto mb-4">
             {status === "loading" && (
               <Loader2 className="h-12 w-12 animate-spin text-primary" />
@@ -71,19 +76,19 @@ export default function VerifyEmailPage() {
               <XCircle className="h-12 w-12 text-red-500" />
             )}
           </div>
-          <CardTitle className="text-2xl">
+          <CardTitle className="text-xl font-display font-bold">
             {status === "loading" && "Verificando..."}
             {status === "success" && "¡Email Verificado!"}
             {status === "error" && "Error de Verificación"}
           </CardTitle>
-          <CardDescription className="text-base mt-2">
+          <CardDescription className="text-base mt-3">
             {message}
           </CardDescription>
         </CardHeader>
-        <CardContent className="flex justify-center gap-4">
+        <CardContent className="flex justify-center gap-4 pb-8">
           {status === "success" && (
             <Link href="/login">
-              <Button>Iniciar Sesión</Button>
+              <Button variant="glow">Iniciar Sesión</Button>
             </Link>
           )}
           {status === "error" && (
@@ -92,7 +97,7 @@ export default function VerifyEmailPage() {
                 <Button variant="outline">Volver al Login</Button>
               </Link>
               <Link href="/register">
-                <Button>Registrarse</Button>
+                <Button variant="glow">Registrarse</Button>
               </Link>
             </>
           )}

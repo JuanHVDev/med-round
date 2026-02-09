@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { UseFormReturn } from "react-hook-form"
 import type { FormData } from "@/lib/registerSchema"
 import { hospitals, specialties } from "@/constants/registerConstants"
+import { Building2, Stethoscope } from "lucide-react"
 
 interface WorkInfoStepProps {
   form: UseFormReturn<FormData>
@@ -14,16 +15,19 @@ interface WorkInfoStepProps {
 
 export function WorkInfoStep({ form, selectedHospital }: WorkInfoStepProps) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       <FormField
         control={form.control}
         name="hospital"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Hospital</FormLabel>
+            <FormLabel className="flex items-center gap-2">
+              <Building2 className="h-4 w-4 text-primary" />
+              Hospital
+            </FormLabel>
             <Select onValueChange={field.onChange} defaultValue={field.value}>
               <FormControl>
-                <SelectTrigger>
+                <SelectTrigger className="bg-card/50 border-primary/20 focus:border-primary/50">
                   <SelectValue placeholder="Seleccione su hospital" />
                 </SelectTrigger>
               </FormControl>
@@ -46,9 +50,12 @@ export function WorkInfoStep({ form, selectedHospital }: WorkInfoStepProps) {
           name="otherHospital"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Nombre del Hospital</FormLabel>
+              <FormLabel className="flex items-center gap-2">
+                <Building2 className="h-4 w-4 text-primary" />
+                Nombre del Hospital
+              </FormLabel>
               <FormControl>
-                <Input placeholder="Ingrese el nombre de su hospital" {...field} />
+                <Input placeholder="Ingrese el nombre de su hospital" {...field} className="bg-card/50 border-primary/20 focus:border-primary/50" />
               </FormControl>
               <FormDescription>
                 Especifique el nombre completo del hospital donde trabaja
@@ -64,10 +71,13 @@ export function WorkInfoStep({ form, selectedHospital }: WorkInfoStepProps) {
         name="specialty"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Especialidad</FormLabel>
+            <FormLabel className="flex items-center gap-2">
+              <Stethoscope className="h-4 w-4 text-primary" />
+              Especialidad
+            </FormLabel>
             <Select onValueChange={field.onChange} defaultValue={field.value}>
               <FormControl>
-                <SelectTrigger>
+                <SelectTrigger className="bg-card/50 border-primary/20 focus:border-primary/50">
                   <SelectValue placeholder="Seleccione su especialidad" />
                 </SelectTrigger>
               </FormControl>

@@ -30,6 +30,7 @@ import type {
 interface UseHandoverOptions {
   hospital?: string;
   status?: "DRAFT" | "IN_PROGRESS" | "FINALIZED";
+  createdBy?: string;
 }
 
 interface CreateHandoverResponse {
@@ -60,6 +61,7 @@ export function useHandover(options: UseHandoverOptions = {}) {
       const params = new URLSearchParams();
       if (options.hospital) params.set("hospital", options.hospital);
       if (options.status) params.set("status", options.status);
+      if (options.createdBy) params.set("createdBy", options.createdBy);
 
       const response = await fetch(`/api/handover?${params.toString()}`);
       if (!response.ok) {
@@ -70,7 +72,9 @@ export function useHandover(options: UseHandoverOptions = {}) {
       return response.json();
     },
     retry: 1,
-    staleTime: 30000,
+    staleTime: 0, // No cachear para siempre tener datos frescos
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
   });
 
   const createMutation = useMutation({
@@ -135,8 +139,11 @@ export function useHandover(options: UseHandoverOptions = {}) {
       }
       return response.json();
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["handovers"] });
+    onSuccess: async (_, id) => {
+      // Invalidar y refetch inmediato para actualizar la UI
+      await queryClient.invalidateQueries({ queryKey: ["handovers"] });
+      await queryClient.invalidateQueries({ queryKey: ["handover", id] });
+      await queryClient.refetchQueries({ queryKey: ["handover", id] });
       toast.success("Handover finalizado correctamente");
     },
     onError: (error: Error) => {
@@ -165,13 +172,17 @@ export function useHandoverById(id: string | undefined) {
     queryKey: ["handover", id],
     queryFn: async (): Promise<{ handover: HandoverWithRelations }> => {
       if (!id) throw new Error("ID requerido");
-      const response = await fetch(`/api/handover/${id}`);
+      // Agregar timestamp para evitar cache del navegador
+      const response = await fetch(`/api/handover/${id}?t=${Date.now()}`);
       if (!response.ok) {
         throw new Error("Error al cargar handover");
       }
       return response.json();
     },
     enabled: !!id,
+    staleTime: 0, // Siempre considerar los datos como stale
+    refetchOnMount: true, // Refetch cuando el componente se monta
+    refetchOnWindowFocus: true, // Refetch cuando la ventana recibe foco
   });
 }
 

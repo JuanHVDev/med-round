@@ -32,6 +32,11 @@ export async function registerUser(data: FormData): Promise<RegisterResult> {
     }
 
     // Create medical profile using Prisma
+    // Si el hospital es "Otro", usar el valor de otherHospital
+    const hospitalValue = validatedData.hospital === "Otro" && validatedData.otherHospital
+      ? validatedData.otherHospital
+      : validatedData.hospital;
+
     await prisma.medicosProfile.create({
       data: {
         userId: user.user.id,
@@ -39,7 +44,7 @@ export async function registerUser(data: FormData): Promise<RegisterResult> {
         professionalId: validatedData.professionalId,
         studentType: validatedData.studentType,
         universityMatricula: validatedData.universityMatricula,
-        hospital: validatedData.hospital,
+        hospital: hospitalValue,
         otherHospital: validatedData.otherHospital,
         specialty: validatedData.specialty,
         userType: validatedData.userType,

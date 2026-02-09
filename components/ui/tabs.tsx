@@ -5,13 +5,16 @@ import { cn } from "@/lib/utils"
 
 const Tabs = React.forwardRef<HTMLDivElement, {
   defaultValue?: string
+  value?: string
+  onValueChange?: (value: string) => void
   className?: string
   children: React.ReactNode
-}>(({ className, defaultValue, children, ...props }, ref) => (
+}>(({ className, defaultValue, value, onValueChange, children, ...props }, ref) => (
   <div
     ref={ref}
     className={cn("w-full", className)}
     data-default-value={defaultValue}
+    data-value={value}
     {...props}
   >
     {children}
@@ -19,15 +22,15 @@ const Tabs = React.forwardRef<HTMLDivElement, {
 ))
 Tabs.displayName = "Tabs"
 
-export { Tabs }
-
 const TabsContent = React.forwardRef<HTMLDivElement, {
+  value?: string
   className?: string
   children: React.ReactNode
-}>(({ className, children, ...props }, ref) => (
+}>(({ className, value, children, ...props }, ref) => (
   <div
     ref={ref}
     className={cn("", className)}
+    data-tab-value={value}
     {...props}
   >
     {children}
@@ -50,12 +53,14 @@ const TabsList = React.forwardRef<HTMLDivElement, {
 TabsList.displayName = "TabsList"
 
 const TabsTrigger = React.forwardRef<HTMLButtonElement, {
+  value?: string
   className?: string
   children: React.ReactNode
-}>(({ className, children, ...props }, ref) => (
+}>(({ className, value, children, ...props }, ref) => (
   <button
     ref={ref}
     className={cn("", className)}
+    data-tab-value={value}
     {...props}
   >
     {children}
@@ -63,4 +68,4 @@ const TabsTrigger = React.forwardRef<HTMLButtonElement, {
 ))
 TabsTrigger.displayName = "TabsTrigger"
 
-export { TabsContent, TabsList, TabsTrigger }
+export { TabsContent, TabsList, TabsTrigger, Tabs }

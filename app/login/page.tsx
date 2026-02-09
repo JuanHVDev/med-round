@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AlertCircle, Loader2 } from "lucide-react";
+import { MedRoundLogo } from "@/components/ui/med-round-logo";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -69,18 +70,24 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-cyan-50 p-4">
-      <Card className="w-full max-w-md bg-white/80 backdrop-blur-sm border border-border shadow-lg">
-        <CardHeader className="text-center space-y-2">
-          <CardTitle className="text-2xl font-bold">Iniciar Sesión</CardTitle>
-          <CardDescription>
-            Accede a tu cuenta de MedRound
-          </CardDescription>
+    <div className="min-h-screen flex items-center justify-center bg-grid-pattern relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-cyan-500/5 pointer-events-none" />
+      <Card className="w-full max-w-md bg-card/80 backdrop-blur-xl border-primary/20 shadow-xl shadow-primary/5">
+        <CardHeader className="text-center space-y-6 pt-8">
+          <div className="flex justify-center">
+            <MedRoundLogo size="lg" />
+          </div>
+          <div>
+            <CardTitle className="text-2xl font-display font-bold">Iniciar Sesión</CardTitle>
+            <CardDescription className="mt-2">
+              Accede a tu cuenta de MedRound
+            </CardDescription>
+          </div>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="font-medium">Email</Label>
               <Input
                 id="email"
                 name="email"
@@ -89,11 +96,11 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="tu@email.com"
-                className="rounded-lg"
+                className="bg-card/50 border-primary/20 focus:border-primary/50 focus:ring-primary/20"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Contraseña</Label>
+              <Label htmlFor="password" className="font-medium">Contraseña</Label>
               <Input
                 id="password"
                 name="password"
@@ -102,30 +109,30 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="rounded-lg"
+                className="bg-card/50 border-primary/20 focus:border-primary/50 focus:ring-primary/20 font-mono"
               />
             </div>
 
             {error && (
-              <div className="flex items-center gap-2 text-sm text-destructive bg-destructive/10 p-3 rounded-lg">
+              <div className="flex items-center gap-2 text-sm text-red-500 bg-red-500/10 p-3 rounded-lg border border-red-500/20">
                 <AlertCircle className="h-4 w-4 flex-shrink-0" />
                 <span>{error}</span>
               </div>
             )}
 
             {needsVerification && (
-              <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+              <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-4">
                 <div className="flex items-start gap-3">
-                  <AlertCircle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                  <AlertCircle className="h-5 w-5 text-amber-500 flex-shrink-0 mt-0.5" />
                   <div className="flex-1">
-                    <p className="text-sm text-amber-800">
+                    <p className="text-sm text-amber-600">
                       {error}
                     </p>
                     <button
                       type="button"
                       onClick={handleResendVerification}
                       disabled={isLoading}
-                      className="mt-2 text-xs text-amber-700 underline hover:text-amber-900 disabled:opacity-50"
+                      className="mt-2 text-xs text-amber-600 underline hover:text-amber-500 disabled:opacity-50"
                     >
                       Reenviar email de verificación
                     </button>
@@ -137,7 +144,8 @@ export default function LoginPage() {
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full btn-primary rounded-lg"
+              variant="glow"
+              className="w-full"
             >
               {isLoading ? (
                 <>
@@ -152,7 +160,7 @@ export default function LoginPage() {
             <div className="text-center text-sm">
               <Link 
                 href="/register" 
-                className="text-primary hover:text-primary/90 underline-offset-4 hover:underline"
+                className="text-primary hover:text-primary/80 underline-offset-4 hover:underline"
               >
                 ¿No tienes cuenta? Regístrate
               </Link>

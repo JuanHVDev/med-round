@@ -15,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Loader2, Save, FileText, ClipboardList, Activity, TestTube, Scan, Pill, Clock } from "lucide-react";
+import { Loader2, Save, FileText, ClipboardList, Activity, TestTube, Scan, Pill, Clock, Stethoscope } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -81,11 +81,11 @@ export function SoapNoteForm({ patientId, initialData, isEditing = false }: Soap
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <div className="grid grid-cols-1 gap-6">
-          <Card className="shadow-sm border-slate-200">
-            <CardHeader className="bg-slate-50/50 border-b pb-4">
+          <Card className="bg-card/50 border-primary/10">
+            <CardHeader className="bg-primary/5 border-b border-primary/10 pb-4">
               <div className="flex items-center gap-2">
-                <FileText className="h-5 w-5 text-blue-600" />
-                <CardTitle className="text-lg">Nota SOAP</CardTitle>
+                <FileText className="h-5 w-5 text-cyan-500" />
+                <CardTitle className="text-lg font-display">Nota SOAP</CardTitle>
               </div>
               <CardDescription>
                 {isEditing
@@ -101,13 +101,13 @@ export function SoapNoteForm({ patientId, initialData, isEditing = false }: Soap
                   render={({ field }) => (
                     <FormItem className="md:col-span-2">
                       <FormLabel className="flex items-center gap-1">
-                        <ClipboardList className="h-4 w-4" />
+                        <ClipboardList className="h-4 w-4 text-cyan-500" />
                         Motivo de Consulta
                       </FormLabel>
                       <FormControl>
                         <Textarea
                           placeholder="Describa el motivo de consulta del paciente..."
-                          className="min-h-[80px]"
+                          className="min-h-[80px] bg-card/50 border-primary/20"
                           maxLength={500}
                           {...field}
                         />
@@ -123,13 +123,13 @@ export function SoapNoteForm({ patientId, initialData, isEditing = false }: Soap
                   render={({ field }) => (
                     <FormItem className="md:col-span-2">
                       <FormLabel className="flex items-center gap-1">
-                        <Clock className="h-4 w-4" />
+                        <Clock className="h-4 w-4 text-teal-500" />
                         Historia de la Enfermedad Actual (HPI)
                       </FormLabel>
                       <FormControl>
                         <Textarea
                           placeholder="Describa la evolución de la enfermedad actual..."
-                          className="min-h-[120px]"
+                          className="min-h-[120px] bg-card/50 border-primary/20"
                           maxLength={2000}
                           {...field}
                         />
@@ -144,11 +144,11 @@ export function SoapNoteForm({ patientId, initialData, isEditing = false }: Soap
 
           <VitalSignsInput />
 
-          <Card className="shadow-sm border-slate-200">
-            <CardHeader className="bg-slate-50/50 border-b pb-4">
+          <Card className="bg-card/50 border-primary/10">
+            <CardHeader className="bg-primary/5 border-b border-primary/10 pb-4">
               <div className="flex items-center gap-2">
-                <Activity className="h-5 w-5 text-green-600" />
-                <CardTitle className="text-lg">Exploración Física</CardTitle>
+                <Stethoscope className="h-5 w-5 text-teal-500" />
+                <CardTitle className="text-lg font-display">Exploración Física</CardTitle>
               </div>
               <CardDescription>Hallazgos de la exploración física</CardDescription>
             </CardHeader>
@@ -161,7 +161,7 @@ export function SoapNoteForm({ patientId, initialData, isEditing = false }: Soap
                     <FormControl>
                       <Textarea
                         placeholder="Describa los hallazgos de la exploración física..."
-                        className="min-h-[150px]"
+                        className="min-h-[150px] bg-card/50 border-primary/20"
                         maxLength={2000}
                         {...field}
                       />
@@ -174,11 +174,11 @@ export function SoapNoteForm({ patientId, initialData, isEditing = false }: Soap
           </Card>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="shadow-sm border-slate-200">
-              <CardHeader className="bg-slate-50/50 border-b pb-4">
+            <Card className="bg-card/50 border-primary/10">
+              <CardHeader className="bg-primary/5 border-b border-primary/10 pb-4">
                 <div className="flex items-center gap-2">
-                  <TestTube className="h-5 w-5 text-purple-600" />
-                  <CardTitle className="text-lg">Resultados de Laboratorio</CardTitle>
+                  <TestTube className="h-5 w-5 text-cyan-500" />
+                  <CardTitle className="text-lg font-display">Resultados de Laboratorio</CardTitle>
                 </div>
               </CardHeader>
               <CardContent className="pt-6">
@@ -190,7 +190,7 @@ export function SoapNoteForm({ patientId, initialData, isEditing = false }: Soap
                       <FormControl>
                         <Textarea
                           placeholder="Resultados de estudios de laboratorio..."
-                          className="min-h-[100px]"
+                          className="min-h-[100px] bg-card/50 border-primary/20"
                           {...field}
                           value={field.value || ""}
                         />
@@ -202,11 +202,11 @@ export function SoapNoteForm({ patientId, initialData, isEditing = false }: Soap
               </CardContent>
             </Card>
 
-            <Card className="shadow-sm border-slate-200">
-              <CardHeader className="bg-slate-50/50 border-b pb-4">
+            <Card className="bg-card/50 border-primary/10">
+              <CardHeader className="bg-primary/5 border-b border-primary/10 pb-4">
                 <div className="flex items-center gap-2">
-                  <Scan className="h-5 w-5 text-indigo-600" />
-                  <CardTitle className="text-lg">Resultados de Imagen</CardTitle>
+                  <Scan className="h-5 w-5 text-teal-500" />
+                  <CardTitle className="text-lg font-display">Resultados de Imagen</CardTitle>
                 </div>
               </CardHeader>
               <CardContent className="pt-6">
@@ -218,7 +218,7 @@ export function SoapNoteForm({ patientId, initialData, isEditing = false }: Soap
                       <FormControl>
                         <Textarea
                           placeholder="Resultados de estudios de imagen (RX, US, TAC, etc.)..."
-                          className="min-h-[100px]"
+                          className="min-h-[100px] bg-card/50 border-primary/20"
                           {...field}
                           value={field.value || ""}
                         />
@@ -231,11 +231,11 @@ export function SoapNoteForm({ patientId, initialData, isEditing = false }: Soap
             </Card>
           </div>
 
-          <Card className="shadow-sm border-slate-200">
-            <CardHeader className="bg-slate-50/50 border-b pb-4">
+          <Card className="bg-card/50 border-primary/10">
+            <CardHeader className="bg-primary/5 border-b border-primary/10 pb-4">
               <div className="flex items-center gap-2">
-                <ClipboardList className="h-5 w-5 text-amber-600" />
-                <CardTitle className="text-lg">Evaluación y Plan</CardTitle>
+                <ClipboardList className="h-5 w-5 text-cyan-500" />
+                <CardTitle className="text-lg font-display">Evaluación y Plan</CardTitle>
               </div>
               <CardDescription>Impresión diagnóstica y plan terapéutico</CardDescription>
             </CardHeader>
@@ -249,7 +249,7 @@ export function SoapNoteForm({ patientId, initialData, isEditing = false }: Soap
                     <FormControl>
                       <Textarea
                         placeholder="Describa su impresión diagnóstica..."
-                        className="min-h-[100px]"
+                        className="min-h-[100px] bg-card/50 border-primary/20"
                         maxLength={1000}
                         {...field}
                       />
@@ -268,7 +268,7 @@ export function SoapNoteForm({ patientId, initialData, isEditing = false }: Soap
                     <FormControl>
                       <Textarea
                         placeholder="Describa el plan terapéutico..."
-                        className="min-h-[100px]"
+                        className="min-h-[100px] bg-card/50 border-primary/20"
                         maxLength={1000}
                         {...field}
                       />
@@ -281,11 +281,11 @@ export function SoapNoteForm({ patientId, initialData, isEditing = false }: Soap
           </Card>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="shadow-sm border-slate-200">
-              <CardHeader className="bg-slate-50/50 border-b pb-4">
+            <Card className="bg-card/50 border-primary/10">
+              <CardHeader className="bg-primary/5 border-b border-primary/10 pb-4">
                 <div className="flex items-center gap-2">
-                  <Pill className="h-5 w-5 text-red-600" />
-                  <CardTitle className="text-lg">Medicamentos</CardTitle>
+                  <Pill className="h-5 w-5 text-teal-500" />
+                  <CardTitle className="text-lg font-display">Medicamentos</CardTitle>
                 </div>
               </CardHeader>
               <CardContent className="pt-6">
@@ -297,7 +297,7 @@ export function SoapNoteForm({ patientId, initialData, isEditing = false }: Soap
                       <FormControl>
                         <Textarea
                           placeholder="Lista de medicamentos prescritos..."
-                          className="min-h-[100px]"
+                          className="min-h-[100px] bg-card/50 border-primary/20"
                           {...field}
                           value={field.value || ""}
                         />
@@ -309,11 +309,11 @@ export function SoapNoteForm({ patientId, initialData, isEditing = false }: Soap
               </CardContent>
             </Card>
 
-            <Card className="shadow-sm border-slate-200">
-              <CardHeader className="bg-slate-50/50 border-b pb-4">
+            <Card className="bg-card/50 border-primary/10">
+              <CardHeader className="bg-primary/5 border-b border-primary/10 pb-4">
                 <div className="flex items-center gap-2">
-                  <TestTube className="h-5 w-5 text-teal-600" />
-                  <CardTitle className="text-lg">Estudios Pendientes</CardTitle>
+                  <Activity className="h-5 w-5 text-cyan-500" />
+                  <CardTitle className="text-lg font-display">Estudios Pendientes</CardTitle>
                 </div>
               </CardHeader>
               <CardContent className="pt-6">
@@ -325,7 +325,7 @@ export function SoapNoteForm({ patientId, initialData, isEditing = false }: Soap
                       <FormControl>
                         <Textarea
                           placeholder="Estudios o procedimientos pendientes..."
-                          className="min-h-[100px]"
+                          className="min-h-[100px] bg-card/50 border-primary/20"
                           {...field}
                           value={field.value || ""}
                         />
@@ -339,7 +339,7 @@ export function SoapNoteForm({ patientId, initialData, isEditing = false }: Soap
           </div>
         </div>
 
-        <div className="flex justify-end items-center gap-4 pt-4 border-t">
+        <div className="flex justify-end items-center gap-4 pt-4 border-t border-primary/10">
           <Button
             type="button"
             variant="outline"
@@ -350,7 +350,8 @@ export function SoapNoteForm({ patientId, initialData, isEditing = false }: Soap
           </Button>
           <Button
             type="submit"
-            className="bg-blue-600 hover:bg-blue-700 min-w-[150px]"
+            variant="glow"
+            className="min-w-[180px]"
             disabled={isSubmitting}
           >
             {isSubmitting ? (

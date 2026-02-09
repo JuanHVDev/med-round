@@ -6,8 +6,13 @@ import { TasksPageClient } from "./TasksPageClient";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Tareas - MedRound",
-  description: "Gestiona las tareas del turno",
+  title: "Tareas Pendientes",
+  description: "Gestiona y organiza tus tareas médicas pendientes. Asigna prioridades y seguimiento de pacientes.",
+  keywords: ["tareas", "pendientes", "to-do", "gestión médica", "medround"],
+  robots: {
+    index: false,
+    follow: true,
+  },
 };
 
 export default async function TasksPage() {

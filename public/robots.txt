@@ -1,0 +1,78 @@
+# MedRound - Robots.txt
+# Configuración para motores de búsqueda
+
+# Agentes de usuario
+User-agent: *
+Allow: /
+
+# Googlebot
+User-agent: Googlebot
+Allow: /
+
+# Googlebot Image
+User-agent: Googlebot-Image
+Allow: /
+
+# Googlebot Video
+User-agent: Googlebot-Video
+Allow: /
+
+# Google Extended
+User-agent: Google-Extended
+Allow: /
+
+# Bingbot
+User-agent: Bingbot
+Allow: /
+
+# Bing Preview
+User-agent: bingbot
+Allow: /
+
+# DuckDuckBot
+User-agent: DuckDuckBot
+Allow: /
+
+# Yahoo
+User-agent: Slurp
+Allow: /
+
+# Yandex
+User-agent: Yandex
+Allow: /
+
+# Baidu
+User-agent: Baiduspider
+Allow: /
+
+# Rastreo y optimización
+Crawl-delay: 10
+
+# Rutas administrativas - no indexar ni rastrear
+Disallow: /dashboard
+Disallow: /patients
+Disallow: /handover
+Disallow: /tasks
+Disallow: /login
+Disallow: /register
+Disallow: /verify-email
+Disallow: /api/
+Disallow: /private/
+
+# Archivos no necesarios rastrear
+Disallow: /public/
+Disallow: /node_modules/
+Disallow: /.git/
+Disallow: /*.json$
+Disallow: /*.md$
+
+# Parámetros de URL a ignorar
+Disallow: /?utm_*
+Disallow: /?_ga
+
+# Sitemap
+Sitemap: https://medround.com/sitemap.xml
+Sitemap: https://medround.com/sitemap-0.xml
+
+# Política de enlaces
+Follow: /

@@ -1,15 +1,14 @@
 "use client";
 
 import { Input } from "@/components/ui/input";
-import
-  {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue
-  } from "@/components/ui/select";
-import { Search, Filter } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from "@/components/ui/select";
+import { Search, Filter, Layers } from "lucide-react";
 
 interface PatientSearchFiltersProps
 {
@@ -30,15 +29,15 @@ export function PatientSearchFilters({
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
           placeholder="Buscar por nombre o historia clínica..."
-          className="pl-10 bg-white"
+          className="pl-10 bg-card/50 border-primary/20 focus:border-primary/50 focus:ring-primary/20"
           onChange={(e) => onSearchChange(e.target.value)}
         />
       </div>
 
       <div className="flex items-center gap-2 min-w-[200px]">
-        <Filter className="h-4 w-4 text-muted-foreground" />
+        <Layers className="h-4 w-4 text-muted-foreground" />
         <Select onValueChange={onServiceChange}>
-          <SelectTrigger className="bg-white">
+          <SelectTrigger className="bg-card/50 border-primary/20 focus:border-primary/50">
             <SelectValue placeholder="Filtrar por servicio" />
           </SelectTrigger>
           <SelectContent>

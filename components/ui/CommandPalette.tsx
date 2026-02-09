@@ -12,11 +12,37 @@ interface CommandPaletteProps {
   patients?: Array<{ id: string; name: string; bedNumber: number }>;
 }
 
+function useIsMac(): boolean {
+  const [isMac, setIsMac] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsMac(navigator.platform.toUpperCase().indexOf("MAC") >= 0);
+  }, []);
+
+  return isMac;
+}
+
+function Shortcut({ ctrl, meta, shift, alt, key }: { ctrl?: boolean; meta?: boolean; shift?: boolean; alt?: boolean; key: string }) {
+  const isMac = useIsMac();
+  const modifier = isMac ? "⌘" : "Ctrl";
+
+  return (
+    <kbd className="ml-auto text-xs text-slate-400">
+      {ctrl && modifier}
+      {meta && "⌘"}
+      {alt && "⌥"}
+      {shift && "⇧"}
+      {key.toUpperCase()}
+    </kbd>
+  );
+}
+
 export function CommandPalette({ patients = [] }: CommandPaletteProps) {
   const [open, setOpen] = React.useState(false);
   const router = useRouter();
   const { setTheme } = useTheme();
   const [search, setSearch] = React.useState("");
+  const isMac = useIsMac();
 
   const toggleOpen = () => setOpen((prev) => !prev);
   const closePalette = () => setOpen(false);
@@ -37,6 +63,8 @@ export function CommandPalette({ patients = [] }: CommandPaletteProps) {
     { key: "Escape", action: closePalette },
     {
       key: "n",
+      ctrl: true,
+      alt: true,
       action: () => {
         closePalette();
         router.push("/patients/new");
@@ -44,6 +72,8 @@ export function CommandPalette({ patients = [] }: CommandPaletteProps) {
     },
     {
       key: "t",
+      ctrl: true,
+      alt: true,
       action: () => {
         closePalette();
         router.push("/tasks");
@@ -51,6 +81,8 @@ export function CommandPalette({ patients = [] }: CommandPaletteProps) {
     },
     {
       key: "h",
+      ctrl: true,
+      alt: true,
       action: () => {
         closePalette();
         router.push("/dashboard");
@@ -58,14 +90,17 @@ export function CommandPalette({ patients = [] }: CommandPaletteProps) {
     },
     {
       key: "p",
+      ctrl: true,
+      alt: true,
       action: () => {
         closePalette();
         router.push("/patients");
       },
     },
     {
-      key: "m",
+      key: "d",
       ctrl: true,
+      alt: true,
       action: () => {
         setTheme((prev) => (prev === "dark" ? "light" : "dark"));
       },
@@ -133,7 +168,7 @@ export function CommandPalette({ patients = [] }: CommandPaletteProps) {
             heading="Navegación"
             className="px-2 py-1.5 text-xs font-medium text-slate-500"
           >
-            <Command.Item
+<Command.Item
               onSelect={() => handleNavigate("/dashboard")}
               className={cn(
                 "flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2",
@@ -144,7 +179,7 @@ export function CommandPalette({ patients = [] }: CommandPaletteProps) {
             >
               <Home className="h-4 w-4" />
               <span>Dashboard</span>
-              <kbd className="ml-auto text-xs text-slate-400">H</kbd>
+              <Shortcut ctrl alt key="h" />
             </Command.Item>
 
             <Command.Item
@@ -158,7 +193,7 @@ export function CommandPalette({ patients = [] }: CommandPaletteProps) {
             >
               <Users className="h-4 w-4" />
               <span>Pacientes</span>
-              <kbd className="ml-auto text-xs text-slate-400">P</kbd>
+              <Shortcut ctrl alt key="p" />
             </Command.Item>
 
             <Command.Item
@@ -172,7 +207,7 @@ export function CommandPalette({ patients = [] }: CommandPaletteProps) {
             >
               <CheckSquare className="h-4 w-4" />
               <span>Tareas</span>
-              <kbd className="ml-auto text-xs text-slate-400">T</kbd>
+              <Shortcut ctrl alt key="t" />
             </Command.Item>
 
             <Command.Item
@@ -193,7 +228,7 @@ export function CommandPalette({ patients = [] }: CommandPaletteProps) {
             heading="Acciones Rápidas"
             className="px-2 py-1.5 text-xs font-medium text-slate-500 mt-2"
           >
-            <Command.Item
+<Command.Item
               onSelect={() => handleNavigate("/patients/new")}
               className={cn(
                 "flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2",
@@ -204,7 +239,7 @@ export function CommandPalette({ patients = [] }: CommandPaletteProps) {
             >
               <Users className="h-4 w-4" />
               <span>Nuevo Paciente</span>
-              <kbd className="ml-auto text-xs text-slate-400">N</kbd>
+              <Shortcut ctrl alt key="n" />
             </Command.Item>
 
             <Command.Item
@@ -218,6 +253,7 @@ export function CommandPalette({ patients = [] }: CommandPaletteProps) {
             >
               <Moon className="h-4 w-4" />
               <span>Modo Oscuro</span>
+              <Shortcut ctrl alt key="d" />
             </Command.Item>
           </Command.Group>
 
@@ -248,8 +284,8 @@ export function CommandPalette({ patients = [] }: CommandPaletteProps) {
           )}
         </Command.List>
 
-        <div className="border-t px-3 py-2 text-xs text-slate-500">
-          <div className="flex gap-4">
+<div className="border-t px-3 py-2 text-xs text-slate-500">
+          <div className="flex flex-wrap gap-4">
             <span>
               <kbd className="rounded bg-slate-100 px-1.5 py-0.5 dark:bg-slate-800">/</kbd>{" "}
               Buscar
@@ -265,6 +301,9 @@ export function CommandPalette({ patients = [] }: CommandPaletteProps) {
             <span>
               <kbd className="rounded bg-slate-100 px-1.5 py-0.5 dark:bg-slate-800">Esc</kbd>{" "}
               Cerrar
+            </span>
+            <span className="ml-auto text-slate-400">
+              {isMac ? "⌘⌥" : "Ctrl+Alt"} + letra
             </span>
           </div>
         </div>

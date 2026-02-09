@@ -2,6 +2,7 @@
 
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { PriorityBadge } from "./PriorityBadge";
 import { Calendar, User } from "lucide-react";
@@ -36,32 +37,34 @@ export function TaskCard({ task, onClick }: TaskCardProps) {
   };
 
   return (
-    <div
+    <motion.div
       ref={setNodeRef}
       style={style}
       {...attributes}
       {...listeners}
       onClick={onClick}
+      whileHover={{ y: -2, scale: 1.01 }}
+      whileDrag={{ scale: 1.05 }}
       className={cn(
-        "bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 cursor-grab active:cursor-grabbing hover:shadow-md transition-shadow",
-        isDragging && "opacity-50 shadow-lg ring-2 ring-primary-500",
+        "bg-card rounded-xl shadow-sm border border-primary/10 p-4 cursor-grab active:cursor-grabbing hover:shadow-lg transition-all duration-200",
+        isDragging && "opacity-60 shadow-xl ring-2 ring-primary",
         "touch-none"
       )}
     >
-      <div className="flex items-start justify-between gap-2 mb-2">
-        <h3 className="font-medium text-gray-900 dark:text-gray-100 line-clamp-2">
+      <div className="flex items-start justify-between gap-2 mb-3">
+        <h3 className="font-medium text-foreground line-clamp-2 font-display">
           {task.title}
         </h3>
         <PriorityBadge variant={task.priority} />
       </div>
 
       {task.description && (
-        <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-3">
+        <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
           {task.description}
         </p>
       )}
 
-      <div className="flex flex-wrap items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
+      <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
         {task.patient && (
           <div className="flex items-center gap-1">
             <User className="h-3 w-3" />
@@ -80,19 +83,19 @@ export function TaskCard({ task, onClick }: TaskCardProps) {
       </div>
 
       {task.assignee && (
-        <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
+        <div className="mt-3 pt-3 border-t border-primary/10">
           <div className="flex items-center gap-2">
-            <div className="h-6 w-6 rounded-full bg-primary-100 dark:bg-primary-900 flex items-center justify-center">
-              <span className="text-xs font-medium text-primary-700 dark:text-primary-300">
+            <div className="h-6 w-6 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+              <span className="text-xs font-medium text-white">
                 {task.assignee.fullName.charAt(0)}
               </span>
             </div>
-            <span className="text-xs text-gray-600 dark:text-gray-400">
+            <span className="text-xs text-muted-foreground">
               {task.assignee.fullName}
             </span>
           </div>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }

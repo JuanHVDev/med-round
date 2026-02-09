@@ -12,6 +12,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { FileText, Clock, AlertTriangle, CheckCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -22,13 +23,15 @@ import { cn } from "@/lib/utils";
 
 interface HandoverClientProps {
   hospital: string;
+  createdBy: string;
 }
 
-export function HandoverClient({ hospital }: HandoverClientProps) {
+export function HandoverClient({ hospital, createdBy }: HandoverClientProps) {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const { handovers, isLoading, isError, error, refetch } = useHandover({
-    hospital,
-    status: statusFilter === "all" ? undefined : (statusFilter as "DRAFT" | "IN_PROGRESS" | "FINALIZED"),
+    // Mostrar todos los handovers del usuario sin filtrar por estado inicialmente
+    // El hospital del perfil puede ser "Otro" mientras que el handover tiene el nombre real
+    createdBy,
   });
 
   const formatDate = (date: Date) => {
@@ -45,36 +48,40 @@ export function HandoverClient({ hospital }: HandoverClientProps) {
     switch (status) {
       case "DRAFT":
         return (
-          <Badge variant="outline" className="gap-1">
+          <Badge variant="outline" className="gap-1 border-amber-500/30 text-amber-400">
             <Clock className="h-3 w-3" />
             Borrador
           </Badge>
         );
       case "IN_PROGRESS":
         return (
-          <Badge className="bg-blue-100 text-blue-800 gap-1">
+          <Badge className="gap-1 bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
             <AlertTriangle className="h-3 w-3" />
             En Progreso
           </Badge>
         );
       case "FINALIZED":
         return (
-          <Badge className="bg-green-100 text-green-800 gap-1">
+          <Badge className="gap-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
             <CheckCircle className="h-3 w-3" />
             Finalizado
           </Badge>
         );
       default:
-        return <Badge variant="outline">{status}</Badge>
+        return <Badge variant="outline">{status}</Badge>;
     }
   };
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold">Handovers Recientes</h2>
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[180px]">
+        <h2 className="text-xl font-display font-semibold">Handovers Recientes</h2>
+        <Select value={statusFilter} onValueChange={(value) => {
+          setStatusFilter(value);
+          // Refetch con el nuevo filtro aplicado
+          refetch();
+        }}>
+          <SelectTrigger className="w-[180px] bg-card">
             <SelectValue placeholder="Filtrar por estado" />
           </SelectTrigger>
           <SelectContent>
@@ -88,14 +95,14 @@ export function HandoverClient({ hospital }: HandoverClientProps) {
 
       {isLoading ? (
         <div className="flex items-center justify-center py-8">
-          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
       ) : isError ? (
-        <Card className="border-red-200 bg-red-50">
+        <Card className="border-destructive/20 bg-destructive/5">
           <CardContent className="py-8 text-center">
-            <AlertTriangle className="h-12 w-12 mx-auto mb-4 text-red-500" />
-            <p className="text-lg font-medium text-red-700">Error al cargar handovers</p>
-            <p className="text-muted-foreground mb-4 text-red-600">
+            <AlertTriangle className="h-12 w-12 mx-auto mb-4 text-destructive" />
+            <p className="text-lg font-medium text-destructive">Error al cargar handovers</p>
+            <p className="text-muted-foreground mb-4">
               {error instanceof Error ? error.message : "Error desconocido"}
             </p>
             <Button onClick={() => refetch()} variant="outline">
@@ -112,7 +119,7 @@ export function HandoverClient({ hospital }: HandoverClientProps) {
               Crea tu primer handover para gestionar la entrega de guardia
             </p>
             <Link href="/handover/new">
-              <Button>
+              <Button variant="glow">
                 <FileText className="h-4 w-4 mr-2" />
                 Crear Handover
               </Button>
@@ -121,52 +128,61 @@ export function HandoverClient({ hospital }: HandoverClientProps) {
         </Card>
       ) : (
         <div className="grid gap-4">
-          {handovers.map((handover) => (
+          {handovers.map((handover, index) => (
             <Link key={handover.id} href={`/handover/${handover.id}`}>
-              <Card className="hover:border-blue-400 transition-colors cursor-pointer">
-                <CardHeader className="pb-2">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <FileText className="h-5 w-5 text-muted-foreground" />
-                      <CardTitle className="text-lg">
-                        {handover.service} - {handover.shiftType}
-                      </CardTitle>
-                    </div>
-                    {getStatusBadge(handover.status)}
-                  </div>
-                  <CardDescription>
-                    {formatDate(handover.shiftDate)}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center gap-6 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-1">
-                      <span className="font-medium text-foreground">
-                        {handover.includedPatientIds.length}
-                      </span>
-                      pacientes
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <span className="font-medium text-foreground">
-                        {handover.includedTaskIds.length}
-                      </span>
-                      tareas
-                    </div>
-                    {handover.criticalPatients && (
-                      <div className="flex items-center gap-1 text-red-600">
-                        <AlertTriangle className="h-4 w-4" />
-                        <span className="font-medium">
-                          {handover.criticalPatients.length}
-                        </span>
-                        críticos
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05 }}
+                whileHover={{ scale: 1.01 }}
+              >
+                <Card className="hover:border-primary/30 transition-all duration-300 cursor-pointer">
+                  <CardHeader className="pb-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+                          <FileText className="h-5 w-5 text-primary" />
+                        </div>
+                        <CardTitle className="text-lg font-display">
+                          {handover.service} - {handover.shiftType}
+                        </CardTitle>
                       </div>
-                    )}
-                    <div className="ml-auto">
-                      Versión {handover.version}
+                      {getStatusBadge(handover.status)}
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
+                    <CardDescription>
+                      {formatDate(handover.shiftDate)}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center gap-6 text-sm text-muted-foreground">
+                      <div className="flex items-center gap-1">
+                        <span className="font-medium text-foreground">
+                          {handover.includedPatientIds.length}
+                        </span>
+                        pacientes
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <span className="font-medium text-foreground">
+                          {handover.includedTaskIds.length}
+                        </span>
+                        tareas
+                      </div>
+                      {handover.criticalPatients && (
+                        <div className="flex items-center gap-1 text-red-400">
+                          <AlertTriangle className="h-4 w-4" />
+                          <span className="font-medium">
+                            {handover.criticalPatients.length}
+                          </span>
+                          críticos
+                        </div>
+                      )}
+                      <div className="ml-auto font-mono text-xs text-muted-foreground">
+                        v{handover.version}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
             </Link>
           ))}
         </div>

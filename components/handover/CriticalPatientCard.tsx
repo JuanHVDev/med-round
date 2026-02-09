@@ -22,9 +22,9 @@ interface CriticalPatientCardProps {
 
 export function CriticalPatientCard({ patient, onClick, className }: CriticalPatientCardProps) {
   const getPriorityColor = (urgentCount: number): string => {
-    if (urgentCount >= 2) return "bg-red-100 border-red-300 text-red-800";
-    if (urgentCount === 1) return "bg-orange-100 border-orange-300 text-orange-800";
-    return "bg-yellow-100 border-yellow-300 text-yellow-800";
+    if (urgentCount >= 2) return "bg-red-500/5 border-red-500/20 text-red-800";
+    if (urgentCount === 1) return "bg-orange-500/5 border-orange-500/20 text-orange-800";
+    return "bg-amber-500/5 border-amber-500/20 text-amber-800";
   };
 
   const formatDate = (date?: Date): string => {
@@ -51,13 +51,13 @@ export function CriticalPatientCard({ patient, onClick, className }: CriticalPat
         <div className="flex items-center gap-2">
           <AlertTriangle className="h-5 w-5" />
           <div>
-            <h4 className="font-semibold">Cama {patient.bedNumber}</h4>
+            <h4 className="font-semibold font-mono">Cama {patient.bedNumber}</h4>
             <p className="text-sm font-medium">{patient.patientName}</p>
           </div>
         </div>
         <div className="text-right text-xs">
           <div className="flex items-center gap-1 justify-end">
-            <Clock className="h-3 w-3" />
+            <Clock className="h-3 w-3 opacity-70" />
             <span>{formatDate(patient.lastSoapDate)}</span>
           </div>
         </div>
@@ -75,14 +75,15 @@ export function CriticalPatientCard({ patient, onClick, className }: CriticalPat
         <div className="flex items-center gap-1">
           <span className="font-medium">Tareas pendientes:</span>
           <span className={cn(
-            "px-2 py-0.5 rounded-full font-bold",
-            patient.pendingTasksCount > 0 ? "bg-red-200" : "bg-gray-200"
+            "px-2 py-0.5 rounded-full font-mono font-bold",
+            patient.pendingTasksCount > 0 ? "bg-red-500/10 text-red-600" : "bg-muted"
           )}>
             {patient.pendingTasksCount}
           </span>
         </div>
         {patient.urgentTasksCount > 0 && (
-          <span className="px-2 py-0.5 bg-red-200 rounded-full font-bold">
+          <span className="px-2 py-0.5 bg-red-500/10 text-red-600 rounded-full font-bold flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
             {patient.urgentTasksCount} URGENTE
           </span>
         )}

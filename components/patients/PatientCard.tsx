@@ -1,12 +1,13 @@
 /**
  * Tarjeta de paciente para mostrar en listas y grids
- * 
+ *
  * Muestra información básica del paciente con enlace a su detalle
  */
 
 "use client";
 
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import type { PatientWithRelations } from "@/services/patient/types";
@@ -21,40 +22,47 @@ export function PatientCard({ patient }: PatientCardProps) {
 
   return (
     <Link href={`/patients/${patient.id}`}>
-      <Card className="hover:shadow-lg transition-shadow cursor-pointer group h-full">
-        <CardHeader className="pb-3">
-          <div className="flex justify-between items-start">
-            <div>
-              <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">
-                {fullName}
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                {age} años • {getGenderLabel(patient.gender)}
+      <motion.div
+        whileHover={{ y: -4, scale: 1.01 }}
+        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      >
+        <Card className="hover:border-primary/30 transition-all duration-300 cursor-pointer group h-full">
+          <CardHeader className="pb-3">
+            <div className="flex justify-between items-start">
+              <div>
+                <h3 className="font-semibold text-lg group-hover:text-primary transition-colors font-display">
+                  {fullName}
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  {age} años • {getGenderLabel(patient.gender)}
+                </p>
+              </div>
+              <BedStatusBadge
+                bedNumber={patient.bedNumber}
+                isActive={patient.isActive}
+              />
+            </div>
+          </CardHeader>
+          <CardContent className="pt-0">
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 flex-wrap">
+                <Badge variant="outline" className="bg-primary/5 border-primary/20">
+                  {patient.service}
+                </Badge>
+                {patient.allergies && (
+                  <Badge variant="destructive">Alergias</Badge>
+                )}
+              </div>
+              <p className="text-sm text-muted-foreground line-clamp-2">
+                {patient.diagnosis}
+              </p>
+              <p className="text-xs text-muted-foreground font-mono">
+                HC: {patient.medicalRecordNumber}
               </p>
             </div>
-            <BedStatusBadge
-              bedNumber={patient.bedNumber}
-              isActive={patient.isActive}
-            />
-          </div>
-        </CardHeader>
-        <CardContent className="pt-0">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <Badge variant="outline">{patient.service}</Badge>
-              {patient.allergies && (
-                <Badge variant="destructive">Alergias</Badge>
-              )}
-            </div>
-            <p className="text-sm text-muted-foreground line-clamp-2">
-              {patient.diagnosis}
-            </p>
-            <p className="text-xs text-muted-foreground">
-              HC: {patient.medicalRecordNumber}
-            </p>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </motion.div>
     </Link>
   );
 }
@@ -65,15 +73,15 @@ export function PatientCard({ patient }: PatientCardProps) {
 function BedStatusBadge({ bedNumber, isActive }: { bedNumber: string; isActive: boolean }) {
   return (
     <span
-      className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
+      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium ${
         isActive
-          ? "bg-green-100 text-green-800"
-          : "bg-gray-100 text-gray-600"
+          ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+          : "bg-slate-500/10 text-slate-400 border border-slate-500/20"
       }`}
     >
       <span
         className={`w-1.5 h-1.5 rounded-full ${
-          isActive ? "bg-green-500" : "bg-gray-400"
+          isActive ? "bg-emerald-400 animate-pulse" : "bg-slate-400"
         }`}
       />
       Cama {bedNumber}

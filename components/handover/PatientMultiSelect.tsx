@@ -35,10 +35,9 @@ export function PatientMultiSelect({
   
   const { data, isLoading } = usePatients({
     hospital,
-    limit: 100, // Cargar más pacientes para mostrar todos los activos
+    limit: 100,
   });
 
-  // Filtrar solo pacientes activos y aplicar búsqueda
   const activePatients = data?.patients.filter(
     (patient) => patient.isActive
   ) || [];
@@ -63,11 +62,9 @@ export function PatientMultiSelect({
 
   const handleSelectAll = () => {
     if (selectedPatientIds.length === filteredPatients.length) {
-      // Deseleccionar todos los visibles
       const visibleIds = new Set(filteredPatients.map((p) => p.id));
       onSelectionChange(selectedPatientIds.filter((id) => !visibleIds.has(id)));
     } else {
-      // Seleccionar todos los visibles
       const visibleIds = filteredPatients.map((p) => p.id);
       const newSelection = [...new Set([...selectedPatientIds, ...visibleIds])];
       onSelectionChange(newSelection);
@@ -94,7 +91,6 @@ export function PatientMultiSelect({
 
   return (
     <div className="space-y-4">
-      {/* Barra de búsqueda y contador */}
       <div className="flex items-center gap-4">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -102,23 +98,25 @@ export function PatientMultiSelect({
             placeholder="Buscar por nombre, cama o servicio..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
+            className="pl-10 bg-card/50 border-primary/20"
           />
         </div>
-        <Badge variant="secondary" className="flex items-center gap-1">
+        <Badge variant="secondary" className="flex items-center gap-1 bg-cyan-500/10 text-cyan-600 border border-cyan-500/20">
           <Users className="h-3 w-3" />
           {activePatients.length} activos
         </Badge>
         <Badge
           variant={selectedCount > 0 ? "default" : "secondary"}
-          className="flex items-center gap-1"
+          className={cn(
+            "flex items-center gap-1",
+            selectedCount > 0 && "bg-primary/10 text-primary border border-primary/20"
+          )}
         >
           <Check className="h-3 w-3" />
           {selectedCount} seleccionados
         </Badge>
       </div>
 
-      {/* Botón seleccionar todos */}
       {filteredPatients.length > 0 && (
         <div className="flex items-center gap-2">
           <Checkbox
@@ -137,9 +135,8 @@ export function PatientMultiSelect({
         </div>
       )}
 
-      {/* Grid de pacientes */}
       {filteredPatients.length === 0 ? (
-        <div className="text-center py-12 text-muted-foreground bg-muted/50 rounded-lg">
+        <div className="text-center py-12 text-muted-foreground bg-card/50 rounded-lg border border-primary/10">
           <Users className="h-12 w-12 mx-auto mb-3 opacity-50" />
           <p className="font-medium">
             {searchQuery
@@ -162,8 +159,8 @@ export function PatientMultiSelect({
                 className={cn(
                   "cursor-pointer transition-all hover:shadow-md",
                   isSelected
-                    ? "border-blue-500 bg-blue-50/50"
-                    : "border-border hover:border-blue-300"
+                    ? "border-cyan-500/50 bg-cyan-500/5"
+                    : "border-border hover:border-cyan-300/50"
                 )}
                 onClick={() => handleTogglePatient(patient.id)}
               >
@@ -177,10 +174,10 @@ export function PatientMultiSelect({
                     />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-2">
-                        <p className="font-semibold truncate">
+                        <p className="font-semibold truncate font-mono">
                           Cama {patient.bedNumber}
                         </p>
-                        <Badge variant="outline" className="text-xs shrink-0">
+                        <Badge variant="outline" className="text-xs shrink-0 border-primary/20">
                           {patient.service}
                         </Badge>
                       </div>

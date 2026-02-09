@@ -66,3 +66,4 @@ prisma/*.db
 
 # Generated
 .next/
+SEO_DOCUMENTATION.md

@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PriorityBadge } from "./PriorityBadge";
 import { PatientSelector } from "@/components/patients/PatientSelector";
+import { cn } from "@/lib/utils";
 
 const taskFormSchema = z.object({
   title: z.string().min(1, "El título es requerido").max(200, "Título muy largo"),
@@ -103,39 +104,41 @@ export function TaskForm({ onClose, defaultPatientId, assignedTo, hospital }: Ta
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+        <label className="block text-sm font-medium text-foreground mb-1">
           Título
         </label>
         <Input
           {...form.register("title")}
           placeholder="Ej: Ordenar biometría hemática"
+          className="bg-card/50 border-primary/20 focus:border-primary/50"
         />
         {form.formState.errors.title && (
-          <p className="mt-1 text-sm text-red-600">{form.formState.errors.title.message}</p>
+          <p className="mt-1 text-sm text-red-500">{form.formState.errors.title.message}</p>
         )}
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+        <label className="block text-sm font-medium text-foreground mb-1">
           Descripción
         </label>
         <Textarea
           {...form.register("description")}
           placeholder="Detalles adicionales..."
           rows={3}
+          className="bg-card/50 border-primary/20 focus:border-primary/50"
         />
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          <label className="block text-sm font-medium text-foreground mb-1">
             Prioridad
           </label>
-            <Select
-              value={form.watch("priority")}
-              onValueChange={(value) => form.setValue("priority", value as TaskFormData["priority"])}
-            >
-            <SelectTrigger>
+          <Select
+            value={form.watch("priority")}
+            onValueChange={(value) => form.setValue("priority", value as TaskFormData["priority"])}
+          >
+            <SelectTrigger className="bg-card/50 border-primary/20 focus:border-primary/50">
               <SelectValue placeholder="Seleccionar prioridad" />
             </SelectTrigger>
             <SelectContent>
@@ -149,14 +152,14 @@ export function TaskForm({ onClose, defaultPatientId, assignedTo, hospital }: Ta
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+          <label className="block text-sm font-medium text-foreground mb-1">
             Tipo
           </label>
-            <Select
-              value={form.watch("type")}
-              onValueChange={(value) => form.setValue("type", value as TaskFormData["type"])}
-            >
-            <SelectTrigger>
+          <Select
+            value={form.watch("type")}
+            onValueChange={(value) => form.setValue("type", value as TaskFormData["type"])}
+          >
+            <SelectTrigger className="bg-card/50 border-primary/20 focus:border-primary/50">
               <SelectValue placeholder="Seleccionar tipo" />
             </SelectTrigger>
             <SelectContent>
@@ -171,7 +174,7 @@ export function TaskForm({ onClose, defaultPatientId, assignedTo, hospital }: Ta
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+        <label className="block text-sm font-medium text-foreground mb-1">
           Paciente (opcional)
         </label>
         <PatientSelector
@@ -183,11 +186,11 @@ export function TaskForm({ onClose, defaultPatientId, assignedTo, hospital }: Ta
 
       <div className="flex justify-end gap-2 pt-4">
         {onClose && (
-          <Button type="button" variant="outline" onClick={onClose}>
+          <Button type="button" variant="outline" onClick={onClose} className="hover:bg-primary/5">
             Cancelar
           </Button>
         )}
-        <Button type="submit" disabled={isSubmitting}>
+        <Button type="submit" disabled={isSubmitting} variant="glow">
           {isSubmitting ? "Creando..." : "Crear Tarea"}
         </Button>
       </div>

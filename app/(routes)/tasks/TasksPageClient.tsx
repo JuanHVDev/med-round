@@ -48,8 +48,8 @@ function TasksPageContent({ assignedTo, hospital }: TasksPageClientProps) {
   if (error) {
     return (
       <div className="container mx-auto py-8 px-4">
-        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
-          <p className="text-red-600 dark:text-red-400">Error al cargar las tareas</p>
+        <div className="bg-destructive/10 border border-destructive/20 rounded-xl p-4">
+          <p className="text-destructive">Error al cargar las tareas</p>
         </div>
       </div>
     );
@@ -59,12 +59,12 @@ function TasksPageContent({ assignedTo, hospital }: TasksPageClientProps) {
     <div className="container mx-auto py-8 px-4">
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Tareas</h1>
+          <h1 className="text-3xl font-display font-bold mb-2">Tareas</h1>
           <p className="text-muted-foreground">
             Gestiona las tareas del turno en {hospital}
           </p>
         </div>
-        <Button onClick={() => setShowCreateForm(true)}>
+        <Button onClick={() => setShowCreateForm(true)} variant="glow">
           <Plus className="h-4 w-4 mr-2" />
           Nueva Tarea
         </Button>
@@ -88,9 +88,9 @@ function TasksPageContent({ assignedTo, hospital }: TasksPageClientProps) {
 
       {showCreateForm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-card rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto border border-primary/20">
             <div className="p-6">
-              <h2 className="text-xl font-semibold mb-4">Nueva Tarea</h2>
+              <h2 className="text-xl font-display font-semibold mb-4">Nueva Tarea</h2>
               <TaskForm
                 onClose={() => setShowCreateForm(false)}
                 assignedTo={assignedTo}

@@ -40,14 +40,14 @@ export function TaskFilters({ onFilterChange }: TaskFiltersProps) {
   const hasActiveFilters = filters.status !== "" || filters.priority !== "" || filters.search !== "";
 
   return (
-    <div className="flex flex-col sm:flex-row gap-3 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+    <div className="flex flex-col sm:flex-row gap-3 p-4 bg-card rounded-xl shadow-sm border border-primary/10">
       <div className="relative flex-1">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
           placeholder="Buscar tareas..."
           value={filters.search}
           onChange={(e) => handleFilterChange("search", e.target.value)}
-          className="pl-9"
+          className="pl-9 bg-background"
         />
       </div>
 
@@ -55,7 +55,7 @@ export function TaskFilters({ onFilterChange }: TaskFiltersProps) {
         value={filters.status === "" ? "all" : filters.status}
         onValueChange={(value) => handleFilterChange("status", value === "all" ? "" : value as TaskStatus)}
       >
-        <SelectTrigger className="w-full sm:w-[160px]">
+        <SelectTrigger className="w-full sm:w-[160px] bg-background">
           <SelectValue placeholder="Estado" />
         </SelectTrigger>
         <SelectContent>
@@ -71,7 +71,7 @@ export function TaskFilters({ onFilterChange }: TaskFiltersProps) {
         value={filters.priority === "" ? "all" : filters.priority}
         onValueChange={(value) => handleFilterChange("priority", value === "all" ? "" : value as TaskPriority)}
       >
-        <SelectTrigger className="w-full sm:w-[160px]">
+        <SelectTrigger className="w-full sm:w-[160px] bg-background">
           <SelectValue placeholder="Prioridad" />
         </SelectTrigger>
         <SelectContent>

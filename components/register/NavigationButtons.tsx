@@ -13,13 +13,13 @@ interface NavigationButtonsProps {
 
 export function NavigationButtons({ currentStep, onPrevStep, onNextStep, isSubmitting = false }: NavigationButtonsProps) {
   return (
-    <div className="flex justify-between pt-6">
+    <div className="flex justify-between pt-8 border-t border-primary/10">
       <Button
         type="button"
         variant="outline"
         onClick={onPrevStep}
         disabled={currentStep === 1}
-        className="gap-2"
+        className="gap-2 border-primary/20 hover:bg-primary/5"
       >
         <ChevronLeft className="w-4 h-4" />
         Anterior
@@ -28,7 +28,8 @@ export function NavigationButtons({ currentStep, onPrevStep, onNextStep, isSubmi
         type="button"
         onClick={onNextStep}
         disabled={isSubmitting}
-        className="btn-primary gap-2"
+        variant="glow"
+        className="gap-2"
       >
         {isSubmitting ? (
           "Procesando..."

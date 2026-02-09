@@ -73,6 +73,8 @@ export async function GET(request: NextRequest)
       limit: searchParams.get("limit") ? parseInt(searchParams.get("limit")!, 10) : undefined,
     };
 
+    console.log("[DEBUG] Patient API - Hospital filter:", filters.hospital, "isActive:", filters.isActive);
+
     const result = await patientService.list(filters);
 
     if (!result.success)

@@ -1,6 +1,6 @@
 /**
  * Página de listado de pacientes (censo)
- * 
+ *
  * Muestra todos los pacientes del hospital del usuario actual
  */
 
@@ -13,11 +13,16 @@ import { PatientList } from "@/components/patients/PatientList";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Pacientes - MedRound",
-  description: "Gestiona el censo de pacientes hospitalizados",
+  title: "Censo de Pacientes",
+  description: "Visualiza y gestiona el censo de pacientes hospitalizados. Accede a historiales, notas SOAP y tareas asignadas.",
+  keywords: ["pacientes", "censo", "hospitalización", "historia clínica", "medround"],
+  robots: {
+    index: false,
+    follow: true,
+  },
 };
 
-export default async function PatientsPage() {
+export default async function patientsPage() {
   const session = await auth.api.getSession({ headers: await headers() });
 
   if (!session?.user?.id) {
@@ -48,15 +53,18 @@ export default async function PatientsPage() {
   }
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Censo de Pacientes</h1>
-        <p className="text-muted-foreground">
-          Gestiona los pacientes hospitalizados en {profile.hospital}
-        </p>
-      </div>
+    <div className="relative">
+      <div className="fixed inset-0 bg-grid opacity-50 pointer-events-none" />
+      <div className="relative z-10 container mx-auto py-8 px-4">
+        <div className="mb-8">
+          <h1 className="text-3xl font-display font-bold mb-2">Censo de Pacientes</h1>
+          <p className="text-muted-foreground">
+            Gestiona los pacientes hospitalizados en {profile.hospital}
+          </p>
+        </div>
 
-      <PatientList initialPatients={result.patients} total={result.total} />
+        <PatientList initialPatients={result.patients} total={result.total} />
+      </div>
     </div>
   );
 }

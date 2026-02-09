@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { UseFormReturn } from "react-hook-form"
 import type { FormData } from "@/lib/registerSchema"
+import { UserCheck, FileBadge, GraduationCap } from "lucide-react"
 
 interface IdentificationStepProps {
   form: UseFormReturn<FormData>
@@ -13,16 +14,19 @@ interface IdentificationStepProps {
 
 export function IdentificationStep({ form, userType }: IdentificationStepProps) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       <FormField
         control={form.control}
         name="userType"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Tipo de Usuario</FormLabel>
+            <FormLabel className="flex items-center gap-2">
+              <UserCheck className="h-4 w-4 text-primary" />
+              Tipo de Usuario
+            </FormLabel>
             <Select onValueChange={field.onChange} defaultValue={field.value}>
               <FormControl>
-                <SelectTrigger>
+                <SelectTrigger className="bg-card/50 border-primary/20 focus:border-primary/50">
                   <SelectValue placeholder="Seleccione su tipo" />
                 </SelectTrigger>
               </FormControl>
@@ -42,9 +46,12 @@ export function IdentificationStep({ form, userType }: IdentificationStepProps) 
           name="professionalId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Cédula Profesional</FormLabel>
+              <FormLabel className="flex items-center gap-2">
+                <FileBadge className="h-4 w-4 text-primary" />
+                Cédula Profesional
+              </FormLabel>
               <FormControl>
-                <Input placeholder="Número de cédula profesional" {...field} />
+                <Input placeholder="Número de cédula profesional" {...field} className="bg-card/50 border-primary/20 focus:border-primary/50 font-mono" />
               </FormControl>
               <FormDescription>
                 Ingrese su número de cédula profesional vigente
@@ -62,10 +69,13 @@ export function IdentificationStep({ form, userType }: IdentificationStepProps) 
             name="studentType"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Tipo de Estudiante</FormLabel>
+                <FormLabel className="flex items-center gap-2">
+                  <GraduationCap className="h-4 w-4 text-primary" />
+                  Tipo de Estudiante
+                </FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger className="bg-card/50 border-primary/20 focus:border-primary/50">
                       <SelectValue placeholder="Seleccione su tipo" />
                     </SelectTrigger>
                   </FormControl>
@@ -83,9 +93,12 @@ export function IdentificationStep({ form, userType }: IdentificationStepProps) 
             name="universityMatricula"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Matricula Universitaria</FormLabel>
+                <FormLabel className="flex items-center gap-2">
+                  <GraduationCap className="h-4 w-4 text-primary" />
+                  Matricula Universitaria
+                </FormLabel>
                 <FormControl>
-                  <Input placeholder="Número de matrícula" {...field} />
+                  <Input placeholder="Número de matrícula" {...field} className="bg-card/50 border-primary/20 focus:border-primary/50 font-mono" />
                 </FormControl>
                 <FormDescription>
                   Ingrese su número de matrícula universitaria

@@ -16,16 +16,6 @@ import type { SoapNoteSchemaType } from "@/lib/schemas/soapSchema";
 export function VitalSignsInput() {
   const form = useFormContext<SoapNoteSchemaType>();
 
-  const bloodPressure = useWatch({
-    control: form.control,
-    name: "vitalSigns.bloodPressure",
-  });
-
-  const heartRate = useWatch({
-    control: form.control,
-    name: "vitalSigns.heartRate",
-  });
-
   const formatBloodPressure = (value: string): string => {
     const cleaned = value.replace(/\D/g, "");
     if (cleaned.length === 0) return "";
@@ -43,11 +33,11 @@ export function VitalSignsInput() {
   };
 
   return (
-    <Card className="shadow-sm border-slate-200">
-      <CardHeader className="bg-slate-50/50 border-b pb-4">
+    <Card className="bg-card/50 border-primary/10">
+      <CardHeader className="bg-primary/5 border-b border-primary/10 pb-4">
         <div className="flex items-center gap-2">
-          <Activity className="h-5 w-5 text-red-600" />
-          <CardTitle className="text-lg">Signos Vitales</CardTitle>
+          <Activity className="h-5 w-5 text-cyan-500" />
+          <CardTitle className="text-lg font-display">Signos Vitales</CardTitle>
         </div>
       </CardHeader>
       <CardContent className="pt-6">
@@ -58,7 +48,7 @@ export function VitalSignsInput() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="flex items-center gap-1">
-                  <Activity className="h-4 w-4" />
+                  <Activity className="h-4 w-4 text-cyan-500" />
                   Presión Arterial
                 </FormLabel>
                 <FormControl>
@@ -68,6 +58,7 @@ export function VitalSignsInput() {
                     value={field.value || ""}
                     onChange={(e) => handleBloodPressureChange(e, field.onChange)}
                     maxLength={7}
+                    className="bg-card/50 border-primary/20 font-mono"
                   />
                 </FormControl>
                 <FormMessage />
@@ -95,6 +86,7 @@ export function VitalSignsInput() {
                         e.target.value === "" ? undefined : parseInt(e.target.value, 10)
                       )
                     }
+                    className="bg-card/50 border-primary/20 font-mono"
                   />
                 </FormControl>
                 <FormMessage />
@@ -123,6 +115,7 @@ export function VitalSignsInput() {
                         e.target.value === "" ? undefined : parseFloat(e.target.value)
                       )
                     }
+                    className="bg-card/50 border-primary/20 font-mono"
                   />
                 </FormControl>
                 <FormMessage />
@@ -136,7 +129,7 @@ export function VitalSignsInput() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="flex items-center gap-1">
-                  <Wind className="h-4 w-4 text-blue-500" />
+                  <Wind className="h-4 w-4 text-teal-500" />
                   Frecuencia Resp.
                 </FormLabel>
                 <FormControl>
@@ -150,6 +143,7 @@ export function VitalSignsInput() {
                         e.target.value === "" ? undefined : parseInt(e.target.value, 10)
                       )
                     }
+                    className="bg-card/50 border-primary/20 font-mono"
                   />
                 </FormControl>
                 <FormMessage />
@@ -163,7 +157,7 @@ export function VitalSignsInput() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="flex items-center gap-1">
-                  <Droplets className="h-4 w-4 text-blue-600" />
+                  <Droplets className="h-4 w-4 text-cyan-500" />
                   SpO2 (%)
                 </FormLabel>
                 <FormControl>
@@ -179,6 +173,7 @@ export function VitalSignsInput() {
                         e.target.value === "" ? undefined : parseInt(e.target.value, 10)
                       )
                     }
+                    className="bg-card/50 border-primary/20 font-mono"
                   />
                 </FormControl>
                 <FormMessage />
@@ -192,7 +187,7 @@ export function VitalSignsInput() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="flex items-center gap-1">
-                  <Scale className="h-4 w-4" />
+                  <Scale className="h-4 w-4 text-muted-foreground" />
                   Peso (kg)
                 </FormLabel>
                 <FormControl>
@@ -207,6 +202,7 @@ export function VitalSignsInput() {
                         e.target.value === "" ? undefined : parseFloat(e.target.value)
                       )
                     }
+                    className="bg-card/50 border-primary/20 font-mono"
                   />
                 </FormControl>
                 <FormMessage />
@@ -220,7 +216,7 @@ export function VitalSignsInput() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="flex items-center gap-1">
-                  <Ruler className="h-4 w-4" />
+                  <Ruler className="h-4 w-4 text-muted-foreground" />
                   Talla (cm)
                 </FormLabel>
                 <FormControl>
@@ -234,6 +230,7 @@ export function VitalSignsInput() {
                         e.target.value === "" ? undefined : parseInt(e.target.value, 10)
                       )
                     }
+                    className="bg-card/50 border-primary/20 font-mono"
                   />
                 </FormControl>
                 <FormMessage />

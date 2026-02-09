@@ -38,7 +38,7 @@ export async function GET(request: NextRequest)
     const { searchParams } = new URL(request.url);
 
     const filters: TaskFilters = {
-      hospital: medicosProfile.hospital,
+      assignedTo: medicosProfile.id,
       page: parseInt(searchParams.get("page") || "1"),
       limit: parseInt(searchParams.get("limit") || "20"),
     };

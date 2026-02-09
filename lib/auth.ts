@@ -3,6 +3,11 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./prisma";
 import { sendEmail } from "./email";
 
+// Verificar que estamos en el servidor
+if (typeof window !== "undefined") {
+  throw new Error("auth.ts should only be imported on the server side");
+}
+
 /**
  * Configuración del sistema de reintentos para emails
  * MAX_RETRIES: Número máximo de intentos antes de dar por fallido

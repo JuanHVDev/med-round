@@ -12,6 +12,7 @@ import {
   Calendar,
   ClipboardList,
   Loader2,
+  Files
 } from "lucide-react";
 import type { SoapNoteWithRelations } from "@/services/soap/types";
 import Link from "next/link";
@@ -47,23 +48,23 @@ export function SoapNoteList({ notes, patientId, isLoading, onCreateNew }: SoapN
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
 
   if (notes.length === 0) {
     return (
-      <Card className="shadow-sm border-slate-200">
+      <Card className="bg-card/50 border-primary/10">
         <CardContent className="py-12">
           <div className="text-center">
-            <FileText className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-lg font-medium mb-2">No hay notas SOAP</h3>
+            <Files className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+            <h3 className="text-lg font-medium mb-2 font-display">No hay notas SOAP</h3>
             <p className="text-muted-foreground mb-4">
               Este paciente aún no tiene notas de evolución registradas.
             </p>
             {onCreateNew && (
-              <Button onClick={onCreateNew}>
+              <Button onClick={onCreateNew} variant="glow">
                 <Plus className="h-4 w-4 mr-2" />
                 Crear Primera Nota SOAP
               </Button>
@@ -77,10 +78,13 @@ export function SoapNoteList({ notes, patientId, isLoading, onCreateNew }: SoapN
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold">Notas SOAP ({notes.length})</h2>
+        <h2 className="text-xl font-semibold font-display flex items-center gap-2">
+          <Files className="h-5 w-5 text-cyan-500" />
+          Notas SOAP ({notes.length})
+        </h2>
         {onCreateNew && (
-          <Button onClick={onCreateNew} size="sm">
-            <Plus className="h-4 w-4 mr-2" />
+          <Button onClick={onCreateNew} size="sm" variant="outline" className="gap-2">
+            <Plus className="h-4 w-4" />
             Nueva Nota
           </Button>
         )}
@@ -95,16 +99,17 @@ export function SoapNoteList({ notes, patientId, isLoading, onCreateNew }: SoapN
               href={`/patients/${patientId}/soap/${note.id}`}
               className="block"
             >
-              <Card className="shadow-sm border-slate-200 hover:border-blue-300 hover:shadow-md transition-all cursor-pointer">
+              <Card className="bg-card/50 border-primary/10 hover:border-primary/30 hover:bg-card/80 transition-all cursor-pointer">
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1 space-y-2">
                       <div className="flex items-center gap-2">
-                        <FileText className="h-5 w-5 text-blue-600" />
-                        <span className="font-medium">
+                        <FileText className="h-5 w-5 text-cyan-500" />
+                        <span className="font-medium font-display">
                           {formatDate(note.date)}
                         </span>
-                        <Badge variant="outline" className="text-xs">
+                        <Badge variant="outline" className="text-xs gap-1 border-primary/20">
+                          <span className="w-1 h-1 rounded-full bg-cyan-500" />
                           {note.hospital}
                         </Badge>
                       </div>
@@ -122,9 +127,9 @@ export function SoapNoteList({ notes, patientId, isLoading, onCreateNew }: SoapN
                         </div>
 
                         {vitalSignsSummary && (
-                          <div className="flex items-center gap-1 text-muted-foreground bg-slate-50 p-2 rounded">
-                            <Activity className="h-3 w-3 text-red-500" />
-                            <span>{vitalSignsSummary}</span>
+                          <div className="flex items-center gap-1 text-muted-foreground bg-primary/5 p-2 rounded border border-primary/10">
+                            <Activity className="h-3 w-3 text-teal-500" />
+                            <span className="font-mono text-xs">{vitalSignsSummary}</span>
                           </div>
                         )}
                       </div>

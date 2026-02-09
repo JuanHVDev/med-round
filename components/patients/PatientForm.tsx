@@ -4,8 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { patientSchema, type PatientSchemaType } from "@/lib/schemas/patientSchema";
 import { Button } from "@/components/ui/button";
-import
-{
+import {
   Form,
   FormControl,
   FormField,
@@ -14,8 +13,7 @@ import
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import
-{
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -24,7 +22,7 @@ import
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, Save, User, Hospital, Activity, Phone } from "lucide-react";
+import { Loader2, Save, User, Hospital, Activity, Phone, Scan, FileKey } from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -108,12 +106,11 @@ export function PatientForm({ initialData, isEditing = false }: PatientFormProps
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Datos Personales */}
-          <Card className="shadow-sm border-slate-200">
-            <CardHeader className="bg-slate-50/50 border-b pb-4">
+          <Card className="bg-card/50 border-primary/10">
+            <CardHeader className="bg-primary/5 border-b border-primary/10 pb-4">
               <div className="flex items-center gap-2">
-                <User className="h-5 w-5 text-blue-600" />
-                <CardTitle className="text-lg">Información Personal</CardTitle>
+                <User className="h-5 w-5 text-cyan-500" />
+                <CardTitle className="text-lg font-display">Información Personal</CardTitle>
               </div>
               <CardDescription>Datos básicos y demográficos del paciente</CardDescription>
             </CardHeader>
@@ -123,9 +120,12 @@ export function PatientForm({ initialData, isEditing = false }: PatientFormProps
                 name="medicalRecordNumber"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Número de Historia Clínica (NHC)</FormLabel>
+                    <FormLabel className="flex items-center gap-1">
+                      <FileKey className="h-4 w-4 text-muted-foreground" />
+                      Número de Historia Clínica (NHC)
+                    </FormLabel>
                     <FormControl>
-                      <Input placeholder="Ej. 123456" {...field} />
+                      <Input placeholder="Ej. 123456" {...field} className="bg-card/50 border-primary/20" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -140,7 +140,7 @@ export function PatientForm({ initialData, isEditing = false }: PatientFormProps
                     <FormItem>
                       <FormLabel>Nombres</FormLabel>
                       <FormControl>
-                        <Input placeholder="Ej. Juan" {...field} />
+                        <Input placeholder="Ej. Juan" {...field} className="bg-card/50 border-primary/20" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -153,7 +153,7 @@ export function PatientForm({ initialData, isEditing = false }: PatientFormProps
                     <FormItem>
                       <FormLabel>Apellidos</FormLabel>
                       <FormControl>
-                        <Input placeholder="Ej. Pérez" {...field} />
+                        <Input placeholder="Ej. Pérez" {...field} className="bg-card/50 border-primary/20" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -169,7 +169,7 @@ export function PatientForm({ initialData, isEditing = false }: PatientFormProps
                     <FormItem>
                       <FormLabel>Fecha de Nacimiento</FormLabel>
                       <FormControl>
-                        <Input type="date" {...field} />
+                        <Input type="date" {...field} className="bg-card/50 border-primary/20" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -183,7 +183,7 @@ export function PatientForm({ initialData, isEditing = false }: PatientFormProps
                       <FormLabel>Género</FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
-                          <SelectTrigger>
+                          <SelectTrigger className="bg-card/50 border-primary/20">
                             <SelectValue placeholder="Seleccione" />
                           </SelectTrigger>
                         </FormControl>
@@ -207,7 +207,7 @@ export function PatientForm({ initialData, isEditing = false }: PatientFormProps
                     <FormLabel>Tipo de Sangre</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value || undefined}>
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="bg-card/50 border-primary/20">
                           <SelectValue placeholder="Seleccione tipo" />
                         </SelectTrigger>
                       </FormControl>
@@ -224,12 +224,11 @@ export function PatientForm({ initialData, isEditing = false }: PatientFormProps
             </CardContent>
           </Card>
 
-          {/* Ubicación y Hospitalización */}
-          <Card className="shadow-sm border-slate-200">
-            <CardHeader className="bg-slate-50/50 border-b pb-4">
+          <Card className="bg-card/50 border-primary/10">
+            <CardHeader className="bg-primary/5 border-b border-primary/10 pb-4">
               <div className="flex items-center gap-2">
-                <Hospital className="h-5 w-5 text-blue-600" />
-                <CardTitle className="text-lg">Detalles de Hospitalización</CardTitle>
+                <Hospital className="h-5 w-5 text-cyan-500" />
+                <CardTitle className="text-lg font-display">Detalles de Hospitalización</CardTitle>
               </div>
               <CardDescription>Ubicación y personal responsable</CardDescription>
             </CardHeader>
@@ -242,7 +241,7 @@ export function PatientForm({ initialData, isEditing = false }: PatientFormProps
                     <FormItem>
                       <FormLabel>Fecha de Ingreso</FormLabel>
                       <FormControl>
-                        <Input type="date" {...field} />
+                        <Input type="date" {...field} className="bg-card/50 border-primary/20" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -253,9 +252,12 @@ export function PatientForm({ initialData, isEditing = false }: PatientFormProps
                   name="bedNumber"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Cama</FormLabel>
+                      <FormLabel className="flex items-center gap-1">
+                        <Scan className="h-4 w-4 text-cyan-500" />
+                        Cama
+                      </FormLabel>
                       <FormControl>
-                        <Input placeholder="Ej. 302-A" {...field} />
+                        <Input placeholder="Ej. 302-A" {...field} className="bg-card/50 border-primary/20 font-mono" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -271,7 +273,7 @@ export function PatientForm({ initialData, isEditing = false }: PatientFormProps
                     <FormItem>
                       <FormLabel>Habitación</FormLabel>
                       <FormControl>
-                        <Input placeholder="Ej. 302" {...field} value={field.value || ""} />
+                        <Input placeholder="Ej. 302" {...field} value={field.value || ""} className="bg-card/50 border-primary/20 font-mono" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -284,7 +286,7 @@ export function PatientForm({ initialData, isEditing = false }: PatientFormProps
                     <FormItem>
                       <FormLabel>Servicio</FormLabel>
                       <FormControl>
-                        <Input placeholder="Ej. Medicina Interna" {...field} />
+                        <Input placeholder="Ej. Medicina Interna" {...field} className="bg-card/50 border-primary/20" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -299,7 +301,7 @@ export function PatientForm({ initialData, isEditing = false }: PatientFormProps
                   <FormItem>
                     <FormLabel>Hospital</FormLabel>
                     <FormControl>
-                      <Input placeholder="Nombre del hospital" {...field} />
+                      <Input placeholder="Nombre del hospital" {...field} className="bg-card/50 border-primary/20" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -313,7 +315,7 @@ export function PatientForm({ initialData, isEditing = false }: PatientFormProps
                   <FormItem>
                     <FormLabel>Médico Tratante (Cargo)</FormLabel>
                     <FormControl>
-                      <Input placeholder="Ej. Dr. Mauricio Mora" {...field} />
+                      <Input placeholder="Ej. Dr. Mauricio Mora" {...field} className="bg-card/50 border-primary/20" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -322,12 +324,11 @@ export function PatientForm({ initialData, isEditing = false }: PatientFormProps
             </CardContent>
           </Card>
 
-          {/* Información Clínica */}
-          <Card className="shadow-sm border-slate-200">
-            <CardHeader className="bg-slate-50/50 border-b pb-4">
+          <Card className="bg-card/50 border-primary/10">
+            <CardHeader className="bg-primary/5 border-b border-primary/10 pb-4">
               <div className="flex items-center gap-2">
-                <Activity className="h-5 w-5 text-blue-600" />
-                <CardTitle className="text-lg">Información Clínica</CardTitle>
+                <Activity className="h-5 w-5 text-teal-500" />
+                <CardTitle className="text-lg font-display">Información Clínica</CardTitle>
               </div>
               <CardDescription>Diagnóstico, alergias y notas médicas</CardDescription>
             </CardHeader>
@@ -341,7 +342,7 @@ export function PatientForm({ initialData, isEditing = false }: PatientFormProps
                     <FormControl>
                       <Textarea
                         placeholder="Describa el diagnóstico de ingreso..."
-                        className="min-h-[100px]"
+                        className="min-h-[100px] bg-card/50 border-primary/20"
                         {...field}
                       />
                     </FormControl>
@@ -355,9 +356,12 @@ export function PatientForm({ initialData, isEditing = false }: PatientFormProps
                 name="allergies"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Alergias</FormLabel>
+                    <FormLabel className="flex items-center gap-1">
+                      <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                      Alergias
+                    </FormLabel>
                     <FormControl>
-                      <Input placeholder="Ej. Penicilina, Látex (o Ninguna)" {...field} value={field.value || ""} />
+                      <Input placeholder="Ej. Penicilina, Látex (o Ninguna)" {...field} value={field.value || ""} className="bg-card/50 border-primary/20" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -372,7 +376,7 @@ export function PatientForm({ initialData, isEditing = false }: PatientFormProps
                     <FormItem>
                       <FormLabel>Tipo de Dieta</FormLabel>
                       <FormControl>
-                        <Input placeholder="Ej. Blanda, Ayuno" {...field} value={field.value || ""} />
+                        <Input placeholder="Ej. Blanda, Ayuno" {...field} value={field.value || ""} className="bg-card/50 border-primary/20" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -385,7 +389,7 @@ export function PatientForm({ initialData, isEditing = false }: PatientFormProps
                     <FormItem>
                       <FormLabel>Precauciones</FormLabel>
                       <FormControl>
-                        <Input placeholder="Ej. Contacto, Gotitas" {...field} value={field.value || ""} />
+                        <Input placeholder="Ej. Contacto, Gotitas" {...field} value={field.value || ""} className="bg-card/50 border-primary/20" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -407,6 +411,7 @@ export function PatientForm({ initialData, isEditing = false }: PatientFormProps
                           placeholder="Ej. 70.5"
                           onChange={(e) => field.onChange(e.target.value === "" ? undefined : parseFloat(e.target.value))}
                           value={field.value || ""}
+                          className="bg-card/50 border-primary/20 font-mono"
                         />
                       </FormControl>
                       <FormMessage />
@@ -425,6 +430,7 @@ export function PatientForm({ initialData, isEditing = false }: PatientFormProps
                           placeholder="Ej. 175"
                           onChange={(e) => field.onChange(e.target.value === "" ? undefined : parseFloat(e.target.value))}
                           value={field.value || ""}
+                          className="bg-card/50 border-primary/20 font-mono"
                         />
                       </FormControl>
                       <FormMessage />
@@ -435,12 +441,11 @@ export function PatientForm({ initialData, isEditing = false }: PatientFormProps
             </CardContent>
           </Card>
 
-          {/* Contacto de Emergencia */}
-          <Card className="shadow-sm border-slate-200">
-            <CardHeader className="bg-slate-50/50 border-b pb-4">
+          <Card className="bg-card/50 border-primary/10">
+            <CardHeader className="bg-primary/5 border-b border-primary/10 pb-4">
               <div className="flex items-center gap-2">
-                <Phone className="h-5 w-5 text-blue-600" />
-                <CardTitle className="text-lg">Contacto de Emergencia</CardTitle>
+                <Phone className="h-5 w-5 text-teal-500" />
+                <CardTitle className="text-lg font-display">Contacto de Emergencia</CardTitle>
               </div>
               <CardDescription>Familiar o persona de referencia</CardDescription>
             </CardHeader>
@@ -452,7 +457,7 @@ export function PatientForm({ initialData, isEditing = false }: PatientFormProps
                   <FormItem>
                     <FormLabel>Nombre del Contacto</FormLabel>
                     <FormControl>
-                      <Input placeholder="Nombre completo" {...field} value={field.value || ""} />
+                      <Input placeholder="Nombre completo" {...field} value={field.value || ""} className="bg-card/50 border-primary/20" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -466,7 +471,7 @@ export function PatientForm({ initialData, isEditing = false }: PatientFormProps
                   <FormItem>
                     <FormLabel>Teléfono de Contacto</FormLabel>
                     <FormControl>
-                      <Input placeholder="Ej. +52 55..." {...field} value={field.value || ""} />
+                      <Input placeholder="Ej. +52 55..." {...field} value={field.value || ""} className="bg-card/50 border-primary/20 font-mono" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -480,7 +485,7 @@ export function PatientForm({ initialData, isEditing = false }: PatientFormProps
                   <FormItem>
                     <FormLabel>Aseguradora (Institución)</FormLabel>
                     <FormControl>
-                      <Input placeholder="Ej. IMSS, AXA, Particular" {...field} value={field.value || ""} />
+                      <Input placeholder="Ej. IMSS, AXA, Particular" {...field} value={field.value || ""} className="bg-card/50 border-primary/20" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -498,6 +503,7 @@ export function PatientForm({ initialData, isEditing = false }: PatientFormProps
                         placeholder="Información relevante no capturada anteriormente..."
                         {...field}
                         value={field.value || ""}
+                        className="bg-card/50 border-primary/20"
                       />
                     </FormControl>
                     <FormMessage />
@@ -508,7 +514,7 @@ export function PatientForm({ initialData, isEditing = false }: PatientFormProps
           </Card>
         </div>
 
-        <div className="flex justify-end items-center gap-4 pt-4 border-t">
+        <div className="flex justify-end items-center gap-4 pt-4 border-t border-primary/10">
           <Button
             type="button"
             variant="outline"
@@ -519,7 +525,8 @@ export function PatientForm({ initialData, isEditing = false }: PatientFormProps
           </Button>
           <Button
             type="submit"
-            className="bg-blue-600 hover:bg-blue-700 min-w-[150px]"
+            variant="glow"
+            className="min-w-[180px]"
             disabled={isSubmitting}
           >
             {isSubmitting ? (

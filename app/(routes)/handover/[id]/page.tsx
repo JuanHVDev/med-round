@@ -22,6 +22,9 @@ interface HandoverPageProps {
   params: Promise<{ id: string }>;
 }
 
+// Asegurar que la página no use cache y siempre obtenga datos frescos
+export const dynamic = "force-dynamic";
+
 export default async function HandoverDetailPage({ params }: HandoverPageProps) {
   const session = await auth.api.getSession({
     headers: await headers(),

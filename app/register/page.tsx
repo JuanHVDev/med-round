@@ -15,9 +15,9 @@ import { NavigationButtons } from "@/components/register/NavigationButtons"
 import { VerificationMessage } from "@/components/register/VerificationMessage"
 import { formSchema, type FormData } from "@/lib/registerSchema"
 import { useEffect } from "react"
+import { MedRoundLogo } from "@/components/ui/med-round-logo"
 
 export default function RegisterPage() {
-  // Zustand para estado global y navegación
   const {
     currentStep,
     isSubmitting,
@@ -33,13 +33,11 @@ export default function RegisterPage() {
     updateFormData,
   } = useRegistration()
 
-  // React Hook Form para validación y estado de campos
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: persistedFormData,
   })
 
-  // Sincronizar cambios del formulario con el store
   useEffect(() => {
     const subscription = form.watch((value) => {
       updateFormData(value as Partial<FormData>)
@@ -47,12 +45,10 @@ export default function RegisterPage() {
     return () => subscription.unsubscribe()
   }, [form, updateFormData])
 
-  // Watchers para obtener valores actuales del formulario
   const userType = form.watch("userType")
   const selectedHospital = form.watch("hospital")
   const email = form.watch("email")
 
-  // Validación de paso actual
   const validateCurrentStep = async () => {
     let fieldsToValidate: string[] = []
 
@@ -79,11 +75,8 @@ export default function RegisterPage() {
       const firstErrorKey = Object.keys(errors)[0] as keyof typeof errors
       if (firstErrorKey) {
         hideError()
-        // Esperar un poco para que el estado se actualice
         setTimeout(() => {
           const errorMessage = errors[firstErrorKey]?.message?.toString() || "Complete los campos requeridos"
-          // Usar el store para mostrar error
-          // Por ahora mostramos el error directamente
           console.error("Validation error:", errorMessage)
         }, 0)
       }
@@ -92,26 +85,23 @@ export default function RegisterPage() {
     return isValid
   }
 
-  // Manejo de navegación con validación
   const handleNextStep = async () => {
     if (currentStep === 3) {
-      // Último paso - enviar formulario
       const formData = form.getValues()
       if (await validateCurrentStep()) {
         await submitForm(formData)
       }
     } else {
-      // Pasos intermedios - solo validar y avanzar
       if (await validateCurrentStep()) {
         nextStep()
       }
     }
   }
 
-  // Mostrar mensaje de verificación si el registro fue exitoso
   if (showVerificationMessage) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-grid-pattern relative overflow-hidden flex items-center justify-center p-4">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-cyan-500/5 pointer-events-none" />
         <VerificationMessage
           email={email}
           onBack={() => {
@@ -124,14 +114,18 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-2xl modern-card">
-        <CardHeader className="text-center pb-6">
-          <CardTitle className="text-2xl font-bold">Registro de Médico</CardTitle>
-          <CardDescription>
+    <div className="min-h-screen bg-grid-pattern relative overflow-hidden flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-cyan-500/5 pointer-events-none" />
+      <Card className="w-full max-w-2xl bg-card/80 backdrop-blur-xl border-primary/20 shadow-xl shadow-primary/5">
+        <CardHeader className="text-center pb-8 pt-8">
+          <div className="flex justify-center mb-4">
+            <MedRoundLogo size="lg" />
+          </div>
+          <CardTitle className="text-2xl font-display font-bold">Registro de Médico</CardTitle>
+          <CardDescription className="mt-2">
             Complete el formulario para crear su cuenta
           </CardDescription>
-          <p className="text-sm text-muted-foreground mt-2">
+          <p className="text-sm text-muted-foreground mt-3">
             ¿Ya tienes una cuenta?{" "}
             <Link href="/login" className="text-primary hover:underline font-medium">
               Inicia sesión

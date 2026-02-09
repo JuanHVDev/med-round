@@ -1,7 +1,6 @@
 "use client";
 
-import
-{
+import {
   Table,
   TableBody,
   TableCell,
@@ -11,8 +10,7 @@ import
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import
-{
+import {
   MoreHorizontal,
   FileText,
   CheckSquare,
@@ -33,16 +31,16 @@ interface PatientTableProps
 export function PatientTable({ patients, onAction }: PatientTableProps)
 {
   return (
-    <div className="rounded-md border bg-white shadow-sm overflow-hidden">
+    <div className="rounded-lg border border-primary/10 bg-card/50 backdrop-blur-sm overflow-hidden">
       <Table>
-        <TableHeader className="bg-slate-50">
+        <TableHeader className="bg-primary/5 border-b border-primary/10">
           <TableRow>
-            <TableHead className="w-[80px]">Cama</TableHead>
-            <TableHead>Paciente</TableHead>
-            <TableHead className="hidden md:table-cell">Diagnóstico</TableHead>
-            <TableHead className="hidden lg:table-cell">Ingreso</TableHead>
-            <TableHead>Tratante</TableHead>
-            <TableHead className="text-right">Acciones</TableHead>
+            <TableHead className="w-[80px] font-display">Cama</TableHead>
+            <TableHead className="font-display">Paciente</TableHead>
+            <TableHead className="hidden md:table-cell font-display">Diagnóstico</TableHead>
+            <TableHead className="hidden lg:table-cell font-display">Ingreso</TableHead>
+            <TableHead className="font-display">Tratante</TableHead>
+            <TableHead className="text-right font-display">Acciones</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -54,16 +52,16 @@ export function PatientTable({ patients, onAction }: PatientTableProps)
             </TableRow>
           ) : (
             patients.map((patient, index) => (
-              <TableRow key={patient.id || `pending-${patient.medicalRecordNumber || index}`} className="hover:bg-slate-50/50 transition-colors">
-                <TableCell className="font-bold text-blue-600">
+              <TableRow key={patient.id || `pending-${patient.medicalRecordNumber || index}`} className="hover:bg-primary/5 transition-colors">
+                <TableCell className="font-bold text-cyan-600 font-mono">
                   {patient.bedNumber}
                 </TableCell>
                 <TableCell>
-                  <Link href={`/patients/${patient.id}`} className="flex flex-col hover:text-blue-600 transition-colors">
-                    <span className="font-medium text-foreground capitalize">
+                  <Link href={`/patients/${patient.id}`} className="flex flex-col hover:text-cyan-600 transition-colors">
+                    <span className="font-medium text-foreground capitalize font-display">
                       {patient.firstName} {patient.lastName}
                     </span>
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-xs text-muted-foreground font-mono">
                       HC: {patient.medicalRecordNumber}
                     </span>
                   </Link>
@@ -72,7 +70,8 @@ export function PatientTable({ patients, onAction }: PatientTableProps)
                   <div className="flex flex-col">
                     <span className="text-sm truncate">{patient.diagnosis}</span>
                     {patient.allergies && (
-                      <Badge variant="destructive" className="w-fit scale-75 -ml-2 py-0">
+                      <Badge variant="destructive" className="w-fit scale-75 -ml-2 py-0 gap-1">
+                        <span className="w-1 h-1 rounded-full bg-current animate-pulse" />
                         Alergias
                       </Badge>
                     )}
@@ -86,8 +85,8 @@ export function PatientTable({ patients, onAction }: PatientTableProps)
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-2">
-                    <div className="h-7 w-7 rounded-full bg-slate-100 flex items-center justify-center">
-                      <User className="h-4 w-4 text-slate-500" />
+                    <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                      <User className="h-4 w-4 text-primary" />
                     </div>
                     <span className="text-sm font-medium">Dr. {patient.attendingDoctor.split(" ")[0]}</span>
                   </div>
@@ -95,7 +94,7 @@ export function PatientTable({ patients, onAction }: PatientTableProps)
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-1">
                     <Link href={`/patients/${patient.id}/edit`}>
-                      <Button variant="ghost" size="icon" title="Editar">
+                      <Button variant="ghost" size="icon" title="Editar" className="hover:bg-primary/10">
                         <MoreHorizontal className="h-4 w-4" />
                       </Button>
                     </Link>
@@ -104,16 +103,18 @@ export function PatientTable({ patients, onAction }: PatientTableProps)
                       size="icon"
                       title="Notas SOAP"
                       onClick={() => onAction?.("soap", patient)}
+                      className="hover:bg-cyan-500/10"
                     >
-                      <FileText className="h-4 w-4 text-blue-500" />
+                      <FileText className="h-4 w-4 text-cyan-500" />
                     </Button>
                     <Button
                       variant="ghost"
                       size="icon"
                       title="Tareas"
                       onClick={() => onAction?.("tasks", patient)}
+                      className="hover:bg-teal-500/10"
                     >
-                      <CheckSquare className="h-4 w-4 text-orange-500" />
+                      <CheckSquare className="h-4 w-4 text-teal-500" />
                     </Button>
                   </div>
                 </TableCell>
